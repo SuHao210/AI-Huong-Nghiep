@@ -1,0 +1,18 @@
+{
+  "name": "huong-nghiep-ai",
+  "version": "1.0.0",
+  "description": "AI tư vấn hướng nghiệp",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@google/genai": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "express-rate-limit": "latest",
+    "helmet": "latest"
+  }
+}
