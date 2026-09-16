@@ -894,7 +894,13 @@
       const pct=Math.round((quizState.index/list.length)*100);
       quizPanel.querySelector("#quizApp").innerHTML=`<button class="quiz-back" type="button" id="quizBack">← Chọn lại ngành</button><div class="quiz-top"><div class="quiz-title">${meta.emoji} ${meta.title}</div><button class="sound-btn" id="soundBtn" type="button">${soundOn?"🔊 Âm thanh":"🔇 Âm thanh"}</button></div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><div class="question-card"><div class="question-illustration">${item.art||meta.art}</div><div style="color:#64748b;font-size:13px;margin-bottom:7px">Câu ${quizState.index+1}/${list.length}</div><h3>${item.q}</h3><div class="option-list">${item.opts.map((o,i)=>`<button class="option-btn" data-i="${i}" type="button"><strong>${String.fromCharCode(65+i)}.</strong> ${o}</button>`).join("")}</div><div class="quiz-explain" id="quizExplain"></div><button class="quiz-next" id="quizNext" type="button">${quizState.index===list.length-1?"🏆 Xem kết quả":"Câu tiếp theo →"}</button></div>`;
       quizPanel.querySelector("#quizBack").addEventListener("click",renderQuizHome);
-      quizPanel.querySelector("#soundBtn").addEventListener("click",()=>{soundOn=!soundOn;renderQuestion();});
+      quizPanel.querySelector("#soundBtn").addEventListener("click",()=>{
+        soundOn=!soundOn;
+        // Chỉ đổi trạng thái âm thanh, không render lại câu hỏi.
+        // Render lại ở đây sẽ reset quizState.answered và làm mất feedback/đáp án đúng.
+        const btn=quizPanel.querySelector("#soundBtn");
+        if(btn) btn.textContent=soundOn?"🔊 Âm thanh":"🔇 Âm thanh";
+      });
       quizPanel.querySelectorAll(".option-btn").forEach(btn=>btn.addEventListener("click",()=>answerQuestion(Number(btn.dataset.i))));
       quizPanel.querySelector("#quizNext").addEventListener("click",nextQuestion);
     }
