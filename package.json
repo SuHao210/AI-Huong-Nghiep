@@ -9,7 +9,7 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
-    "@google/genai": "latest",
+    "@google/genai": "2.22.0",
     "dotenv": "latest",
     "express": "latest",
     "express-rate-limit": "latest",
