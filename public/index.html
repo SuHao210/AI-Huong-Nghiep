@@ -431,6 +431,110 @@
 
         }
 
+
+        /* ================= QUIZ / MODE SWITCH ================= */
+        .mode-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            padding: 8px;
+            margin-bottom: 14px;
+            background: rgba(255,255,255,.86);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(15,23,42,.07);
+        }
+        .mode-btn {
+            border: 0;
+            border-radius: 11px;
+            padding: 12px 14px;
+            background: transparent;
+            color: #475569;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+        .mode-btn.active {
+            background: #172554;
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(23,37,84,.18);
+        }
+        .mode-panel { display: none; }
+        .mode-panel.active { display: block; }
+
+        .quiz-shell {
+            background: rgba(255,255,255,.96);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 12px 40px rgba(15,23,42,.10);
+        }
+        .quiz-hero {
+            text-align: center;
+            padding: 8px 4px 18px;
+        }
+        .quiz-hero .big-emoji { font-size: 54px; }
+        .quiz-hero h2 { margin: 8px 0 6px; color:#172554; }
+        .quiz-hero p { margin:0; color:#64748b; line-height:1.6; }
+        .industry-grid {
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:14px;
+        }
+        .industry-card {
+            border:1px solid #e2e8f0;
+            border-radius:18px;
+            padding:16px;
+            background:linear-gradient(145deg,#fff,#f8fafc);
+            cursor:pointer;
+            text-align:left;
+            transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+            position:relative;
+            overflow:hidden;
+        }
+        .industry-card:hover { transform:translateY(-3px); box-shadow:0 12px 28px rgba(15,23,42,.11); border-color:#93c5fd; }
+        .industry-art { height:105px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:56px; margin-bottom:12px; background:linear-gradient(135deg,#dbeafe,#ecfeff); }
+        .industry-card:nth-child(2) .industry-art { background:linear-gradient(135deg,#fef3c7,#ffedd5); }
+        .industry-card:nth-child(3) .industry-art { background:linear-gradient(135deg,#dcfce7,#ecfdf5); }
+        .industry-card:nth-child(4) .industry-art { background:linear-gradient(135deg,#e0e7ff,#eef2ff); }
+        .industry-card:nth-child(5) .industry-art { background:linear-gradient(135deg,#fce7f3,#fae8ff); }
+        .industry-card h3 { margin:0 0 5px; color:#0f172a; }
+        .industry-card p { margin:0; color:#64748b; font-size:13px; line-height:1.5; }
+        .quiz-back { border:0; background:transparent; color:#2563eb; font-weight:800; cursor:pointer; padding:4px 0 12px; }
+        .quiz-top { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; }
+        .quiz-title { font-weight:900; color:#172554; }
+        .sound-btn { border:1px solid #cbd5e1; background:#fff; border-radius:10px; padding:8px 11px; cursor:pointer; }
+        .progress-wrap { height:9px; background:#e2e8f0; border-radius:99px; overflow:hidden; margin:8px 0 18px; }
+        .progress-bar { height:100%; width:0; background:linear-gradient(90deg,#2563eb,#16a34a); transition:width .25s ease; }
+        .question-card { border:1px solid #e2e8f0; border-radius:18px; padding:20px; background:#fff; }
+        .question-illustration { height:130px; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:62px; background:linear-gradient(135deg,#eff6ff,#f0fdf4); margin-bottom:16px; }
+        .question-card h3 { margin:0 0 18px; line-height:1.45; color:#0f172a; }
+        .option-list { display:grid; gap:10px; }
+        .option-btn { width:100%; text-align:left; border:1px solid #cbd5e1; background:#fff; border-radius:12px; padding:13px 14px; cursor:pointer; font-size:15px; transition:.16s ease; }
+        .option-btn:hover { border-color:#60a5fa; background:#eff6ff; }
+        .option-btn.correct { border-color:#22c55e; background:#f0fdf4; }
+        .option-btn.wrong { border-color:#ef4444; background:#fef2f2; }
+        .option-btn:disabled { cursor:default; }
+        .quiz-explain { margin-top:14px; padding:12px 14px; border-radius:12px; background:#f8fafc; color:#475569; line-height:1.55; display:none; }
+        .quiz-next { width:100%; margin-top:14px; border:0; border-radius:12px; padding:13px; background:#172554; color:#fff; font-weight:800; cursor:pointer; display:none; }
+        .quiz-result { text-align:center; padding:18px 4px; }
+        .score-ring { width:132px; height:132px; margin:10px auto 18px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:conic-gradient(#2563eb 0deg,#16a34a 0deg,#e2e8f0 0deg); position:relative; }
+        .score-ring::after { content:""; position:absolute; inset:10px; background:#fff; border-radius:50%; }
+        .score-ring span { position:relative; z-index:1; font-size:28px; font-weight:900; color:#172554; }
+        .result-actions { display:grid; gap:10px; margin-top:18px; }
+        .result-actions button { border:0; border-radius:12px; padding:13px; font-weight:800; cursor:pointer; }
+        .primary-action { background:#172554; color:#fff; }
+        .secondary-action { background:#eff6ff; color:#1d4ed8; }
+        .personal-quiz-box { margin-top:16px; padding:14px; border:1px solid #bfdbfe; border-radius:15px; background:linear-gradient(135deg,#eff6ff,#f0fdf4); }
+        .personal-quiz-box strong { display:block; color:#172554; margin-bottom:6px; }
+        .career-quiz-buttons { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+        .career-quiz-btn { border:1px solid #93c5fd; background:#fff; color:#1d4ed8; border-radius:10px; padding:8px 11px; cursor:pointer; font-weight:800; }
+        .career-quiz-btn:hover { background:#eff6ff; }
+        .loading-card { text-align:center; padding:30px 10px; color:#64748b; }
+        .spinner { width:34px; height:34px; border:4px solid #dbeafe; border-top-color:#2563eb; border-radius:50%; margin:0 auto 12px; animation:spin .8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .quiz-note { font-size:12px; color:#64748b; text-align:center; margin-top:14px; }
+        @media(max-width:600px){ .industry-grid{grid-template-columns:1fr;} .quiz-shell{padding:15px;} .mode-btn{font-size:13px;} }
+
     </style>
 
 </head>
@@ -441,782 +545,373 @@
 
 <div class="app">
 
-
     <div class="header">
-
-        <div class="logo">
-            🧭
-        </div>
-
-        <h1>
-            Chuyên Gia Hướng Nghiệp AI
-        </h1>
-
-        <div class="subtitle">
-
-            Trò chuyện để khám phá sở thích,
-            năng lực và hướng nghề nghiệp phù hợp.
-
-        </div>
-
+        <div class="logo">🧭</div>
+        <h1>Chuyên Gia Hướng Nghiệp AI</h1>
+        <div class="subtitle">Khám phá bản thân bằng trò chuyện AI và quiz ngành nghề.</div>
     </div>
 
+    <div class="mode-switch" role="tablist" aria-label="Chế độ">
+        <button class="mode-btn active" id="chatModeBtn" type="button">💬 AI Chat</button>
+        <button class="mode-btn" id="quizModeBtn" type="button">🎮 Quiz ngành nghề</button>
+    </div>
 
-    <div class="chat">
-
-
-        <div id="chatBox">
-
-
-            <div class="message ai">
-
-                <div class="bubble">
-
-                    <div class="sender">
-                        🧭 AI Hướng Nghiệp
+    <div id="chatPanel" class="mode-panel active">
+        <div class="chat">
+            <div id="chatBox">
+                <div class="message ai">
+                    <div class="bubble">
+                        <div class="sender">🧭 AI Hướng Nghiệp</div>
+                        Chào bạn! 👋
+                        <br><br>
+                        Mình sẽ trò chuyện với bạn để tìm hiểu sở thích, cách suy nghĩ, điểm mạnh và môi trường làm việc phù hợp.
+                        <br><br>
+                        Không có bài trắc nghiệm cứng và cũng không giới hạn số câu hỏi.
+                        <br><br>
+                        Hãy bắt đầu bằng việc kể cho mình một vài thứ bạn thích làm khi rảnh nhé.
                     </div>
-
-                    Chào bạn! 👋
-
-                    <br><br>
-
-                    Mình sẽ trò chuyện với bạn để tìm hiểu
-                    sở thích, cách suy nghĩ, điểm mạnh và
-                    môi trường làm việc phù hợp.
-
-                    <br><br>
-
-                    Không có bài trắc nghiệm cứng và
-                    cũng không giới hạn số câu hỏi.
-
-                    <br><br>
-
-                    Hãy bắt đầu bằng việc kể cho mình
-                    một vài thứ bạn thích làm khi rảnh nhé.
-
                 </div>
-
             </div>
-
-
+            <div class="input-area">
+                <div class="input-row">
+                    <input id="userInput" type="text" placeholder="Ví dụ: Em thích chơi game, bóng đá và làm video..." autocomplete="off">
+                    <button id="sendBtn">Gửi</button>
+                </div>
+                <button class="reset" id="resetBtn">🔄 Bắt đầu cuộc trò chuyện mới</button>
+                <div class="status" id="status">🟢 AI đang sẵn sàng</div>
+            </div>
         </div>
-
-
-        <div class="input-area">
-
-
-            <div class="input-row">
-
-                <input
-                    id="userInput"
-                    type="text"
-                    placeholder="Ví dụ: Em thích chơi game, bóng đá và làm video..."
-                    autocomplete="off"
-                >
-
-                <button
-                    id="sendBtn"
-                >
-                    Gửi
-                </button>
-
-            </div>
-
-
-            <button
-                class="reset"
-                id="resetBtn"
-            >
-                🔄 Bắt đầu cuộc trò chuyện mới
-            </button>
-
-
-            <div
-                class="status"
-                id="status"
-            >
-                🟢 AI đang sẵn sàng
-            </div>
-
-
-        </div>
-
-
     </div>
 
+    <div id="quizPanel" class="mode-panel">
+        <div class="quiz-shell" id="quizApp"></div>
+    </div>
 
 </div>
 
 
 <script>
+    /* ===================== APP MODE ===================== */
+    const chatModeBtn = document.getElementById("chatModeBtn");
+    const quizModeBtn = document.getElementById("quizModeBtn");
+    const chatPanel = document.getElementById("chatPanel");
+    const quizPanel = document.getElementById("quizPanel");
 
+    function switchMode(mode) {
+        const chat = mode === "chat";
+        chatPanel.classList.toggle("active", chat);
+        quizPanel.classList.toggle("active", !chat);
+        chatModeBtn.classList.toggle("active", chat);
+        quizModeBtn.classList.toggle("active", !chat);
+        if (!chat) renderQuizHome();
+        else userInput.focus();
+    }
+    chatModeBtn.addEventListener("click", () => switchMode("chat"));
+    quizModeBtn.addEventListener("click", () => switchMode("quiz"));
 
-    /* =====================================================
-       SESSION
-       ===================================================== */
-
-    let sessionId =
-        localStorage.getItem(
-            "huongnghiep_session_id"
-        );
-
-
-    /* =====================================================
-       ELEMENT
-       ===================================================== */
-
-    const chatBox =
-        document.getElementById(
-            "chatBox"
-        );
-
-
-    const userInput =
-        document.getElementById(
-            "userInput"
-        );
-
-
-    const sendBtn =
-        document.getElementById(
-            "sendBtn"
-        );
-
-
-    const resetBtn =
-        document.getElementById(
-            "resetBtn"
-        );
-
-
-    const status =
-        document.getElementById(
-            "status"
-        );
-
-
+    /* ===================== CHAT ===================== */
+    let sessionId = localStorage.getItem("huongnghiep_session_id");
+    const chatBox = document.getElementById("chatBox");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const status = document.getElementById("status");
     let sending = false;
 
-
-    /* =====================================================
-       SESSION ID
-       ===================================================== */
-
     function saveSessionId(id) {
-
-        if (!id) {
-            return;
-        }
-
+        if (!id) return;
         sessionId = id;
-
-        localStorage.setItem(
-            "huongnghiep_session_id",
-            id
-        );
-
+        localStorage.setItem("huongnghiep_session_id", id);
     }
-
-
-    /* =====================================================
-       ADD MESSAGE
-       ===================================================== */
-
-    function addMessage(
-        text,
-        type
-    ) {
-
-        const message =
-            document.createElement(
-                "div"
-            );
-
-
-        message.className =
-            `message ${type}`;
-
-
-        const bubble =
-            document.createElement(
-                "div"
-            );
-
-
-        bubble.className =
-            "bubble";
-
-
-        const sender =
-            document.createElement(
-                "div"
-            );
-
-
-        sender.className =
-            "sender";
-
-
-        sender.textContent =
-            type === "user"
-                ? "Bạn"
-                : "🧭 AI Hướng Nghiệp";
-
-
-        const content =
-            document.createElement(
-                "div"
-            );
-
-
-        content.textContent =
-            text;
-
-
-        bubble.appendChild(
-            sender
-        );
-
-
-        bubble.appendChild(
-            content
-        );
-
-
-        message.appendChild(
-            bubble
-        );
-
-
-        chatBox.appendChild(
-            message
-        );
-
-
+    function scrollBottom() { chatBox.scrollTop = chatBox.scrollHeight; }
+    function addMessage(text, type) {
+        const message = document.createElement("div");
+        message.className = `message ${type}`;
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        const sender = document.createElement("div");
+        sender.className = "sender";
+        sender.textContent = type === "user" ? "Bạn" : "🧭 AI Hướng Nghiệp";
+        const content = document.createElement("div");
+        content.textContent = text;
+        bubble.append(sender, content);
+        message.appendChild(bubble);
+        chatBox.appendChild(message);
         scrollBottom();
-
-
         return content;
-
     }
-
-
-    /* =====================================================
-       TYPING
-       ===================================================== */
-
     function addTyping() {
-
-        const message =
-            document.createElement(
-                "div"
-            );
-
-
-        message.className =
-            "message ai";
-
-
-        const bubble =
-            document.createElement(
-                "div"
-            );
-
-
-        bubble.className =
-            "bubble";
-
-
-        bubble.innerHTML = `
-
-            <div class="sender">
-                🧭 AI Hướng Nghiệp
-            </div>
-
-            <div class="typing">
-
-                <span></span>
-                <span></span>
-                <span></span>
-
-            </div>
-
-        `;
-
-
-        message.appendChild(
-            bubble
-        );
-
-
-        chatBox.appendChild(
-            message
-        );
-
-
-        scrollBottom();
-
-
-        return message;
-
+        const message = document.createElement("div");
+        message.className = "message ai";
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.innerHTML = `<div class="sender">🧭 AI Hướng Nghiệp</div><div class="typing"><span></span><span></span><span></span></div>`;
+        message.appendChild(bubble); chatBox.appendChild(message); scrollBottom(); return message;
     }
 
-
-    /* =====================================================
-       SCROLL
-       ===================================================== */
-
-    function scrollBottom() {
-
-        chatBox.scrollTop =
-            chatBox.scrollHeight;
-
+    function normalizeRecommendationText(text) {
+        // Only expose the personalized-quiz button after the AI has reached its recommendation section.
+        const eligible = text.includes("💼 NGHỀ NGHIỆP ĐÁNG THỬ") || /NGHỀ NGHIỆP ĐÁNG THỬ/i.test(text);
+        if (!eligible) return null;
+        const map = [
+            { key:"it", label:"💻 Công nghệ thông tin", terms:["data analyst","data scientist","software engineer","software developer","lập trình viên","developer","ux/ui designer","ui/ux","game designer","gameplay programmer","product designer","devops","cybersecurity","an ninh mạng","kỹ sư phần mềm","kiểm thử phần mềm","qa engineer"] },
+            { key:"business", label:"📊 Kinh doanh & Tài chính", terms:["business analyst","financial analyst","finance","tài chính","kinh doanh","sales","bán hàng","business development","chuyên viên kinh doanh","phân tích kinh doanh","ngân hàng","accountant","kế toán","investment"] },
+            { key:"health", label:"🩺 Y tế & Chăm sóc sức khỏe", terms:["bác sĩ","điều dưỡng","dược sĩ","pharmacist","y tế","healthcare","chăm sóc sức khỏe","kỹ thuật viên xét nghiệm","vật lý trị liệu","physiotherapist","nutritionist","dinh dưỡng"] },
+            { key:"engineering", label:"⚙️ Kỹ thuật & Công nghệ", terms:["kỹ sư","engineering","kỹ thuật","cơ khí","điện","điện tử","tự động hóa","robotics","civil engineer","xây dựng","cơ điện tử","mechatronics","mechanical"] },
+            { key:"marketing", label:"🎨 Marketing & Truyền thông", terms:["marketing","digital marketing","content strategist","content creator","truyền thông","social media","copywriter","seo","branding","quảng cáo","pr","quan hệ công chúng","creator","biên tập viên"] }
+        ];
+        const lower = text.toLowerCase();
+        return map.filter(x => x.terms.some(t => lower.includes(t)));
     }
-
-
-    /* =====================================================
-       SEND
-       ===================================================== */
+    function addPersonalQuizButtons(text) {
+        const matches = normalizeRecommendationText(text);
+        if (!matches?.length) return;
+        const last = [...chatBox.querySelectorAll(".message.ai")].pop();
+        if (!last || last.querySelector(".personal-quiz-box")) return;
+        const box = document.createElement("div");
+        box.className = "personal-quiz-box";
+        box.innerHTML = `<strong>🎯 Muốn tìm hiểu sâu hơn từ chính cuộc trò chuyện này?</strong><span>AI có thể tạo một quiz riêng dựa trên những gì bạn vừa chia sẻ. Quiz chỉ xuất hiện cho các lĩnh vực có bộ quiz hỗ trợ.</span><div class="career-quiz-buttons"></div>`;
+        const buttons = box.querySelector(".career-quiz-buttons");
+        matches.forEach(item => {
+            const b = document.createElement("button");
+            b.className = "career-quiz-btn";
+            b.type = "button";
+            b.textContent = `✨ Hãy thử quiz ${item.label.replace(/^\S+\s/,"")}`;
+            b.addEventListener("click", () => startPersonalizedQuiz(item.key, item.label));
+            buttons.appendChild(b);
+        });
+        last.querySelector(".bubble")?.appendChild(box);
+    }
 
     async function sendMessage() {
-
-        if (sending) {
-            return;
-        }
-
-
-        const text =
-            userInput.value.trim();
-
-
-        if (!text) {
-
-            userInput.focus();
-
-            return;
-
-        }
-
-
-        sending = true;
-
-        sendBtn.disabled =
-            true;
-
-        sendBtn.textContent =
-            "Đang trả lời...";
-
-
-        addMessage(
-            text,
-            "user"
-        );
-
-
-        userInput.value = "";
-
-
-        const typing =
-            addTyping();
-
-
-        status.textContent =
-            "🟡 AI đang suy nghĩ...";
-
-
+        if (sending) return;
+        const text = userInput.value.trim();
+        if (!text) { userInput.focus(); return; }
+        sending = true; sendBtn.disabled = true; sendBtn.textContent = "Đang trả lời...";
+        addMessage(text,"user"); userInput.value = "";
+        const typing = addTyping(); status.textContent = "🟡 AI đang suy nghĩ...";
         try {
-
-            const response =
-                await fetch(
-                    "/api/chat",
-                    {
-
-                        method:
-                            "POST",
-
-                        headers: {
-
-                            "Content-Type":
-                                "application/json",
-
-                            ...(sessionId
-                                ? {
-                                    "X-Session-Id":
-                                        sessionId
-                                }
-                                : {})
-
-                        },
-
-                        body:
-                            JSON.stringify({
-                                message:
-                                    text
-                            })
-
-                    }
-                );
-
-
-            const returnedSession =
-                response.headers.get(
-                    "X-Session-Id"
-                );
-
-
-            if (returnedSession) {
-
-                saveSessionId(
-                    returnedSession
-                );
-
-            }
-
-
+            const response = await fetch("/api/chat", { method:"POST", headers:{"Content-Type":"application/json", ...(sessionId?{"X-Session-Id":sessionId}: {})}, body:JSON.stringify({message:text}) });
+            const returnedSession = response.headers.get("X-Session-Id");
+            if (returnedSession) saveSessionId(returnedSession);
             if (!response.ok) {
-
-                typing.remove();
-
-                const data =
-                    await response.json()
-                    .catch(
-                        () => ({})
-                    );
-
-
-                addMessage(
-                    data.error ||
-                    "Có lỗi xảy ra.",
-                    "ai"
-                );
-
-
-                return;
-
+                typing.remove(); const data = await response.json().catch(()=>({}));
+                addMessage(data.error || "Có lỗi xảy ra.","ai"); status.textContent="🔴 AI tạm thời không sẵn sàng"; return;
             }
-
-
-            /*
-             * Chuyển từ "đang suy nghĩ"
-             * sang bong bóng AI thật.
-             */
-
-            typing.remove();
-
-
-            const aiContent =
-                addMessage(
-                    "",
-                    "ai"
-                );
-
-
-            let fullText = "";
-
-
-            /*
-             * Đọc SSE stream.
-             */
-
-            const reader =
-                response.body.getReader();
-
-
-            const decoder =
-                new TextDecoder(
-                    "utf-8"
-                );
-
-
-            let buffer = "";
-
-
-            while (true) {
-
-                const {
-                    value,
-                    done
-                } =
-                    await reader.read();
-
-
-                if (done) {
-                    break;
+            typing.remove(); const aiContent = addMessage("","ai"); let fullText="";
+            const reader=response.body.getReader(); const decoder=new TextDecoder("utf-8"); let buffer=""; let streamError=false;
+            while(true){
+                const {value,done}=await reader.read(); if(done) break;
+                buffer += decoder.decode(value,{stream:true}); const events=buffer.split("\n\n"); buffer=events.pop()||"";
+                for(const eventText of events){
+                    if(!eventText.startsWith("data:")) continue;
+                    const jsonText=eventText.slice(5).trim(); if(!jsonText) continue;
+                    let event; try{event=JSON.parse(jsonText);}catch{continue;}
+                    if(event.type==="text"){fullText += event.text||""; aiContent.textContent=fullText; scrollBottom();}
+                    if(event.type==="error"){streamError=true; aiContent.textContent="❌ "+(event.message||"AI gặp lỗi.");}
                 }
-
-
-                buffer +=
-                    decoder.decode(
-                        value,
-                        {
-                            stream:
-                                true
-                        }
-                    );
-
-
-                const events =
-                    buffer.split(
-                        "\n\n"
-                    );
-
-
-                buffer =
-                    events.pop() || "";
-
-
-                for (
-                    const eventText
-                    of events
-                ) {
-
-                    if (
-                        !eventText.startsWith(
-                            "data:"
-                        )
-                    ) {
-
-                        continue;
-
-                    }
-
-
-                    const jsonText =
-                        eventText
-                            .slice(5)
-                            .trim();
-
-
-                    if (!jsonText) {
-                        continue;
-                    }
-
-
-                    let event;
-
-                    try {
-
-                        event =
-                            JSON.parse(
-                                jsonText
-                            );
-
-                    } catch {
-
-                        continue;
-
-                    }
-
-
-                    /* ------------------
-                       TEXT
-                       ------------------ */
-
-                    if (
-                        event.type ===
-                        "text"
-                    ) {
-
-                        fullText +=
-                            event.text ||
-                            "";
-
-
-                        aiContent.textContent =
-                            fullText;
-
-
-                        scrollBottom();
-
-                    }
-
-
-                    /* ------------------
-                       ERROR
-                       ------------------ */
-
-                    if (
-                        event.type ===
-                        "error"
-                    ) {
-
-                        aiContent.textContent =
-                            "❌ "
-                            + (
-                                event.message ||
-                                "AI gặp lỗi."
-                            );
-
-                    }
-
-                }
-
             }
-
-
-            status.textContent =
-                "🟢 AI đang sẵn sàng";
-
-
-        }
-
-
-        catch (error) {
-
-            console.error(
-                error
-            );
-
-
-            typing.remove();
-
-
-            addMessage(
-                "❌ Không thể kết nối tới server. Hãy kiểm tra server.js có đang chạy không.",
-                "ai"
-            );
-
-
-            status.textContent =
-                "🔴 Mất kết nối server";
-
-        }
-
-
-        finally {
-
-            sending = false;
-
-            sendBtn.disabled =
-                false;
-
-            sendBtn.textContent =
-                "Gửi";
-
-            userInput.focus();
-
-        }
-
+            if(!streamError && fullText) addPersonalQuizButtons(fullText);
+            status.textContent = streamError ? "🔴 AI tạm thời không sẵn sàng" : "🟢 AI đang sẵn sàng";
+        } catch(error) {
+            console.error(error); typing.remove(); addMessage("❌ Không thể kết nối tới server. Vui lòng thử lại sau.","ai"); status.textContent="🔴 Mất kết nối server";
+        } finally { sending=false; sendBtn.disabled=false; sendBtn.textContent="Gửi"; userInput.focus(); }
     }
 
+    async function resetChat(){
+        try{await fetch("/api/reset",{method:"POST",headers:{...(sessionId?{"X-Session-Id":sessionId}: {})}});}catch{}
+        sessionId=null; localStorage.removeItem("huongnghiep_session_id");
+        chatBox.innerHTML=`<div class="message ai"><div class="bubble"><div class="sender">🧭 AI Hướng Nghiệp</div>Chúng ta bắt đầu lại nhé! 👋<br><br>Hãy kể cho mình những thứ bạn thích, những việc bạn thường làm khi rảnh, hoặc điều gì khiến bạn tò mò.</div></div>`;
+        status.textContent="🟢 AI đang sẵn sàng"; userInput.focus();
+    }
+    sendBtn.addEventListener("click",sendMessage); resetBtn.addEventListener("click",resetChat);
+    userInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage();}});
 
-    /* =====================================================
-       RESET
-       ===================================================== */
+    /* ===================== QUIZ DATA ===================== */
+    const INDUSTRIES = {
+      it:{title:"Công nghệ thông tin",emoji:"💻",art:"🖥️",desc:"Logic, công nghệ, dữ liệu và xây dựng sản phẩm số."},
+      business:{title:"Kinh doanh & Tài chính",emoji:"📊",art:"📈",desc:"Thị trường, con người, tiền bạc và quyết định kinh doanh."},
+      health:{title:"Y tế & Chăm sóc sức khỏe",emoji:"🩺",art:"🧬",desc:"Sức khỏe, khoa học, chăm sóc và phục vụ cộng đồng."},
+      engineering:{title:"Kỹ thuật & Công nghệ",emoji:"⚙️",art:"🤖",desc:"Máy móc, hệ thống, thiết kế và giải quyết vấn đề thực tế."},
+      marketing:{title:"Marketing & Truyền thông",emoji:"🎨",art:"📣",desc:"Ý tưởng, nội dung, thương hiệu và kết nối với khán giả."}
+    };
+    const Q = (q,opts,a,e,art) => ({q,opts,a,e,art});
+    const QUIZ = {
+      it:[
+        Q("Khi gặp một vấn đề phức tạp, bạn thường làm gì trước?",["Chia nhỏ vấn đề","Làm thử ngay","Hỏi người có kinh nghiệm","Tìm một cách hoàn toàn mới"],0,"Chia nhỏ giúp bạn nhìn rõ cấu trúc của vấn đề."),
+        Q("Một bảng dữ liệu có nhiều giá trị bất thường. Bạn sẽ?",["Bỏ qua","Kiểm tra nguồn và quy tắc dữ liệu","Xóa ngẫu nhiên","Đổi màu bảng"],1,"Kiểm tra dữ liệu trước khi phân tích giúp tránh kết luận sai."),
+        Q("Bạn thích công việc nào hơn?",["Xây một công cụ","Tổ chức sự kiện","Chăm sóc khách hàng","Viết bài"],0,"Xây công cụ thường gắn với tư duy sản phẩm và công nghệ."),
+        Q("Khi code chạy sai, phản ứng đầu tiên của bạn là?",["Bỏ cuộc","Đọc lỗi và tái hiện lỗi","Đổ lỗi cho máy","Viết lại tất cả"],1,"Debug có hệ thống là kỹ năng cốt lõi trong phát triển phần mềm."),
+        Q("Điều nào hấp dẫn bạn nhất?",["Tự động hóa việc lặp lại","Thuyết phục người khác","Chăm sóc người bệnh","Thiết kế poster"],0,"Tự động hóa là một tư duy ứng dụng công nghệ rất phổ biến."),
+        Q("Bạn muốn sản phẩm mình tạo ra được đánh giá bằng?",["Khả năng hoạt động","Màu sắc","Số người biết đến","Cảm xúc"],0,"Sản phẩm số cần đáp ứng chức năng và nhu cầu người dùng."),
+        Q("Bạn thấy thoải mái với việc học công cụ mới?",["Rất thích","Chỉ khi bắt buộc","Không thích","Tùy hôm"],0,"Công nghệ thay đổi nhanh nên khả năng học công cụ mới rất hữu ích."),
+        Q("Một website tải chậm, bạn muốn kiểm tra gì?",["Hiệu năng và tài nguyên","Logo","Tên miền trước tiên","Font chữ duy nhất"],0,"Đo và tìm điểm nghẽn là cách tiếp cận kỹ thuật."),
+        Q("Bạn thích làm việc với thông tin nào?",["Dữ liệu và hệ thống","Tin đồn","Khẩu hiệu","Trang trí"],0,"Dữ liệu và hệ thống là nền tảng của nhiều nghề IT."),
+        Q("Khi hai cách giải quyết đều có ưu nhược điểm, bạn sẽ?",["So sánh tiêu chí","Chọn ngẫu nhiên","Chọn cách dài nhất","Tránh quyết định"],0,"Đặt tiêu chí giúp quyết định kỹ thuật minh bạch hơn."),
+        Q("Bạn có hứng thú tìm hiểu vì sao một ứng dụng hoạt động?",["Có","Ít","Không","Chỉ khi lỗi"],0,"Tò mò về cơ chế bên trong là tín hiệu tốt cho việc khám phá công nghệ."),
+        Q("Bạn thích nhiệm vụ nào hơn?",["Tìm lỗi trong hệ thống","Trang trí phòng","Viết lời chúc","Bán vé"],0,"Tìm lỗi cần sự tỉ mỉ và tư duy phân tích."),
+        Q("Nếu người dùng dùng sản phẩm khác dự kiến, bạn sẽ?",["Quan sát và cải thiện","Bảo họ dùng đúng","Bỏ qua","Xóa tính năng"],0,"Sản phẩm tốt cần học từ hành vi người dùng thực tế."),
+        Q("Bạn có thích các bài toán có nhiều bước logic?",["Có","Một chút","Không","Chưa thử"],0,"Tư duy logic hỗ trợ nhiều lĩnh vực IT."),
+        Q("Khi học một công nghệ mới, bạn thích?",["Làm dự án nhỏ","Chỉ xem lý thuyết","Chờ người dạy làm","Không thử"],0,"Dự án nhỏ giúp biến kiến thức thành kỹ năng."),
+        Q("Bạn nghĩ bảo mật quan trọng vì?",["Bảo vệ dữ liệu và người dùng","Làm web đẹp hơn","Tăng âm lượng","Giảm giá"],0,"Bảo mật liên quan trực tiếp đến dữ liệu, tài sản và niềm tin."),
+        Q("Bạn có thể kiên nhẫn tìm nguyên nhân của lỗi lâu không?",["Có","Khó nhưng thử","Không","Chưa biết"],0,"Kiên nhẫn là lợi thế khi debug và xử lý vấn đề phức tạp."),
+        Q("Bạn thích tạo ra thứ có thể được dùng nhiều lần?",["Có","Không","Tùy","Chưa nghĩ"],0,"Tư duy tạo hệ thống có khả năng tái sử dụng rất hữu ích trong IT."),
+        Q("Khi có yêu cầu mơ hồ, bạn nên?",["Làm rõ mục tiêu","Đoán rồi làm","Bỏ qua","Chờ mãi"],0,"Làm rõ yêu cầu giảm sai lệch giữa sản phẩm và nhu cầu."),
+        Q("Sau quiz này, hoạt động nào giúp kiểm chứng hứng thú IT tốt nhất?",["Làm một dự án nhỏ","Chỉ xem video nghề","Mua máy thật đắt","Không làm gì"],0,"Một dự án nhỏ cho bạn trải nghiệm công việc thực tế với chi phí thấp.")
+      ],
+      business:[
+        Q("Khi doanh số giảm, bạn muốn xem gì trước?",["Dữ liệu và nguyên nhân","Màu logo","Tên nhân viên","Không cần xem"],0,"Dữ liệu giúp xác định vấn đề thay vì đoán."),
+        Q("Một khách hàng chưa quyết định mua. Bạn sẽ?",["Tìm hiểu nhu cầu","Ép mua","Bỏ qua","Giảm giá ngay"],0,"Hiểu nhu cầu là nền tảng của bán hàng và tư vấn."),
+        Q("Bạn thích công việc nào?",["Phân tích thị trường","Sửa máy","Điều trị bệnh","Thiết kế 3D"],0,"Phân tích thị trường phù hợp với nhiều vai trò kinh doanh."),
+        Q("Khi có hai phương án đầu tư, bạn nên?",["So sánh lợi nhuận và rủi ro","Chọn phương án nghe hay","Chọn ngẫu nhiên","Không xem số liệu"],0,"Quyết định tài chính cần cân nhắc cả lợi nhuận và rủi ro."),
+        Q("Bạn có thích thương lượng để tìm điểm chung?",["Có","Một chút","Không","Chưa thử"],0,"Đàm phán là kỹ năng quan trọng trong nhiều vai trò kinh doanh."),
+        Q("Một sản phẩm tốt nhưng ít người mua. Bạn kiểm tra?",["Nhu cầu và cách tiếp cận thị trường","Đổi tên ngay","Xóa sản phẩm","Tăng giá ngay"],0,"Sản phẩm cần phù hợp nhu cầu và được tiếp cận đúng khách hàng."),
+        Q("Bạn thích làm việc với con số?",["Có","Tùy","Không","Chưa biết"],0,"Số liệu hỗ trợ phân tích và ra quyết định kinh doanh."),
+        Q("Nếu đồng đội đưa ra ý tưởng khác bạn, bạn sẽ?",["So sánh bằng tiêu chí","Bác ngay","Im lặng","Tránh làm chung"],0,"So sánh bằng tiêu chí giúp đội nhóm quyết định khách quan."),
+        Q("Điều nào hấp dẫn bạn hơn?",["Tìm cơ hội tăng trưởng","Sửa code","Chăm sóc bệnh nhân","Lắp robot"],0,"Tìm cơ hội tăng trưởng là hoạt động cốt lõi của nhiều vai trò kinh doanh."),
+        Q("Khi ngân sách hạn chế, bạn sẽ?",["Ưu tiên mục tiêu quan trọng","Chi đều cho mọi thứ","Chi hết","Không làm"],0,"Ưu tiên nguồn lực là kỹ năng quản trị."),
+        Q("Bạn có tò mò về lý do khách hàng chọn một thương hiệu?",["Có","Một chút","Không","Chưa nghĩ"],0,"Hiểu hành vi khách hàng giúp xây sản phẩm và chiến lược tốt hơn."),
+        Q("Khi một kế hoạch không đạt mục tiêu, bạn sẽ?",["Đo lại và điều chỉnh","Đổ lỗi","Bỏ luôn","Giữ nguyên"],0,"Quản trị tốt cần theo dõi kết quả và điều chỉnh."),
+        Q("Bạn thích môi trường nào?",["Nhiều mục tiêu và tương tác","Ít thay đổi","Chỉ làm một mình","Không có deadline"],0,"Kinh doanh thường có mục tiêu, khách hàng và thay đổi liên tục."),
+        Q("Một báo cáo tốt nên?",["Rõ dữ liệu và kết luận","Thật dài","Nhiều màu","Không cần nguồn"],0,"Báo cáo tốt giúp người đọc hiểu dữ liệu và quyết định."),
+        Q("Bạn có thích tìm cách tăng hiệu quả?",["Có","Một chút","Không","Chưa thử"],0,"Tối ưu hiệu quả là trọng tâm của nhiều vai trò kinh doanh."),
+        Q("Khi khách hàng phàn nàn, bước đầu tiên?",["Lắng nghe và xác định vấn đề","Tranh luận","Xóa phản hồi","Đổ lỗi"],0,"Lắng nghe giúp xác định nhu cầu và nguyên nhân thực tế."),
+        Q("Bạn muốn đo thành công bằng?",["Mục tiêu và kết quả","Cảm giác","Số cuộc họp","Độ dài báo cáo"],0,"Kết quả và mục tiêu là thước đo rõ ràng hơn."),
+        Q("Bạn có thích xây dựng kế hoạch?",["Có","Tùy","Không","Chưa biết"],0,"Lập kế hoạch giúp phối hợp nguồn lực và thời gian."),
+        Q("Khi thị trường thay đổi, bạn sẽ?",["Theo dõi và thích nghi","Giữ nguyên mọi thứ","Bỏ cuộc","Chờ người khác"],0,"Khả năng thích nghi rất quan trọng trong môi trường kinh doanh."),
+        Q("Hoạt động nào giúp kiểm chứng hứng thú kinh doanh?",["Thử bán một sản phẩm nhỏ","Chỉ đọc lý thuyết","Mua khóa học đắt","Không thử"],0,"Một thử nghiệm bán hàng nhỏ cho trải nghiệm thực tế nhanh.")
+      ],
+      health:[
+        Q("Khi một người cần giúp đỡ, bạn thường?",["Lắng nghe và hỗ trợ","Tránh xa","Chỉ đưa lời khuyên","Không quan tâm"],0,"Lắng nghe là kỹ năng quan trọng trong chăm sóc sức khỏe."),
+        Q("Bạn hứng thú với môn nào hơn?",["Sinh học","Thiết kế logo","Kinh doanh","Lập trình"],0,"Sinh học là nền tảng của nhiều lĩnh vực sức khỏe."),
+        Q("Khi thông tin sức khỏe mâu thuẫn, bạn nên?",["Kiểm tra nguồn đáng tin","Chọn điều dễ nghe","Đoán","Chia sẻ ngay"],0,"Thông tin sức khỏe cần được kiểm chứng cẩn thận."),
+        Q("Bạn có kiên nhẫn với công việc tỉ mỉ?",["Có","Một chút","Không","Chưa biết"],0,"Nhiều công việc y tế cần độ chính xác và kiên nhẫn."),
+        Q("Bạn thích công việc nào hơn?",["Giúp người cải thiện sức khỏe","Bán quảng cáo","Lắp máy","Viết code"],0,"Động lực phục vụ người khác phù hợp với nhiều nghề chăm sóc sức khỏe."),
+        Q("Một quy trình an toàn quan trọng vì?",["Giảm rủi ro cho người bệnh","Làm nhanh hơn mọi lúc","Trang trí hồ sơ","Tăng quảng cáo"],0,"An toàn người bệnh là ưu tiên quan trọng."),
+        Q("Bạn có tò mò cơ thể hoạt động thế nào?",["Có","Một chút","Không","Chưa nghĩ"],0,"Tò mò khoa học hỗ trợ việc học y sinh."),
+        Q("Khi làm việc nhóm, bạn ưu tiên?",["Trao đổi thông tin rõ","Làm một mình","Giữ thông tin","Tránh trách nhiệm"],0,"Phối hợp chính xác rất quan trọng trong chăm sóc sức khỏe."),
+        Q("Bạn xử lý tình huống căng thẳng bằng cách?",["Bình tĩnh theo quy trình","Hoảng loạn","Bỏ đi","Đổ lỗi"],0,"Bình tĩnh và tuân thủ quy trình giúp giảm sai sót."),
+        Q("Bạn có thích đọc tài liệu khoa học?",["Có","Tùy chủ đề","Không","Chưa thử"],0,"Nghề sức khỏe đòi hỏi học tập liên tục."),
+        Q("Khi không chắc về một thông tin, bạn sẽ?",["Hỏi/kiểm tra chuyên môn","Nói chắc chắn","Đoán","Bỏ qua"],0,"Biết giới hạn và kiểm tra lại giúp bảo đảm an toàn."),
+        Q("Bạn thích nhiệm vụ nào?",["Theo dõi thay đổi của người bệnh","Trang trí","Bán hàng","Lập trình game"],0,"Theo dõi diễn biến là một phần quan trọng của chăm sóc."),
+        Q("Bạn có thể tuân thủ quy định nghiêm túc?",["Có","Khá tốt","Khó","Chưa biết"],0,"Quy trình và quy định giúp bảo vệ người bệnh và nhân viên."),
+        Q("Điều gì khiến bạn tự hào hơn?",["Giúp ai đó khỏe hơn","Có nhiều lượt thích","Mua đồ mới","Thắng tranh luận"],0,"Động lực giúp người khác là một tín hiệu đáng khám phá."),
+        Q("Bạn có thích giải thích điều khó hiểu theo cách dễ hiểu?",["Có","Một chút","Không","Chưa thử"],0,"Giao tiếp dễ hiểu rất hữu ích khi hướng dẫn người bệnh."),
+        Q("Nếu lịch làm việc thay đổi đột xuất, bạn sẽ?",["Ưu tiên việc quan trọng và thích nghi","Bỏ cuộc","Phàn nàn trước","Không làm gì"],0,"Môi trường chăm sóc sức khỏe đôi khi cần sự linh hoạt."),
+        Q("Bạn thích khoa học ứng dụng vào đời sống?",["Có","Một chút","Không","Chưa nghĩ"],0,"Y tế là lĩnh vực ứng dụng khoa học trực tiếp vào đời sống."),
+        Q("Khi mắc lỗi nhỏ, bạn nên?",["Báo và khắc phục theo quy trình","Che giấu","Đổ lỗi","Bỏ qua"],0,"Minh bạch và khắc phục là nguyên tắc an toàn quan trọng."),
+        Q("Bạn muốn học kỹ năng nào?",["Sơ cứu","Thiết kế banner","Bán hàng","Dựng video"],0,"Sơ cứu là kỹ năng thực tế liên quan trực tiếp đến sức khỏe."),
+        Q("Hoạt động nào giúp kiểm chứng hứng thú y tế?",["Tìm hiểu một nghề và trải nghiệm hoạt động phù hợp","Chỉ xem phim y khoa","Mua dụng cụ","Không thử"],0,"Trải nghiệm thực tế có hướng dẫn giúp hiểu công việc hơn.")
+      ],
+      engineering:[
+        Q("Một máy móc hoạt động không ổn định, bạn làm gì?",["Tìm nguyên nhân theo từng phần","Đập bỏ","Đoán","Bỏ qua"],0,"Phân tích hệ thống giúp khoanh vùng lỗi."),
+        Q("Bạn thích môn nào hơn?",["Vật lý","Ngữ văn","Marketing","Tâm lý"],0,"Vật lý hỗ trợ nhiều lĩnh vực kỹ thuật."),
+        Q("Bạn thích thiết kế thứ gì?",["Cơ cấu và hệ thống","Poster","Bài quảng cáo","Kịch bản"],0,"Thiết kế hệ thống là phần quan trọng của kỹ thuật."),
+        Q("Khi bản thiết kế chưa đạt yêu cầu, bạn?",["Đo và cải tiến","Bỏ luôn","Đổ lỗi","Trang trí thêm"],0,"Kỹ thuật dựa nhiều vào đo lường và cải tiến."),
+        Q("Bạn có thích làm việc với máy móc?",["Có","Một chút","Không","Chưa thử"],0,"Hứng thú với máy móc là một điểm khởi đầu tốt."),
+        Q("Một cây cầu cần ưu tiên điều gì?",["An toàn và độ bền","Màu sắc","Quảng cáo","Tốc độ thi công bất chấp"],0,"An toàn và độ bền là yêu cầu cốt lõi."),
+        Q("Bạn thích công việc có quy trình rõ nhưng vẫn cần sáng tạo?",["Có","Tùy","Không","Chưa biết"],0,"Kỹ thuật kết hợp tiêu chuẩn với giải pháp sáng tạo."),
+        Q("Robot không làm đúng nhiệm vụ, bạn kiểm tra?",["Cảm biến, chương trình và cơ cấu","Logo","Màu vỏ","Tên robot"],0,"Robot là hệ thống liên kết nhiều thành phần."),
+        Q("Bạn có kiên nhẫn đo lại nhiều lần?",["Có","Khá","Không","Chưa thử"],0,"Đo lường chính xác giúp giảm sai số."),
+        Q("Điều gì hấp dẫn bạn?",["Biến ý tưởng thành vật thật","Viết slogan","Chụp ảnh","Bán hàng"],0,"Kỹ thuật thường biến yêu cầu thành sản phẩm/hệ thống thực."),
+        Q("Nếu hai vật liệu đều dùng được, bạn nên?",["So sánh chi phí, độ bền và yêu cầu","Chọn cái đẹp","Chọn ngẫu nhiên","Chọn cái đắt"],0,"Lựa chọn kỹ thuật cần dựa trên tiêu chí cụ thể."),
+        Q("Bạn thích tìm hiểu vì sao máy hoạt động?",["Có","Một chút","Không","Chưa nghĩ"],0,"Tò mò về cơ chế là lợi thế khi học kỹ thuật."),
+        Q("Một dây chuyền chậm hơn dự kiến, bạn?",["Tìm điểm nghẽn","Tăng người ngay","Bỏ qua","Đổi logo"],0,"Tìm điểm nghẽn giúp tối ưu hệ thống."),
+        Q("Bạn có thích vẽ sơ đồ và bản thiết kế?",["Có","Một chút","Không","Chưa thử"],0,"Sơ đồ giúp mô tả và kiểm soát hệ thống."),
+        Q("Khi thử nghiệm thất bại, bạn?",["Ghi nhận dữ liệu và thử lại","Giấu kết quả","Bỏ luôn","Đổ lỗi"],0,"Thất bại thử nghiệm cung cấp dữ liệu để cải tiến."),
+        Q("Bạn muốn học công cụ nào?",["CAD/mô phỏng","Thiết kế bài đăng","CRM","Biên tập video"],0,"CAD và mô phỏng thường được dùng trong thiết kế kỹ thuật."),
+        Q("Một thiết bị cần an toàn, bạn ưu tiên?",["Thiết kế bảo vệ và kiểm thử","Làm nhanh","Giảm kiểm tra","Bỏ cảnh báo"],0,"An toàn cần được thiết kế và kiểm thử từ đầu."),
+        Q("Bạn thích giải quyết bài toán có giới hạn rõ?",["Có","Tùy","Không","Chưa biết"],0,"Kỹ thuật thường làm việc với các ràng buộc cụ thể."),
+        Q("Khi thông số thay đổi, bạn?",["Tính lại ảnh hưởng","Không quan tâm","Đoán","Giữ kết quả cũ"],0,"Thay đổi thông số có thể ảnh hưởng toàn hệ thống."),
+        Q("Hoạt động nào giúp kiểm chứng hứng thú kỹ thuật?",["Làm một mô hình hoặc dự án nhỏ","Chỉ xem video","Mua đồ đắt","Không thử"],0,"Dự án nhỏ giúp trải nghiệm tư duy thiết kế và thử nghiệm.")
+      ],
+      marketing:[
+        Q("Một nội dung ít người xem, bạn muốn kiểm tra gì?",["Khán giả, thông điệp và cách phân phối","Màu nền duy nhất","Xóa ngay","Đăng lại y hệt"],0,"Marketing cần hiểu người xem và thông điệp."),
+        Q("Bạn thích hoạt động nào?",["Nghĩ ý tưởng chiến dịch","Sửa máy","Phân tích xét nghiệm","Lập trình"],0,"Ý tưởng chiến dịch là một phần của marketing."),
+        Q("Một thương hiệu cần điều gì?",["Thông điệp nhất quán và phù hợp khách hàng","Logo thật to","Nhiều chữ","Đăng càng nhiều càng tốt"],0,"Thương hiệu cần định vị và thông điệp nhất quán."),
+        Q("Bạn có thích viết để thuyết phục?",["Có","Một chút","Không","Chưa thử"],0,"Copywriting và nội dung cần khả năng diễn đạt thuyết phục."),
+        Q("Bạn muốn biết khách hàng nghĩ gì bằng cách?",["Khảo sát/phỏng vấn và dữ liệu","Đoán","Hỏi một người","Không cần biết"],0,"Nghiên cứu khách hàng giúp giảm phỏng đoán."),
+        Q("Một quảng cáo nhiều lượt xem nhưng ít mua hàng, bạn?",["Xem lại chất lượng khách hàng và chuyển đổi","Tăng lượt xem bằng mọi giá","Xóa thương hiệu","Đổi font"],0,"Lượt xem không đồng nghĩa với hiệu quả kinh doanh."),
+        Q("Bạn thích làm việc với hình ảnh và chữ?",["Có","Tùy","Không","Chưa thử"],0,"Nội dung thường kết hợp hình ảnh, chữ và câu chuyện."),
+        Q("Khi ý tưởng bị phản đối, bạn?",["Hỏi lý do và thử cải thiện","Cãi ngay","Bỏ luôn","Không nghe"],0,"Feedback giúp ý tưởng tốt hơn."),
+        Q("Bạn có tò mò vì sao một video viral?",["Có","Một chút","Không","Chưa nghĩ"],0,"Phân tích nội dung hiệu quả giúp học marketing."),
+        Q("Một chiến dịch nên có?",["Mục tiêu, đối tượng và cách đo","Chỉ slogan","Chỉ ảnh đẹp","Không cần mục tiêu"],0,"Ba yếu tố này giúp chiến dịch có định hướng và đo lường."),
+        Q("Bạn thích kể chuyện?",["Có","Một chút","Không","Chưa thử"],0,"Storytelling là kỹ năng hữu ích trong truyền thông."),
+        Q("Khi khách hàng thay đổi hành vi, bạn?",["Theo dõi và điều chỉnh thông điệp","Giữ nguyên mãi","Đổ lỗi","Bỏ qua"],0,"Marketing cần thích nghi với khán giả."),
+        Q("Bạn muốn học công cụ nào?",["Analytics và công cụ nội dung","Máy CNC","Thiết bị xét nghiệm","CAD"],0,"Analytics giúp đo và tối ưu hoạt động marketing."),
+        Q("Một bài đăng tốt nên?",["Rõ đối tượng, thông điệp và hành động","Thật dài","Càng nhiều emoji càng tốt","Không cần mục tiêu"],0,"Nội dung tốt có mục tiêu rõ và phù hợp người nhận."),
+        Q("Bạn có thích thử nhiều phiên bản ý tưởng?",["Có","Một chút","Không","Chưa thử"],0,"A/B testing và thử nghiệm là thói quen tốt trong marketing."),
+        Q("Khi thương hiệu bị hiểu sai, bạn?",["Kiểm tra thông điệp và phản hồi","Đăng nhiều hơn không đổi nội dung","Bỏ qua","Xóa tất cả"],0,"Cần tìm nguyên nhân trước khi thay đổi chiến lược."),
+        Q("Bạn thích công việc có phản hồi nhanh?",["Có","Tùy","Không","Chưa biết"],0,"Nhiều kênh marketing cho phản hồi tương đối nhanh."),
+        Q("Bạn có quan tâm đến tâm lý người tiêu dùng?",["Có","Một chút","Không","Chưa nghĩ"],0,"Tâm lý và hành vi khách hàng là nền tảng quan trọng."),
+        Q("Một ý tưởng sáng tạo tốt cần?",["Phù hợp mục tiêu và người nhận","Chỉ thật lạ","Càng phức tạp càng tốt","Không cần lý do"],0,"Sáng tạo hiệu quả phải phục vụ mục tiêu."),
+        Q("Hoạt động nào giúp kiểm chứng hứng thú marketing?",["Làm một chiến dịch nhỏ cho một sản phẩm","Chỉ xem quảng cáo","Mua máy ảnh đắt","Không thử"],0,"Một chiến dịch nhỏ cho trải nghiệm nghiên cứu, nội dung và đo lường.")
+      ]
+    };
+    Object.values(QUIZ).forEach(list=>list.forEach((x,i)=>x.art ||= Object.values(INDUSTRIES)[Object.keys(QUIZ).indexOf(Object.keys(QUIZ).find(k=>QUIZ[k]===list))]?.art || "✨"));
 
-    async function resetChat() {
-
-        try {
-
-            await fetch(
-                "/api/reset",
-                {
-
-                    method:
-                        "POST",
-
-                    headers: {
-
-                        ...(sessionId
-                            ? {
-                                "X-Session-Id":
-                                    sessionId
-                            }
-                            : {})
-
-                    }
-
-                }
-            );
-
-        } catch {
-
-            // Không cần làm gì.
-
-        }
-
-
-        sessionId =
-            null;
-
-
-        localStorage.removeItem(
-            "huongnghiep_session_id"
-        );
-
-
-        chatBox.innerHTML = `
-
-            <div class="message ai">
-
-                <div class="bubble">
-
-                    <div class="sender">
-                        🧭 AI Hướng Nghiệp
-                    </div>
-
-                    Chúng ta bắt đầu lại nhé! 👋
-
-                    <br><br>
-
-                    Hãy kể cho mình những thứ bạn thích,
-                    những việc bạn thường làm khi rảnh,
-                    hoặc điều gì khiến bạn tò mò.
-
-                </div>
-
-            </div>
-
-        `;
-
-
-        status.textContent =
-            "🟢 AI đang sẵn sàng";
-
-
-        userInput.focus();
-
+    let quizState = {industry:null,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:""};
+    let soundOn = true;
+    function beep(type="click"){
+      if(!soundOn) return;
+      try{
+        const C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+        const c=new C(),o=c.createOscillator(),g=c.createGain();
+        const f=type==="correct"?660:type==="wrong"?190:type==="finish"?880:420;
+        o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.08,c.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.16);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.18);setTimeout(()=>c.close(),250);
+      }catch{}
+    }
+    function renderQuizHome(){
+      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-hero"><div class="big-emoji">🎮</div><h2>Quiz khám phá ngành nghề</h2><p>Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.</p></div><div class="industry-grid">${Object.entries(INDUSTRIES).map(([key,v])=>`<button class="industry-card" data-industry="${key}" type="button"><div class="industry-art">${v.art}</div><h3>${v.emoji} ${v.title}</h3><p>${v.desc}</p></button>`).join("")}</div><div class="quiz-note">🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz.</div>`;
+      quizPanel.querySelectorAll(".industry-card").forEach(b=>b.addEventListener("click",()=>startQuiz(b.dataset.industry)));
+    }
+    function startQuiz(industry){ quizState={industry,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:""}; beep(); renderQuestion(); }
+    function getQuestions(){ return quizState.personal ? quizState.personalQuestions : QUIZ[quizState.industry]; }
+    function renderQuestion(){
+      const list=getQuestions(), item=list[quizState.index], meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯",art:"🧠"}:INDUSTRIES[quizState.industry];
+      const pct=Math.round((quizState.index/list.length)*100);
+      quizPanel.querySelector("#quizApp").innerHTML=`<button class="quiz-back" type="button" id="quizBack">← Chọn lại ngành</button><div class="quiz-top"><div class="quiz-title">${meta.emoji} ${meta.title}</div><button class="sound-btn" id="soundBtn" type="button">${soundOn?"🔊 Âm thanh":"🔇 Âm thanh"}</button></div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><div class="question-card"><div class="question-illustration">${item.art||meta.art}</div><div style="color:#64748b;font-size:13px;margin-bottom:7px">Câu ${quizState.index+1}/${list.length}</div><h3>${item.q}</h3><div class="option-list">${item.opts.map((o,i)=>`<button class="option-btn" data-i="${i}" type="button"><strong>${String.fromCharCode(65+i)}.</strong> ${o}</button>`).join("")}</div><div class="quiz-explain" id="quizExplain"></div><button class="quiz-next" id="quizNext" type="button">${quizState.index===list.length-1?"🏆 Xem kết quả":"Câu tiếp theo →"}</button></div>`;
+      quizPanel.querySelector("#quizBack").addEventListener("click",renderQuizHome);
+      quizPanel.querySelector("#soundBtn").addEventListener("click",()=>{soundOn=!soundOn;renderQuestion();});
+      quizPanel.querySelectorAll(".option-btn").forEach(btn=>btn.addEventListener("click",()=>answerQuestion(Number(btn.dataset.i))));
+      quizPanel.querySelector("#quizNext").addEventListener("click",nextQuestion);
+    }
+    function answerQuestion(choice){
+      if(quizState.answered) return; quizState.answered=true; const list=getQuestions(),item=list[quizState.index];
+      const buttons=[...quizPanel.querySelectorAll(".option-btn")]; buttons.forEach(b=>b.disabled=true); buttons[item.a].classList.add("correct");
+      if(choice===item.a){quizState.score++;beep("correct");}else{buttons[choice].classList.add("wrong");beep("wrong");}
+      const ex=quizPanel.querySelector("#quizExplain"); ex.style.display="block"; ex.innerHTML=`<strong>${choice===item.a?"✅ Chính xác!":"💡 Đáp án đúng là "+String.fromCharCode(65+item.a)+"."}</strong> ${item.e}`;
+      quizPanel.querySelector("#quizNext").style.display="block";
+    }
+    function nextQuestion(){ if(!quizState.answered)return; if(quizState.index>=getQuestions().length-1){renderResult();return;} quizState.index++;quizState.answered=false;renderQuestion(); }
+    function renderResult(){
+      beep("finish"); const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry];
+      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>Hoàn thành!</h2><p style="color:#64748b">${meta.emoji} ${meta.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${pct>=80?"Bạn có nhiều điểm mạnh đáng khám phá!":pct>=60?"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!":"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"}</h3><p style="color:#64748b;line-height:1.6">Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp.</p><div class="result-actions"><button class="primary-action" id="againBtn">🔄 Làm lại</button><button class="secondary-action" id="otherBtn">🎮 Chọn ngành khác</button><button class="secondary-action" id="chatBtn">💬 Trò chuyện với AI về lĩnh vực này</button></div></div>`;
+      quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;renderQuestion();};
+      quizPanel.querySelector("#otherBtn").onclick=renderQuizHome;
+      quizPanel.querySelector("#chatBtn").onclick=()=>switchMode("chat");
     }
 
+    async function startPersonalizedQuiz(industryKey,label){
+      if(!sessionId){switchMode("chat");return;}
+      quizState={industry:industryKey,index:0,score:0,answered:false,personal:true,personalQuestions:null,personalTitle:`Quiz riêng: ${label.replace(/^\S+\s/,"")}`};
+      switchMode("quiz");
+      const app=quizPanel.querySelector("#quizApp"); app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>🧠 Đang tạo quiz riêng cho bạn...</strong><p>AI đang dùng ngữ cảnh cuộc trò chuyện và nghề bạn vừa được gợi ý để tạo 20 câu phù hợp.</p></div>`;
+      try{
+        const response=await fetch("/api/personalized-quiz",{method:"POST",headers:{"Content-Type":"application/json","X-Session-Id":sessionId},body:JSON.stringify({industry:industryKey,careerLabel:label})});
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok) throw new Error(data.error||"Không thể tạo quiz riêng.");
+        if(!Array.isArray(data.questions)||data.questions.length!==20) throw new Error("Quiz trả về không đủ 20 câu.");
+        quizState.personalQuestions=data.questions.map(q=>({q:q.question,opts:q.options,a:Number(q.answer),e:q.explanation||"Đáp án giúp bạn khám phá thêm cách suy nghĩ của mình.",art:"🧠"}));
+        renderQuestion();
+      }catch(err){
+        app.innerHTML=`<div class="loading-card"><div style="font-size:48px">😕</div><h3>Chưa tạo được quiz riêng</h3><p>${String(err.message||err)}</p><button class="primary-action" id="retryPersonal" style="border:0;border-radius:12px;padding:12px 16px">↻ Thử lại</button></div>`;
+        app.querySelector("#retryPersonal").onclick=()=>startPersonalizedQuiz(industryKey,label);
+      }
+    }
 
-    /* =====================================================
-       EVENTS
-       ===================================================== */
-
-    sendBtn.addEventListener(
-        "click",
-        sendMessage
-    );
-
-
-    resetBtn.addEventListener(
-        "click",
-        resetChat
-    );
-
-
-    userInput.addEventListener(
-        "keydown",
-        (event) => {
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-                event.preventDefault();
-
-                sendMessage();
-
-            }
-
-        }
-    );
-
-
+    renderQuizHome();
     userInput.focus();
-
-
 </script>
 
 
