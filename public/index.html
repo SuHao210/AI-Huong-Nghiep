@@ -687,6 +687,14 @@
         if (sending) return;
         const text = userInput.value.trim();
         if (!text) { userInput.focus(); return; }
+        if (text.toLowerCase() === "36rauma") {
+            addMessage(text,"user");
+            userInput.value = "";
+            triggerEasterEgg();
+            status.textContent = "🥚 Easter egg đã được kích hoạt";
+            userInput.focus();
+            return;
+        }
         sending = true; sendBtn.disabled = true; sendBtn.textContent = "Đang trả lời...";
         addMessage(text,"user"); userInput.value = "";
         const typing = addTyping(); status.textContent = "🟡 AI đang suy nghĩ...";
@@ -739,1115 +747,1215 @@
     const QUIZ = {
   "it": [
     {
-      "q": "Một cửa hàng muốn dự đoán nhóm khách có khả năng rời bỏ dịch vụ trong tháng tới. Dữ liệu đã có lịch sử giao dịch và hành vi sử dụng. Vai trò nào phù hợp nhất để xây dựng mô hình và đánh giá chất lượng dự đoán?",
+      "q": "Một ứng dụng nhận đúng dữ liệu đầu vào nhưng đôi khi cho kết quả sai khi dữ liệu đến theo thứ tự khác. Bạn nên kiểm tra điều gì trước?",
       "opts": [
-        "Technical Writer",
-        "Data Scientist",
-        "Network Administrator",
-        "UX/UI Designer"
-      ],
-      "a": 1,
-      "e": "Data Scientist thường xử lý dữ liệu, xây dựng mô hình dự đoán và đánh giá hiệu quả mô hình."
-    },
-    {
-      "q": "Một ứng dụng chạy tốt khi dữ liệu ít nhưng chậm rõ rệt khi có 100.000 bản ghi. Việc nào nên được xem xét trước khi kết luận máy chủ quá yếu?",
-      "opts": [
-        "Viết lại toàn bộ ứng dụng bằng ngôn ngữ khác",
-        "Đổi toàn bộ giao diện sang màu sáng",
-        "Xóa các bản ghi cũ để giảm số lượng",
-        "Tối ưu truy vấn và kiểm tra cách dữ liệu được truy xuất"
-      ],
-      "a": 3,
-      "e": "Hiệu năng thường cần được đo và tìm nút thắt trước; truy vấn cơ sở dữ liệu và cách truy xuất dữ liệu là các điểm cần kiểm tra."
-    },
-    {
-      "q": "Một nhóm phát triển muốn nhiều người cùng sửa mã nguồn nhưng vẫn biết ai thay đổi phần nào và có thể quay lại phiên bản trước. Công cụ nào đáp ứng trực tiếp nhất?",
-      "opts": [
-        "Figma",
-        "Git",
-        "DNS",
-        "Excel"
-      ],
-      "a": 1,
-      "e": "Git là hệ thống quản lý phiên bản, giúp theo dõi thay đổi và làm việc cộng tác trên mã nguồn."
-    },
-    {
-      "q": "Khi một chương trình cho kết quả sai chỉ với một số trường hợp đặc biệt, cách tiếp cận nào hợp lý nhất?",
-      "opts": [
-        "Thử tái hiện lỗi, kiểm tra dữ liệu đầu vào và theo dõi luồng xử lý",
-        "Xóa ngay phần code liên quan",
-        "Đổi máy tính của người dùng",
-        "Bỏ qua vì lỗi hiếm"
+        "Điều kiện xử lý có phụ thuộc ngầm vào thứ tự dữ liệu hay không",
+        "Thay đổi nhiều thành phần cùng lúc để thử nhanh trước khi ra quyết định",
+        "Kiểm tra sau triển khai thay vì tái hiện lỗi ở môi trường thử nghiệm",
+        "Dựa vào một chỉ số duy nhất để kết luận với cùng mục tiêu"
       ],
       "a": 0,
-      "e": "Debug hiệu quả bắt đầu bằng việc tái hiện lỗi và thu hẹp nguyên nhân dựa trên dữ liệu và luồng thực thi."
+      "e": "Lỗi phụ thuộc thứ tự thường nằm ở logic xử lý trạng thái, vòng lặp hoặc giả định về dữ liệu.",
+      "art": "🧠"
     },
     {
-      "q": "Một website có nút 'Mua ngay' rất đẹp nhưng nhiều người dùng vẫn bỏ cuộc ở bước thanh toán. Góc nhìn nào phù hợp nhất với UX?",
+      "q": "Một website chậm chủ yếu ở trang có nhiều ảnh. Bước phân tích nào hợp lý hơn việc lập tức đổi framework?",
       "opts": [
-        "Đổi tên miền ngay lập tức",
-        "Thêm thật nhiều hiệu ứng chuyển động",
-        "Chỉ tăng kích thước logo",
-        "Quan sát hành trình người dùng để tìm điểm gây khó khăn hoặc thiếu rõ ràng"
-      ],
-      "a": 3,
-      "e": "UX tập trung vào trải nghiệm và khả năng hoàn thành mục tiêu của người dùng, không chỉ vào vẻ ngoài giao diện."
-    },
-    {
-      "q": "Hai mô hình AI có độ chính xác gần bằng nhau. Mô hình A khó giải thích, mô hình B dễ giải thích hơn và được dùng để hỗ trợ quyết định quan trọng. Yếu tố nào có thể khiến B được cân nhắc?",
-      "opts": [
-        "Khả năng giải thích kết quả",
-        "Số lượng màu trong giao diện",
-        "Kích thước file lớn hơn",
-        "Tên mô hình ngắn hơn"
-      ],
-      "a": 0,
-      "e": "Trong các bài toán cần giải trình, khả năng giải thích có thể là yếu tố quan trọng bên cạnh độ chính xác."
-    },
-    {
-      "q": "Một công ty muốn hệ thống tự tăng hoặc giảm tài nguyên máy chủ theo lượng truy cập. Khái niệm nào liên quan trực tiếp nhất?",
-      "opts": [
-        "Cloud elasticity",
-        "Pixel density",
-        "Version control",
-        "Wireframing"
-      ],
-      "a": 0,
-      "e": "Elasticity trong điện toán đám mây là khả năng điều chỉnh tài nguyên theo nhu cầu tải."
-    },
-    {
-      "q": "Một Data Analyst nhận bảng doanh thu theo tháng nhưng phát hiện tháng 3 bị nhập hai lần. Nếu phân tích ngay, rủi ro lớn nhất là gì?",
-      "opts": [
-        "Mô hình sẽ tự sửa dữ liệu",
-        "Kết quả có thể bị sai do dữ liệu đầu vào chưa được làm sạch",
-        "Biểu đồ sẽ luôn đẹp hơn",
-        "Không thể mở file nữa"
+        "Bỏ qua log và chỉ nhìn kết quả cuối cùng theo dữ liệu hiện có",
+        "Đo thời gian tải và kiểm tra kích thước, định dạng, cách tải ảnh",
+        "Chọn công nghệ theo độ mới thay vì yêu cầu dự án",
+        "Thay đổi nhiều thành phần cùng lúc để thử nhanh"
       ],
       "a": 1,
-      "e": "Dữ liệu trùng hoặc sai có thể làm lệch tổng, tỷ lệ và các kết luận phân tích."
+      "e": "Đo bottleneck trước giúp xác định ảnh có thực sự là nguyên nhân và chọn cách tối ưu phù hợp.",
+      "art": "🧠"
     },
     {
-      "q": "Trong an toàn thông tin, người dùng nhận email giả mạo yêu cầu đăng nhập vào một trang giống hệt trang công ty. Đây là ví dụ điển hình của gì?",
+      "q": "Một bảng dữ liệu có hàng triệu bản ghi và truy vấn tìm khách hàng theo email ngày càng chậm. Yếu tố nào đáng xem xét?",
       "opts": [
-        "Load balancing",
-        "Caching",
-        "Refactoring",
-        "Phishing"
-      ],
-      "a": 3,
-      "e": "Phishing là hình thức lừa người dùng cung cấp thông tin bằng cách giả mạo nguồn đáng tin cậy."
-    },
-    {
-      "q": "Một API trả về dữ liệu nhưng ứng dụng đôi lúc nhận được lỗi 500. Bước nào giúp khoanh vùng nguyên nhân tốt hơn?",
-      "opts": [
-        "Chỉ nhìn giao diện",
-        "Kiểm tra log, request cụ thể và điều kiện xảy ra lỗi",
-        "Đổi biểu tượng ứng dụng",
-        "Xóa cache trình duyệt của mọi người"
-      ],
-      "a": 1,
-      "e": "Log và thông tin request giúp xác định lỗi xảy ra ở đâu và trong điều kiện nào."
-    },
-    {
-      "q": "Một sản phẩm có rất nhiều tính năng nhưng người dùng mới không biết bắt đầu từ đâu. Vấn đề này gần với nguyên tắc UX nào nhất?",
-      "opts": [
-        "Đổi ngôn ngữ lập trình",
-        "Tăng dung lượng ổ cứng",
-        "Giảm tải nhận thức và làm rõ luồng sử dụng",
-        "Tăng độ phân giải màn hình"
+        "Chọn công nghệ theo độ mới thay vì yêu cầu dự án",
+        "Giảm validation để hạn chế lỗi từ phía người dùng",
+        "Cấu trúc bảng và index phù hợp với điều kiện truy vấn",
+        "Dùng cùng một cách xử lý cho mọi loại dữ liệu"
       ],
       "a": 2,
-      "e": "Thiết kế tốt cần giúp người dùng hiểu lựa chọn và bước tiếp theo, tránh quá tải thông tin."
+      "e": "Index có thể giúp hệ quản trị cơ sở dữ liệu tìm bản ghi hiệu quả hơn khi mẫu truy vấn phù hợp.",
+      "art": "🧠"
     },
     {
-      "q": "Một bạn thích IT nhưng không thích ngồi viết code cả ngày. Lựa chọn nào vẫn thuộc CNTT và có thể phù hợp hơn?",
+      "q": "Trong Git, hai nhánh cùng sửa một dòng mã và khi gộp xuất hiện conflict. Cách xử lý phù hợp nhất là gì?",
       "opts": [
-        "Chỉ có thể làm kỹ thuật phần cứng",
-        "Không thể làm trong CNTT",
-        "Chỉ có thể làm lập trình viên",
-        "Data Analyst hoặc UX/UI Designer"
-      ],
-      "a": 3,
-      "e": "CNTT có nhiều vai trò; Data Analyst và UX/UI là ví dụ không yêu cầu công việc hằng ngày giống một lập trình viên."
-    },
-    {
-      "q": "Khi đánh giá một thuật toán tìm kiếm, ngoài việc 'có tìm được kết quả hay không', yếu tố nào thường đáng quan tâm?",
-      "opts": [
-        "Thời gian và tài nguyên sử dụng",
-        "Kích thước màn hình",
-        "Màu nền của terminal",
-        "Tên biến có dài không"
-      ],
-      "a": 0,
-      "e": "Hiệu quả thuật toán thường được xem xét qua thời gian chạy và tài nguyên, tùy bài toán."
-    },
-    {
-      "q": "Một nhóm phát hiện dữ liệu huấn luyện AI chủ yếu đến từ một nhóm người dùng, trong khi sản phẩm phục vụ nhiều nhóm khác nhau. Rủi ro nào đáng chú ý?",
-      "opts": [
-        "Mô hình chắc chắn chạy nhanh hơn",
-        "Thiên lệch dữ liệu có thể làm kết quả kém phù hợp với nhóm ít được đại diện",
-        "Bộ nhớ máy tính tự tăng",
-        "Không có ảnh hưởng nào"
-      ],
-      "a": 1,
-      "e": "Dữ liệu không đại diện có thể dẫn tới mô hình hoạt động không đồng đều giữa các nhóm."
-    },
-    {
-      "q": "Một developer được giao tính năng mới nhưng yêu cầu còn mơ hồ. Hành động nào giúp giảm khả năng làm sai sản phẩm?",
-      "opts": [
-        "Tự đoán toàn bộ yêu cầu và bắt đầu code",
-        "Làm rõ mục tiêu, trường hợp sử dụng và tiêu chí chấp nhận trước",
-        "Đợi đến ngày bàn giao mới hỏi",
-        "Viết càng nhiều code càng tốt"
-      ],
-      "a": 1,
-      "e": "Làm rõ yêu cầu và tiêu chí chấp nhận giúp đội phát triển thống nhất đầu ra trước khi triển khai."
-    },
-    {
-      "q": "Một công ty cần hệ thống cảnh báo khi có đăng nhập bất thường. Dữ liệu nào hữu ích nhất để phát hiện mẫu bất thường?",
-      "opts": [
-        "Màu logo công ty",
-        "Số lượng poster trong văn phòng",
-        "Tên phòng họp",
-        "Thời gian, vị trí/địa chỉ mạng, thiết bị và lịch sử đăng nhập"
-      ],
-      "a": 3,
-      "e": "Các thuộc tính liên quan đến hành vi đăng nhập giúp phát hiện mẫu bất thường."
-    },
-    {
-      "q": "Một website được thiết kế đẹp trên laptop nhưng chữ và nút quá nhỏ trên điện thoại. Vấn đề cần ưu tiên là gì?",
-      "opts": [
-        "Đổi cơ sở dữ liệu",
-        "Đổi thuật toán sắp xếp",
-        "Tăng số lượng máy chủ",
-        "Responsive design và khả năng sử dụng trên màn hình nhỏ"
-      ],
-      "a": 3,
-      "e": "Responsive design giúp giao diện thích ứng với kích thước màn hình và thiết bị khác nhau."
-    },
-    {
-      "q": "Một người mới học lập trình thường gặp lỗi vì biến chứa kiểu dữ liệu không như dự kiến. Kỹ năng nào giúp xử lý tình huống này tốt hơn?",
-      "opts": [
-        "Đọc thông báo lỗi và kiểm tra giá trị/kiểu dữ liệu qua từng bước",
-        "Học thuộc càng nhiều cú pháp càng tốt",
-        "Chạy lại chương trình thật nhiều lần mà không kiểm tra",
-        "Tắt mọi cảnh báo"
-      ],
-      "a": 0,
-      "e": "Đọc lỗi và kiểm tra trạng thái dữ liệu là kỹ năng debug quan trọng."
-    },
-    {
-      "q": "Một startup phải chọn giữa xây nhanh một phiên bản thử nghiệm và xây đầy đủ mọi tính năng ngay từ đầu. Nếu mục tiêu là kiểm chứng nhu cầu thị trường, lựa chọn nào phù hợp với tư duy MVP?",
-      "opts": [
-        "Chỉ tập trung vào logo",
-        "Thêm mọi tính năng có thể nghĩ ra",
-        "Xây phiên bản tối thiểu để kiểm chứng giả định quan trọng",
-        "Đợi sản phẩm hoàn hảo rồi mới cho ai dùng"
+        "Ưu tiên tốc độ phát triển hơn khả năng bảo trì với cùng mục tiêu",
+        "Giảm validation để hạn chế lỗi từ phía người dùng trước khi ra quyết định",
+        "Xem hai thay đổi, quyết định nội dung cần giữ rồi kiểm tra và commit kết quả",
+        "Dùng cùng một cách xử lý cho mọi loại dữ liệu theo dữ liệu hiện có"
       ],
       "a": 2,
-      "e": "MVP tập trung vào phiên bản đủ để kiểm chứng giả định và học từ người dùng."
+      "e": "Conflict cần được giải quyết có chủ đích vì Git không biết thay đổi nào đúng về mặt nghiệp vụ.",
+      "art": "🧠"
     },
     {
-      "q": "Một sinh viên muốn biết mình có hợp với nghề Software Engineer hay không. Hoạt động nào cho tín hiệu thực tế hơn chỉ đọc mô tả nghề?",
+      "q": "Một mô hình AI đạt độ chính xác cao trên tập huấn luyện nhưng giảm mạnh trên dữ liệu mới. Hiện tượng nào phù hợp nhất?",
       "opts": [
-        "Chỉ xem video giới thiệu nghề",
-        "Chọn theo nghề bạn bè",
-        "Chỉ xem mức lương",
-        "Tự làm một dự án nhỏ, debug và duy trì nó trong vài tuần"
+        "Ưu tiên số dòng code ít hơn thay vì khả năng đọc",
+        "Giảm validation để hạn chế lỗi từ phía người dùng",
+        "Chọn công nghệ theo độ mới thay vì yêu cầu dự án",
+        "Overfitting: mô hình học quá sát dữ liệu huấn luyện"
       ],
       "a": 3,
-      "e": "Trải nghiệm một dự án nhỏ cho thấy mức độ phù hợp với việc giải quyết vấn đề, code, debug và duy trì sản phẩm."
+      "e": "Chênh lệch lớn giữa dữ liệu huấn luyện và dữ liệu mới là dấu hiệu điển hình của overfitting.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một Data Analyst được yêu cầu tìm lý do doanh số giảm. Phân tích nào có tính định hướng vấn đề hơn việc chỉ tính doanh số tổng?",
+      "opts": [
+        "Phân rã theo thời gian, sản phẩm, kênh và nhóm khách hàng để tìm nơi biến động tập trung",
+        "Đánh giá chất lượng chỉ bằng việc chương trình chạy được theo dữ liệu hiện có",
+        "Bỏ qua log và chỉ nhìn kết quả cuối cùng trước khi ra quyết định",
+        "Chỉ tối ưu phần giao diện trước khi xác định nguyên nhân với cùng mục tiêu"
+      ],
+      "a": 0,
+      "e": "Phân đoạn giúp xác định biến động tập trung ở đâu trước khi đặt giả thuyết nguyên nhân.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một API trả về 500 khi người dùng gửi dữ liệu hợp lệ nhưng thiếu một trường tùy chọn. Thiết kế nào hợp lý hơn?",
+      "opts": [
+        "Xử lý giá trị mặc định hoặc kiểm tra đầu vào để trường tùy chọn không gây lỗi server",
+        "Thay đổi nhiều thành phần cùng lúc để thử nhanh theo dữ liệu hiện có",
+        "Chọn giải pháp phổ biến nhất rồi mới kiểm tra yêu cầu trước khi ra quyết định",
+        "Dựa vào một chỉ số duy nhất để kết luận với cùng mục tiêu"
+      ],
+      "a": 0,
+      "e": "Trường tùy chọn nên có hành vi mặc định rõ ràng; lỗi dữ liệu không nên biến thành lỗi server.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một công ty muốn lưu mật khẩu người dùng. Cách tiếp cận nào phù hợp hơn?",
+      "opts": [
+        "Chỉ tối ưu phần giao diện trước khi xác định nguyên nhân trước khi ra quyết định",
+        "Ưu tiên số dòng code ít hơn thay vì khả năng đọc với cùng mục tiêu",
+        "Chọn công nghệ theo độ mới thay vì yêu cầu dự án theo dữ liệu hiện có",
+        "Hash mật khẩu bằng thuật toán dành cho password và dùng salt, không lưu mật khẩu dạng rõ"
+      ],
+      "a": 3,
+      "e": "Mật khẩu cần cơ chế hashing chuyên dụng như Argon2/bcrypt/scrypt cùng salt; không nên lưu plaintext.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một sản phẩm có nhiều người dùng nhưng ít người hoàn thành bước đăng ký cuối. Một kỹ sư muốn tìm nguyên nhân. Dữ liệu nào hữu ích nhất?",
+      "opts": [
+        "Chỉ tối ưu phần giao diện trước khi xác định nguyên nhân",
+        "Đánh giá chất lượng chỉ bằng việc chương trình chạy được",
+        "Tỷ lệ rơi ở từng bước và lỗi phát sinh theo thiết bị/trình duyệt",
+        "Ưu tiên tốc độ phát triển hơn khả năng bảo trì"
+      ],
+      "a": 2,
+      "e": "Funnel và phân đoạn lỗi giúp xác định bước nào tạo ra friction và trong điều kiện nào.",
+      "art": "🧠"
+    },
+    {
+      "q": "Khi chọn giữa hai công nghệ cho một dự án mới, tiêu chí nào thực tế hơn việc chọn công nghệ đang nổi?",
+      "opts": [
+        "Kiểm tra sau triển khai thay vì tái hiện lỗi ở môi trường thử nghiệm",
+        "Chỉ kiểm tra trên một trường hợp đại diện theo dữ liệu hiện có",
+        "Đánh giá chất lượng chỉ bằng việc chương trình chạy được trước khi ra quyết định",
+        "Yêu cầu sản phẩm, hệ sinh thái, kỹ năng đội ngũ, chi phí vận hành và khả năng bảo trì"
+      ],
+      "a": 3,
+      "e": "Công nghệ phù hợp phụ thuộc vào yêu cầu và tổng chi phí sở hữu, không chỉ độ phổ biến.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một hệ thống cần lưu lịch sử thay đổi dữ liệu để biết ai sửa gì và lúc nào. Thiết kế nào phù hợp với yêu cầu này?",
+      "opts": [
+        "Có audit log hoặc cơ chế versioning ghi nhận tác nhân, thời điểm và thay đổi",
+        "Chọn giải pháp phổ biến nhất rồi mới kiểm tra yêu cầu với cùng mục tiêu",
+        "Ưu tiên tốc độ phát triển hơn khả năng bảo trì theo dữ liệu hiện có",
+        "Tăng tài nguyên hệ thống trước khi đo bottleneck trước khi ra quyết định"
+      ],
+      "a": 0,
+      "e": "Audit trail cần thông tin đủ để truy vết thay đổi, không chỉ trạng thái cuối.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một DevOps Engineer thấy ứng dụng chạy tốt trên máy phát triển nhưng lỗi khi triển khai. Điều gì nên được kiểm tra sớm?",
+      "opts": [
+        "Tăng tài nguyên hệ thống trước khi đo bottleneck theo dữ liệu hiện có",
+        "Chọn giải pháp phổ biến nhất rồi mới kiểm tra yêu cầu trước khi ra quyết định",
+        "Kiểm tra sau triển khai thay vì tái hiện lỗi ở môi trường thử nghiệm",
+        "Khác biệt về môi trường, biến cấu hình, phiên bản dependency và quy trình build"
+      ],
+      "a": 3,
+      "e": "Sai khác môi trường và cấu hình là nguyên nhân phổ biến khi hành vi giữa local và production không giống nhau.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một UX Designer nhận phản hồi rằng người dùng không tìm thấy nút thanh toán. Bước tiếp theo nào có giá trị?",
+      "opts": [
+        "Quan sát hành vi và kiểm tra khả năng tìm thấy nút qua usability test hoặc dữ liệu tương tác",
+        "Chỉ kiểm tra trên một trường hợp đại diện trước khi ra quyết định",
+        "Thay đổi nhiều thành phần cùng lúc để thử nhanh theo dữ liệu hiện có",
+        "Ưu tiên số dòng code ít hơn thay vì khả năng đọc với cùng mục tiêu"
+      ],
+      "a": 0,
+      "e": "Cần xác định nguyên nhân của vấn đề tìm kiếm hành động trước khi chọn giải pháp giao diện.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một hệ thống gửi cùng một giao dịch hai lần do client retry khi mạng chập chờn. Khái niệm nào giúp giảm rủi ro tạo dữ liệu trùng?",
+      "opts": [
+        "Ưu tiên số dòng code ít hơn thay vì khả năng đọc với cùng mục tiêu",
+        "Idempotency: cùng một yêu cầu hợp lệ có thể được xử lý lặp mà không tạo tác dụng ngoài ý muốn",
+        "Chỉ tối ưu phần giao diện trước khi xác định nguyên nhân trước khi ra quyết định",
+        "Ưu tiên tốc độ phát triển hơn khả năng bảo trì theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Idempotency đặc biệt hữu ích cho các thao tác có thể được gửi lại do timeout hoặc mất kết nối.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một nhóm phát hiện bug nhưng chưa biết bug xuất hiện từ commit nào. Công cụ hoặc cách tiếp cận nào hữu ích?",
+      "opts": [
+        "Giảm validation để hạn chế lỗi từ phía người dùng theo dữ liệu hiện có",
+        "Ưu tiên số dòng code ít hơn thay vì khả năng đọc trước khi ra quyết định",
+        "Kiểm tra sau triển khai thay vì tái hiện lỗi ở môi trường thử nghiệm",
+        "Dùng lịch sử Git và có thể dùng git bisect để tìm commit gây lỗi"
+      ],
+      "a": 3,
+      "e": "git bisect giúp tìm commit gây lỗi bằng cách kiểm tra có hệ thống giữa các mốc.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một sinh viên thích giải bài logic nhưng không thích học thuộc cú pháp. Điều nào mô tả đúng hơn về lập trình?",
+      "opts": [
+        "Tăng tài nguyên hệ thống trước khi đo bottleneck theo dữ liệu hiện có",
+        "Cú pháp là công cụ; tư duy phân rã vấn đề, mô hình hóa và kiểm thử cũng rất quan trọng",
+        "Bỏ qua log và chỉ nhìn kết quả cuối cùng trước khi ra quyết định",
+        "Thay đổi nhiều thành phần cùng lúc để thử nhanh với cùng mục tiêu"
+      ],
+      "a": 1,
+      "e": "Năng lực lập trình bao gồm hiểu vấn đề, thiết kế lời giải, kiểm thử và bảo trì; cú pháp chỉ là một phần.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một hệ thống dùng cloud nhưng chi phí tăng mạnh sau khi lượng truy cập tăng. Phản ứng kỹ thuật nào hợp lý?",
+      "opts": [
+        "Đo chi phí theo tài nguyên và tải, tìm dịch vụ gây tăng chi phí rồi tối ưu hoặc điều chỉnh scaling",
+        "Ưu tiên tốc độ phát triển hơn khả năng bảo trì trước khi ra quyết định",
+        "Chọn công nghệ theo độ mới thay vì yêu cầu dự án với cùng mục tiêu",
+        "Giảm validation để hạn chế lỗi từ phía người dùng theo dữ liệu hiện có"
+      ],
+      "a": 0,
+      "e": "Cloud không tự động rẻ; cần quan sát cost theo tài nguyên và điều chỉnh kiến trúc hoặc chính sách scaling.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một mô hình phân loại bệnh có accuracy 95%, nhưng dữ liệu thực tế chỉ có 2% ca bệnh. Vì sao accuracy có thể gây hiểu nhầm?",
+      "opts": [
+        "Tăng tài nguyên hệ thống trước khi đo bottleneck theo dữ liệu hiện có",
+        "Kiểm tra sau triển khai thay vì tái hiện lỗi ở môi trường thử nghiệm",
+        "Đánh giá chất lượng chỉ bằng việc chương trình chạy được trước khi ra quyết định",
+        "Với dữ liệu mất cân bằng, mô hình đoán lớp đa số vẫn có thể đạt accuracy cao"
+      ],
+      "a": 3,
+      "e": "Với lớp hiếm, cần xem thêm precision, recall, F1 hoặc confusion matrix tùy mục tiêu.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một bạn muốn vào IT nhưng chưa biết nên theo Data, Web hay Cybersecurity. Cách khám phá ít dựa vào tưởng tượng nhất?",
+      "opts": [
+        "Làm các mini-project khác nhau và so sánh loại công việc, khó khăn và hứng thú thực tế",
+        "Ưu tiên tốc độ phát triển hơn khả năng bảo trì trước khi ra quyết định",
+        "Tăng tài nguyên hệ thống trước khi đo bottleneck với cùng mục tiêu",
+        "Dùng cùng một cách xử lý cho mọi loại dữ liệu theo dữ liệu hiện có"
+      ],
+      "a": 0,
+      "e": "Trải nghiệm công việc thu nhỏ cho tín hiệu thực tế hơn việc chỉ đọc mô tả nghề.",
+      "art": "🧠"
+    },
+    {
+      "q": "Trong code review, một đoạn code chạy đúng nhưng rất khó đọc và khó kiểm thử. Nhận xét nào hợp lý?",
+      "opts": [
+        "Giảm validation để hạn chế lỗi từ phía người dùng trước khi ra quyết định",
+        "Đúng chức năng chưa đủ; khả năng đọc, kiểm thử và bảo trì cũng là tiêu chí của chất lượng code",
+        "Bỏ qua log và chỉ nhìn kết quả cuối cùng theo dữ liệu hiện có",
+        "Ưu tiên tốc độ phát triển hơn khả năng bảo trì với cùng mục tiêu"
+      ],
+      "a": 1,
+      "e": "Software engineering quan tâm cả correctness, maintainability, testability và các thuộc tính liên quan.",
+      "art": "🧠"
     }
   ],
   "business": [
     {
-      "q": "Một doanh nghiệp doanh thu tăng 20% nhưng lợi nhuận giảm. Điều nào cần kiểm tra đầu tiên để hiểu hiện tượng này?",
+      "q": "Doanh thu tăng 20% nhưng lợi nhuận giảm. Kết luận nào cần kiểm tra trước?",
       "opts": [
-        "Logo có đẹp hơn không",
-        "Tên sản phẩm có ngắn không",
-        "Số bài đăng mạng xã hội có tăng không",
-        "Chi phí và biên lợi nhuận có thay đổi không"
+        "Bỏ qua các yếu tố ngoài mô hình khi diễn giải dự báo với cùng mục tiêu",
+        "Dùng số liệu tổng thay cho việc phân đoạn theo nhóm trước khi ra quyết định",
+        "Chi phí hoặc cơ cấu doanh thu có thể tăng theo cách làm biên lợi nhuận giảm",
+        "Suy ra nguyên nhân từ một nhóm khách hàng duy nhất theo dữ liệu hiện có"
       ],
-      "a": 3,
-      "e": "Doanh thu không đồng nghĩa lợi nhuận; cần xem chi phí và biên lợi nhuận để tìm nguyên nhân."
+      "a": 2,
+      "e": "Doanh thu và lợi nhuận là các khái niệm khác nhau; cần xem chi phí và margin.",
+      "art": "🧠"
     },
     {
-      "q": "Một Business Analyst nhận yêu cầu 'hãy làm app tốt hơn' nhưng không có tiêu chí cụ thể. Việc nào nên làm trước?",
+      "q": "Một cửa hàng giảm giá mạnh và doanh số tăng, nhưng lợi nhuận trên mỗi đơn giảm sâu. Chỉ số nào nên được xem cùng doanh số?",
       "opts": [
-        "Xác định vấn đề, người dùng, mục tiêu và tiêu chí thành công",
-        "Chuyển ngay sang viết code",
-        "Tăng ngân sách quảng cáo",
-        "Đổi toàn bộ nhân sự"
+        "Dùng dữ liệu lịch sử như thể luôn phản ánh thị trường hiện tại",
+        "Tăng ngân sách trước khi xác định yếu tố làm thay đổi kết quả",
+        "Gross margin hoặc contribution margin trên đơn hàng",
+        "Ưu tiên giải pháp nhanh mà chưa làm rõ vấn đề kinh doanh"
+      ],
+      "a": 2,
+      "e": "Doanh số không cho biết mỗi đơn đóng góp bao nhiêu sau các chi phí liên quan.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một Business Analyst nhận hai yêu cầu: “làm màn hình đẹp hơn” và “giảm thời gian xử lý đơn”. Cách tiếp cận nào phù hợp hơn?",
+      "opts": [
+        "Chọn phương án có con số lớn nhất mà không xét mục tiêu trước khi ra quyết định",
+        "Làm rõ mục tiêu, người dùng, quy trình hiện tại và tiêu chí đo trước khi đặc tả giải pháp",
+        "Tăng ngân sách trước khi xác định yếu tố làm thay đổi kết quả với cùng mục tiêu",
+        "Suy ra nguyên nhân từ một nhóm khách hàng duy nhất theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "BA thường làm rõ problem và outcome trước khi khóa solution.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một khoản đầu tư có lợi nhuận kỳ vọng cao nhưng kết quả rất biến động. Cách nhìn nào đầy đủ hơn chỉ nhìn ROI kỳ vọng?",
+      "opts": [
+        "Tối ưu doanh thu mà không xét biên lợi nhuận và chi phí",
+        "Tăng ngân sách trước khi xác định yếu tố làm thay đổi kết quả",
+        "Suy ra nguyên nhân từ một nhóm khách hàng duy nhất với cùng mục tiêu",
+        "Xem cả mức độ rủi ro, phân phối kết quả, thời gian và khả năng chịu lỗ"
+      ],
+      "a": 3,
+      "e": "Return cần được đặt trong quan hệ với risk, horizon và mục tiêu tài chính.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một công ty có CAC tăng trong khi số khách mới vẫn tăng. Câu hỏi nào nên đặt?",
+      "opts": [
+        "CAC tăng ở kênh nào, cohort nào và LTV có thay đổi tương ứng hay không",
+        "Dùng dữ liệu lịch sử như thể luôn phản ánh thị trường hiện tại",
+        "Tối ưu doanh thu mà không xét biên lợi nhuận và chi phí",
+        "So sánh hai phương án mà không đưa về cùng giả định trước khi ra quyết định"
       ],
       "a": 0,
-      "e": "Business Analyst cần làm rõ vấn đề và yêu cầu trước khi đề xuất hoặc triển khai giải pháp."
+      "e": "CAC cần được phân rã theo nguồn và đặt cạnh giá trị khách hàng để đánh giá kinh tế tăng trưởng.",
+      "art": "🧠"
     },
     {
-      "q": "Một công ty bán cùng sản phẩm cho sinh viên và doanh nghiệp nhưng dùng một thông điệp giống hệt nhau. Rủi ro chính là gì?",
+      "q": "Một khảo sát khách hàng cho thấy 80% người trả lời “hài lòng”, nhưng tỷ lệ trả lời chỉ 5%. Điều gì cần lưu ý?",
       "opts": [
-        "Sản phẩm sẽ tự động lỗi",
-        "Chi phí sản xuất chắc chắn tăng gấp đôi",
-        "Doanh thu chắc chắn bằng 0",
-        "Thông điệp có thể không phù hợp với nhu cầu và bối cảnh của từng nhóm khách hàng"
+        "Coi khảo sát là đại diện cho toàn bộ khách hàng mà không xem mẫu",
+        "Đưa ra quyết định trước rồi tìm dữ liệu để xác nhận theo dữ liệu hiện có",
+        "Chọn phương án có con số lớn nhất mà không xét mục tiêu trước khi ra quyết định",
+        "Kết quả có thể chịu non-response bias và chưa chắc đại diện cho toàn bộ khách hàng"
       ],
       "a": 3,
-      "e": "Các phân khúc có nhu cầu, khả năng chi trả và cách ra quyết định khác nhau."
+      "e": "Nhóm không trả lời có thể khác nhóm trả lời, nên cần xem cách lấy mẫu và response bias.",
+      "art": "🧠"
     },
     {
-      "q": "Một Financial Analyst thấy dòng tiền tháng này âm dù báo cáo lợi nhuận vẫn dương. Giải thích nào hợp lý?",
+      "q": "Một doanh nghiệp có dòng tiền dương nhưng lợi nhuận kế toán âm trong giai đoạn đầu. Điều nào có thể giải thích?",
       "opts": [
-        "Lợi nhuận và dòng tiền là hai khái niệm khác nhau; thời điểm thu tiền và chi tiền có thể lệch",
-        "Lợi nhuận luôn bằng tiền mặt",
-        "Điều đó chứng minh báo cáo chắc chắn giả",
-        "Doanh nghiệp không có doanh thu"
+        "Tăng ngân sách trước khi xác định yếu tố làm thay đổi kết quả trước khi ra quyết định",
+        "Chọn phương án có con số lớn nhất mà không xét mục tiêu theo dữ liệu hiện có",
+        "Đánh giá hiệu quả theo output mà không xét chất lượng đầu ra với cùng mục tiêu",
+        "Khấu hao hoặc các khoản mục kế toán có thể làm lợi nhuận khác dòng tiền thực nhận/chi trả"
+      ],
+      "a": 3,
+      "e": "Lợi nhuận và cash flow dùng các nguyên tắc khác nhau; khấu hao là ví dụ điển hình.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một nhà quản lý muốn đánh giá nhân viên sales chỉ bằng doanh thu tháng. Rủi ro nào đáng chú ý?",
+      "opts": [
+        "Đánh giá hiệu quả theo output mà không xét chất lượng đầu ra với cùng mục tiêu",
+        "Suy ra nguyên nhân từ một nhóm khách hàng duy nhất theo dữ liệu hiện có",
+        "Có thể khuyến khích hành vi tối ưu doanh số ngắn hạn nhưng bỏ qua chất lượng khách hàng, biên lợi nhuận hoặc giữ chân",
+        "Ưu tiên giải pháp nhanh mà chưa làm rõ vấn đề kinh doanh trước khi ra quyết định"
+      ],
+      "a": 2,
+      "e": "KPI định hình hành vi; cần cân nhắc metric bổ sung để tránh tối ưu một chiều.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một công ty muốn mở thị trường mới nhưng dữ liệu hiện có chủ yếu từ khách hàng thành thị. Rủi ro phân tích nào có thể xảy ra?",
+      "opts": [
+        "Tăng ngân sách trước khi xác định yếu tố làm thay đổi kết quả với cùng mục tiêu",
+        "Ngoại suy kết luận sang nhóm khách hàng khác mà không kiểm tra sự khác biệt về nhu cầu và hành vi",
+        "Đưa ra quyết định trước rồi tìm dữ liệu để xác nhận trước khi ra quyết định",
+        "Dùng một ý kiến cá nhân làm bằng chứng chính theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Tính đại diện của dữ liệu quan trọng khi suy luận về population khác với mẫu ban đầu.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một sản phẩm có churn cao ở tháng đầu nhưng ổn định sau đó. Phân tích nào hữu ích?",
+      "opts": [
+        "Ưu tiên giải pháp nhanh mà chưa làm rõ vấn đề kinh doanh trước khi ra quyết định",
+        "Xem onboarding và cohort tháng đầu để tìm điểm gây rời bỏ trước khi tối ưu toàn bộ sản phẩm",
+        "Đánh giá bằng một chỉ số duy nhất mà không xét bối cảnh theo dữ liệu hiện có",
+        "Tối ưu doanh thu mà không xét biên lợi nhuận và chi phí với cùng mục tiêu"
+      ],
+      "a": 1,
+      "e": "Churn theo cohort và thời điểm giúp xác định vấn đề nằm ở giai đoạn đầu của hành trình.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một nhà tuyển dụng thấy ứng viên có điểm GPA cao và muốn kết luận người đó chắc chắn làm việc tốt. Vấn đề của suy luận này là gì?",
+      "opts": [
+        "Tối ưu doanh thu mà không xét biên lợi nhuận và chi phí theo dữ liệu hiện có",
+        "So sánh hai phương án mà không đưa về cùng giả định với cùng mục tiêu",
+        "Bỏ qua các yếu tố ngoài mô hình khi diễn giải dự báo trước khi ra quyết định",
+        "GPA là một tín hiệu nhưng không đo trực tiếp mọi kỹ năng, hành vi và bối cảnh công việc"
+      ],
+      "a": 3,
+      "e": "Một chỉ báo đơn lẻ không đại diện cho toàn bộ năng lực; cần đánh giá theo yêu cầu vai trò.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một doanh nghiệp có hai sản phẩm: A doanh thu lớn nhưng margin thấp, B doanh thu nhỏ nhưng margin cao. Quyết định nguồn lực nên bắt đầu từ đâu?",
+      "opts": [
+        "Đánh giá bằng một chỉ số duy nhất mà không xét bối cảnh với cùng mục tiêu",
+        "Dùng dữ liệu lịch sử như thể luôn phản ánh thị trường hiện tại trước khi ra quyết định",
+        "Xác định mục tiêu chiến lược và xem contribution, tăng trưởng, rủi ro cùng các ràng buộc",
+        "Coi khảo sát là đại diện cho toàn bộ khách hàng mà không xem mẫu theo dữ liệu hiện có"
+      ],
+      "a": 2,
+      "e": "Không có một metric đơn lẻ quyết định mọi phân bổ; cần đặt trong mục tiêu và economics cụ thể.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một Financial Analyst xây mô hình dự báo và nhận thấy kết quả thay đổi mạnh khi giả định tăng trưởng chỉ đổi 1%. Điều này gợi ý gì?",
+      "opts": [
+        "Mô hình nhạy với giả định đó và nên thực hiện sensitivity analysis",
+        "Dùng số liệu tổng thay cho việc phân đoạn theo nhóm",
+        "Đưa ra quyết định trước rồi tìm dữ liệu để xác nhận",
+        "Dùng dữ liệu lịch sử như thể luôn phản ánh thị trường hiện tại"
       ],
       "a": 0,
-      "e": "Doanh thu/lợi nhuận có thể được ghi nhận khác thời điểm tiền thực sự thu hoặc chi."
+      "e": "Sensitivity analysis giúp hiểu mức phụ thuộc của kết quả vào các giả định đầu vào.",
+      "art": "🧠"
     },
     {
-      "q": "Một cửa hàng muốn biết khách hàng có sẵn sàng trả 200.000 đồng cho sản phẩm mới hay không. Cách thu thập thông tin trực tiếp hơn là gì?",
+      "q": "Một công ty tăng ngân sách quảng cáo nhưng doanh số gần như không đổi. Trước khi kết luận quảng cáo kém hiệu quả, nên kiểm tra gì?",
       "opts": [
-        "Chỉ xem logo đối thủ",
-        "Khảo sát/phỏng vấn khách hàng mục tiêu và thử nghiệm mức giá",
-        "Chỉ hỏi nhân viên kế toán",
-        "Đo tốc độ website"
+        "Dùng dữ liệu lịch sử như thể luôn phản ánh thị trường hiện tại trước khi ra quyết định",
+        "Incrementality, phân bổ kênh, attribution và các yếu tố khác có ảnh hưởng đến doanh số",
+        "Đưa ra quyết định trước rồi tìm dữ liệu để xác nhận với cùng mục tiêu",
+        "Đánh giá bằng một chỉ số duy nhất mà không xét bối cảnh theo dữ liệu hiện có"
       ],
       "a": 1,
-      "e": "Nghiên cứu khách hàng và thử nghiệm giá giúp kiểm chứng willingness-to-pay thực tế hơn."
+      "e": "Doanh số có thể chịu nhiều yếu tố; cần phân biệt correlation, attribution và tác động gia tăng thực sự.",
+      "art": "🧠"
     },
     {
-      "q": "Một chiến dịch quảng cáo có nhiều lượt nhấp nhưng rất ít người mua. Chỉ số nào nên được xem cùng với số lượt nhấp để đánh giá sâu hơn?",
+      "q": "Một dự án liên phòng ban thường trễ vì mỗi bên hiểu “hoàn thành” khác nhau. Công cụ quản trị nào hữu ích?",
       "opts": [
-        "Kích thước logo",
-        "Tỷ lệ chuyển đổi và chi phí trên chuyển đổi",
-        "Số lượng font chữ",
-        "Số người theo dõi CEO"
+        "Ưu tiên giải pháp nhanh mà chưa làm rõ vấn đề kinh doanh với cùng mục tiêu",
+        "Dùng dữ liệu lịch sử như thể luôn phản ánh thị trường hiện tại theo dữ liệu hiện có",
+        "Xem kết quả ngắn hạn mà không kiểm tra tác động dài hạn trước khi ra quyết định",
+        "Xác định rõ deliverable, acceptance criteria, owner và mốc phụ thuộc giữa các bên"
       ],
-      "a": 1,
-      "e": "Click chỉ phản ánh một bước; conversion và cost per conversion giúp đánh giá hiệu quả kinh doanh."
+      "a": 3,
+      "e": "Definition of done/acceptance criteria và ownership làm giảm ambiguity giữa các bên.",
+      "art": "🧠"
     },
     {
-      "q": "Một doanh nghiệp có khoản vay lãi suất thả nổi. Nếu lãi suất thị trường tăng, rủi ro trực tiếp nào có thể xảy ra?",
+      "q": "Một người muốn làm Business Analyst vì thích “làm việc với dữ liệu”. Điều gì cần bổ sung để hiểu đúng vai trò?",
       "opts": [
-        "Chi phí lãi vay tăng",
-        "Tài sản tự động tăng giá",
-        "Doanh thu tự động tăng",
-        "Thuế chắc chắn giảm"
+        "Đánh giá bằng một chỉ số duy nhất mà không xét bối cảnh trước khi ra quyết định",
+        "Dùng dữ liệu lịch sử như thể luôn phản ánh thị trường hiện tại theo dữ liệu hiện có",
+        "BA còn cần hiểu quy trình, yêu cầu, stakeholder và chuyển vấn đề kinh doanh thành yêu cầu khả thi",
+        "Dùng một ý kiến cá nhân làm bằng chứng chính với cùng mục tiêu"
+      ],
+      "a": 2,
+      "e": "BA nằm ở giao điểm giữa business problem, quy trình, stakeholder và giải pháp.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một khoản vay có lãi suất danh nghĩa giống nhau nhưng cách tính phí khác nhau giữa hai ngân hàng. So sánh nào hợp lý hơn?",
+      "opts": [
+        "Xem tổng chi phí tín dụng/APR hoặc các khoản phí và lịch thanh toán, không chỉ lãi suất niêm yết",
+        "Tăng ngân sách trước khi xác định yếu tố làm thay đổi kết quả theo dữ liệu hiện có",
+        "So sánh hai phương án mà không đưa về cùng giả định trước khi ra quyết định",
+        "Dùng số liệu tổng thay cho việc phân đoạn theo nhóm với cùng mục tiêu"
       ],
       "a": 0,
-      "e": "Với khoản vay lãi suất thả nổi, lãi suất tăng có thể làm chi phí tài chính tăng."
+      "e": "Chi phí thực tế phụ thuộc lãi, phí và lịch dòng tiền; cần so sánh trên cùng cơ sở.",
+      "art": "🧠"
     },
     {
-      "q": "Một nhà đầu tư chỉ nhìn doanh thu tăng mạnh và bỏ qua chi phí, dòng tiền và nợ. Vấn đề của cách đánh giá này là gì?",
+      "q": "Một đội sales đạt chỉ tiêu bằng cách giảm giá sâu cho khách hàng ít có khả năng mua lại. Metric nào giúp nhìn chất lượng tăng trưởng?",
       "opts": [
-        "Chi phí không liên quan đến doanh nghiệp",
-        "Một chỉ tiêu không đủ để phản ánh toàn bộ tình hình tài chính",
-        "Nợ luôn là dấu hiệu tốt",
-        "Doanh thu không bao giờ có ý nghĩa"
-      ],
-      "a": 1,
-      "e": "Đánh giá tài chính cần xem nhiều chỉ tiêu và bối cảnh thay vì dựa vào một con số."
-    },
-    {
-      "q": "Trong kế toán, việc đối chiếu số tiền ghi nhận với chứng từ và giao dịch thực tế chủ yếu nhằm mục đích gì?",
-      "opts": [
-        "Dự đoán thời tiết",
-        "Kiểm tra tính chính xác và phát hiện sai lệch",
-        "Thiết kế bao bì",
-        "Tăng lượt theo dõi mạng xã hội"
-      ],
-      "a": 1,
-      "e": "Đối chiếu giúp phát hiện chênh lệch, sai sót hoặc giao dịch cần kiểm tra thêm."
-    },
-    {
-      "q": "Một đội Sales liên tục giảm giá để đạt doanh số nhưng lợi nhuận mỗi đơn hàng giảm mạnh. Điều này cho thấy cần cân bằng yếu tố nào?",
-      "opts": [
-        "Độ dài email",
-        "Màu đồng phục và logo",
-        "Số lượng phòng họp",
-        "Doanh số, giá bán, chi phí và biên lợi nhuận"
-      ],
-      "a": 3,
-      "e": "Doanh số cao chưa chắc hiệu quả nếu biên lợi nhuận bị bào mòn quá mức."
-    },
-    {
-      "q": "Một Business Analyst phát hiện hai phòng ban dùng hai định nghĩa khác nhau cho 'khách hàng mới'. Bước nào quan trọng trước khi lập báo cáo?",
-      "opts": [
-        "Bỏ chỉ tiêu này",
-        "Thống nhất định nghĩa và quy tắc đo lường",
-        "Đổi phần mềm trình chiếu",
-        "Tự chọn một định nghĩa mà không báo ai"
-      ],
-      "a": 1,
-      "e": "Nếu định nghĩa không thống nhất, số liệu giữa các bộ phận có thể không so sánh được."
-    },
-    {
-      "q": "Một công ty muốn giảm rủi ro khi phụ thuộc vào một nhà cung cấp duy nhất. Giải pháp nào trực tiếp nhất?",
-      "opts": [
-        "Tăng kích thước logo",
-        "Đánh giá thêm nhà cung cấp thay thế và xây phương án dự phòng",
-        "Đổi màu website",
-        "Giảm số lượng nhân viên marketing"
-      ],
-      "a": 1,
-      "e": "Đa dạng hóa nguồn cung hoặc có phương án dự phòng giúp giảm rủi ro gián đoạn."
-    },
-    {
-      "q": "Một Financial Analyst so sánh hai dự án đầu tư có dòng tiền ở các thời điểm khác nhau. Vì sao không nên chỉ cộng tất cả dòng tiền lại?",
-      "opts": [
-        "Vì doanh thu luôn quan trọng hơn dòng tiền",
-        "Vì máy tính không cộng được",
-        "Vì mọi dự án đều giống nhau",
-        "Tiền nhận ở các thời điểm khác nhau có giá trị thời gian khác nhau"
-      ],
-      "a": 3,
-      "e": "Phân tích đầu tư thường xét giá trị thời gian của tiền, nên thời điểm của dòng tiền rất quan trọng."
-    },
-    {
-      "q": "Một thương hiệu có lượng người theo dõi lớn nhưng doanh số sản phẩm mới thấp. Kết luận nào thận trọng nhất?",
-      "opts": [
-        "Lượng người theo dõi không tự động chứng minh nhu cầu mua hoặc hiệu quả kinh doanh",
-        "Sản phẩm chắc chắn kém chất lượng",
-        "Tất cả người theo dõi đều là khách hàng",
-        "Thương hiệu chắc chắn thất bại"
+        "Retention hoặc repeat purchase và contribution sau chi phí khuyến mãi",
+        "Đưa ra quyết định trước rồi tìm dữ liệu để xác nhận",
+        "Dùng dữ liệu lịch sử như thể luôn phản ánh thị trường hiện tại",
+        "Dùng một ý kiến cá nhân làm bằng chứng chính trước khi ra quyết định"
       ],
       "a": 0,
-      "e": "Follower là một chỉ số về quy mô cộng đồng, không phải bằng chứng trực tiếp về chuyển đổi mua hàng."
+      "e": "Tăng trưởng có chất lượng cần xét khả năng giữ chân và giá trị kinh tế của khách hàng.",
+      "art": "🧠"
     },
     {
-      "q": "Một bạn thích phân tích số liệu, đặt câu hỏi 'vì sao doanh thu thay đổi?' và muốn làm việc với nhiều phòng ban. Nghề nào có thể phù hợp với mô tả này?",
+      "q": "Khi nghiên cứu một ngành nghề kinh doanh mới, nguồn thông tin nào nên được kết hợp?",
       "opts": [
-        "Bác sĩ lâm sàng",
-        "Graphic Designer",
-        "Network Technician",
-        "Business Analyst"
-      ],
-      "a": 3,
-      "e": "Business Analyst thường phân tích vấn đề kinh doanh, dữ liệu và làm việc với các bên liên quan."
-    },
-    {
-      "q": "Một công ty phát hiện khách hàng rời bỏ nhiều sau tháng đầu tiên. Câu hỏi nào có giá trị nhất để bắt đầu tìm nguyên nhân?",
-      "opts": [
-        "Ở bước nào và với nhóm khách nào tỷ lệ rời bỏ tăng mạnh?",
-        "Nhân viên có thích màu thương hiệu không?",
-        "Logo có đủ đẹp không?",
-        "Tên công ty có bao nhiêu chữ?"
-      ],
-      "a": 0,
-      "e": "Phân đoạn theo thời điểm và nhóm khách hàng giúp xác định nơi vấn đề tập trung."
-    },
-    {
-      "q": "Trong quản trị rủi ro, rủi ro có xác suất thấp nhưng hậu quả rất lớn thường nên được xử lý thế nào?",
-      "opts": [
-        "Chỉ xử lý nếu đã xảy ra",
-        "Chỉ nhìn doanh thu",
-        "Bỏ qua vì xác suất thấp",
-        "Đánh giá riêng mức độ tác động và chuẩn bị biện pháp giảm thiểu phù hợp"
-      ],
-      "a": 3,
-      "e": "Rủi ro cần xem cả xác suất và tác động; hậu quả lớn có thể khiến rủi ro vẫn cần kế hoạch ứng phó."
-    },
-    {
-      "q": "Một nhân viên kinh doanh có mục tiêu doanh số và được thưởng nếu đạt. Hành vi nào phù hợp với nguyên tắc đạo đức kinh doanh?",
-      "opts": [
-        "Hứa tính năng sản phẩm không tồn tại",
-        "Tư vấn đúng nhu cầu và không cố ý che giấu thông tin bất lợi",
-        "Che phí phát sinh đến sau khi ký",
-        "Tạo số liệu khách hàng giả"
+        "Dùng số liệu tổng thay cho việc phân đoạn theo nhóm trước khi ra quyết định",
+        "Dữ liệu thị trường, báo cáo doanh nghiệp, phỏng vấn khách hàng và quan sát đối thủ",
+        "Đưa ra quyết định trước rồi tìm dữ liệu để xác nhận với cùng mục tiêu",
+        "Coi khảo sát là đại diện cho toàn bộ khách hàng mà không xem mẫu"
       ],
       "a": 1,
-      "e": "Đạo đức kinh doanh yêu cầu trung thực và tránh gây hiểu lầm, ngay cả khi có áp lực chỉ tiêu."
+      "e": "Triangulation giữa nhiều nguồn giúp giảm rủi ro phụ thuộc một góc nhìn.",
+      "art": "🧠"
     },
     {
-      "q": "Một doanh nghiệp muốn mở rộng sang thị trường mới. Thông tin nào có giá trị trước khi quyết định đầu tư lớn?",
+      "q": "Một người chọn ngành tài chính chỉ vì thấy mức lương cao. Cách kiểm chứng phù hợp hơn là gì?",
       "opts": [
-        "Chỉ số lượt thích của CEO",
-        "Màu chủ đạo của website đối thủ",
-        "Số tầng của văn phòng đối thủ",
-        "Quy mô nhu cầu, đối thủ, khách hàng mục tiêu, quy định và economics của mô hình"
+        "Chọn phương án có con số lớn nhất mà không xét mục tiêu với cùng mục tiêu",
+        "So sánh hai phương án mà không đưa về cùng giả định trước khi ra quyết định",
+        "Đối chiếu công việc hằng ngày, áp lực, kỹ năng, yêu cầu tuyển dụng và thử một nhiệm vụ gần thực tế",
+        "Xem kết quả ngắn hạn mà không kiểm tra tác động dài hạn theo dữ liệu hiện có"
       ],
-      "a": 3,
-      "e": "Nghiên cứu thị trường cần kết hợp nhu cầu, cạnh tranh, quy định và tính khả thi tài chính."
-    },
-    {
-      "q": "Một sinh viên chọn ngành kinh doanh chỉ vì nghe rằng ngành này 'dễ kiếm tiền'. Cách kiểm chứng phù hợp hơn là gì?",
-      "opts": [
-        "Tìm hiểu công việc thực tế, kỹ năng cần có, môi trường làm việc và thử một hoạt động liên quan",
-        "Chỉ hỏi một người quen",
-        "Chọn ngành đang nổi trên mạng",
-        "Chỉ xem mức lương cao nhất"
-      ],
-      "a": 0,
-      "e": "Mức lương không phản ánh đầy đủ độ phù hợp; trải nghiệm và tìm hiểu công việc thực tế cho thông tin tốt hơn."
+      "a": 2,
+      "e": "Thu nhập chỉ là một yếu tố; trải nghiệm công việc và mức phù hợp với năng lực cũng cần kiểm chứng.",
+      "art": "🧠"
     }
   ],
   "health": [
     {
-      "q": "Một người có triệu chứng giống nhau nhưng tiền sử bệnh và thuốc đang dùng khác nhau. Vì sao nhân viên y tế không nên chỉ dựa vào triệu chứng để đưa ra quyết định?",
+      "q": "Một bệnh nhân có triệu chứng giống nhiều bệnh khác nhau. Vì sao bác sĩ không nên chỉ dựa vào một triệu chứng nổi bật?",
       "opts": [
-        "Vì thuốc luôn giống nhau",
-        "Vì mọi bệnh nhân phải điều trị giống nhau",
-        "Bối cảnh và tiền sử có thể làm thay đổi cách đánh giá và xử trí",
-        "Vì triệu chứng không bao giờ có giá trị"
-      ],
-      "a": 2,
-      "e": "Đánh giá y tế thường cần kết hợp triệu chứng với tiền sử, khám, xét nghiệm và các yếu tố liên quan."
-    },
-    {
-      "q": "Một điều dưỡng phát hiện chỉ số sinh tồn của bệnh nhân thay đổi bất thường so với trước đó. Hành động nào phù hợp nhất?",
-      "opts": [
-        "Bỏ qua nếu bệnh nhân chưa than đau",
-        "Đánh giá lại, báo cho người có trách nhiệm và thực hiện quy trình phù hợp",
-        "Tự ý đổi toàn bộ thuốc",
-        "Chờ đến cuối ca mới ghi"
-      ],
-      "a": 1,
-      "e": "Thay đổi bất thường cần được đánh giá và xử lý theo quy trình an toàn của cơ sở y tế."
-    },
-    {
-      "q": "Một dược sĩ được hỏi về việc dùng hai thuốc cùng lúc. Điều nào cần được xem xét trước khi tư vấn?",
-      "opts": [
-        "Số người theo dõi nhà thuốc",
-        "Tên thuốc, liều dùng, bệnh nền, thuốc khác đang dùng và nguy cơ tương tác",
-        "Chỉ giá tiền của thuốc",
-        "Chỉ màu của vỏ hộp"
-      ],
-      "a": 1,
-      "e": "Tương tác thuốc và chống chỉ định phụ thuộc vào nhiều yếu tố của người dùng và thuốc."
-    },
-    {
-      "q": "Trong phòng xét nghiệm, một mẫu bệnh phẩm bị ghi sai thông tin định danh. Vấn đề nghiêm trọng nhất là gì?",
-      "opts": [
-        "Máy xét nghiệm sẽ chạy nhanh hơn",
-        "Mẫu sẽ tự sửa tên",
-        "Chỉ ảnh hưởng đến hình thức",
-        "Nguy cơ gắn kết kết quả với sai người và dẫn đến quyết định sai"
-      ],
-      "a": 3,
-      "e": "Định danh chính xác là nền tảng của an toàn xét nghiệm và chăm sóc người bệnh."
-    },
-    {
-      "q": "Một kỹ thuật viên xét nghiệm nhận kết quả bất thường nhưng nghi ngờ mẫu bị ảnh hưởng bởi lỗi tiền phân tích. Nên làm gì?",
-      "opts": [
-        "Tự sửa số liệu để gần với mức bình thường",
-        "Đổi tên bệnh nhân",
-        "Bỏ qua kết quả",
-        "Kiểm tra điều kiện lấy/bảo quản mẫu và quy trình trước khi diễn giải kết quả"
-      ],
-      "a": 3,
-      "e": "Các yếu tố trước xét nghiệm như lấy và bảo quản mẫu có thể ảnh hưởng kết quả và cần được kiểm tra."
-    },
-    {
-      "q": "Một bệnh nhân lớn tuổi khó nghe hướng dẫn. Cách giao tiếp nào phù hợp hơn?",
-      "opts": [
-        "Nói nhanh hơn để tiết kiệm thời gian",
-        "Nói rõ, kiểm tra lại người bệnh đã hiểu và điều chỉnh cách truyền đạt",
-        "Chỉ đưa tài liệu rồi bỏ đi",
-        "Tránh giải thích vì bệnh nhân lớn tuổi"
-      ],
-      "a": 1,
-      "e": "Giao tiếp y tế cần phù hợp khả năng tiếp nhận và nên xác nhận mức độ hiểu."
-    },
-    {
-      "q": "Một kỹ thuật viên vật lý trị liệu xây dựng bài tập cho người sau chấn thương. Vì sao cần theo dõi đáp ứng và điều chỉnh dần?",
-      "opts": [
-        "Không cần đánh giá lại",
-        "Mọi người luôn cần cùng một cường độ",
-        "Mức chịu tải và khả năng hồi phục khác nhau giữa từng người",
-        "Tập càng đau càng tốt"
-      ],
-      "a": 2,
-      "e": "Phục hồi chức năng cần cá thể hóa và điều chỉnh theo đáp ứng, tiến triển và mục tiêu."
-    },
-    {
-      "q": "Một người làm dinh dưỡng muốn tư vấn cho bệnh nhân có bệnh nền và đang dùng thuốc. Điều gì quan trọng?",
-      "opts": [
-        "Bỏ qua thuốc vì dinh dưỡng không liên quan",
-        "Chỉ dựa vào một thực đơn trên mạng",
-        "Xem xét bệnh nền, thuốc và mục tiêu dinh dưỡng trước khi đưa khuyến nghị",
-        "Chỉ hỏi món ăn yêu thích"
-      ],
-      "a": 2,
-      "e": "Dinh dưỡng lâm sàng cần tính đến tình trạng sức khỏe và các yếu tố có thể ảnh hưởng lẫn nhau."
-    },
-    {
-      "q": "Một bệnh viện muốn giảm sai sót khi bàn giao ca. Biện pháp nào trực tiếp hỗ trợ an toàn hơn?",
-      "opts": [
-        "Chỉ dựa vào trí nhớ",
-        "Không ghi chép để tiết kiệm thời gian",
-        "Chỉ bàn giao bệnh nhân khó",
-        "Dùng quy trình bàn giao có cấu trúc và thông tin cần thiết"
-      ],
-      "a": 3,
-      "e": "Bàn giao có cấu trúc giúp giảm bỏ sót thông tin quan trọng."
-    },
-    {
-      "q": "Một sinh viên nghĩ nghề y chỉ có bác sĩ. Thông tin nào phản ánh đúng hơn?",
-      "opts": [
-        "Hệ thống y tế có nhiều vai trò như điều dưỡng, dược, xét nghiệm, phục hồi chức năng và dinh dưỡng",
-        "Các nghề khác không cần đào tạo chuyên môn",
-        "Chỉ bác sĩ mới làm việc với bệnh nhân",
-        "Mọi vị trí y tế đều làm cùng một việc"
+        "Một triệu chứng có thể không đặc hiệu; cần kết hợp bệnh sử, khám và xét nghiệm phù hợp",
+        "Ưu tiên tốc độ xử lý hơn độ tin cậy của kết quả với cùng mục tiêu",
+        "Chỉ dựa vào một dấu hiệu nổi bật mà không xét bối cảnh trước khi ra quyết định",
+        "Giả định bệnh nhân đã hiểu nếu họ không đặt câu hỏi theo dữ liệu hiện có"
       ],
       "a": 0,
-      "e": "Chăm sóc sức khỏe là hệ sinh thái nhiều chuyên môn phối hợp."
+      "e": "Chẩn đoán thường dựa trên tổng hợp nhiều nguồn bằng chứng và bối cảnh lâm sàng.",
+      "art": "🧠"
     },
     {
-      "q": "Trong chăm sóc sức khỏe, vì sao bảo mật thông tin bệnh nhân quan trọng?",
+      "q": "Một mẫu xét nghiệm bị nhiễm bẩn trước khi phân tích. Điều gì đáng lo nhất?",
       "opts": [
-        "Vì bảo mật chỉ liên quan đến máy tính",
-        "Vì dữ liệu y tế không bao giờ có giá trị",
-        "Thông tin sức khỏe nhạy cảm cần được bảo vệ và chỉ chia sẻ theo quy định, nhu cầu công việc phù hợp",
-        "Vì chỉ bác sĩ mới được xem mọi dữ liệu"
+        "Kết quả có thể sai và dẫn đến diễn giải hoặc quyết định chăm sóc không phù hợp",
+        "Chỉ dựa vào một dấu hiệu nổi bật mà không xét bối cảnh với cùng mục tiêu",
+        "Đánh giá thông tin sức khỏe dựa chủ yếu vào mức độ phổ biến theo dữ liệu hiện có",
+        "Bỏ qua tiền sử thuốc khi đánh giá điều trị trước khi ra quyết định"
+      ],
+      "a": 0,
+      "e": "Pre-analytical errors có thể làm kết quả không đáng tin cậy và ảnh hưởng quyết định sau đó.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một điều dưỡng nhận thấy hai bệnh nhân dùng thuốc có tên gần giống nhau. Biện pháp nào giúp giảm nhầm lẫn?",
+      "opts": [
+        "Xem một nguồn thông tin như đủ cho mọi quyết định theo dữ liệu hiện có",
+        "Xem kết quả xét nghiệm mà không xét chất lượng mẫu với cùng mục tiêu",
+        "Xác nhận đúng người, thuốc, liều, đường dùng và thời điểm theo quy trình an toàn thuốc",
+        "Ưu tiên chi phí thấp hơn mà không cân nhắc rủi ro trước khi ra quyết định"
       ],
       "a": 2,
-      "e": "Bảo mật và quyền riêng tư là phần quan trọng của đạo đức và an toàn thông tin y tế."
+      "e": "Kiểm tra các yếu tố an toàn trước khi dùng thuốc là hàng rào chống medication error.",
+      "art": "🧠"
     },
     {
-      "q": "Một nhân viên y tế gặp tình huống chưa chắc chắn trong phạm vi chuyên môn của mình. Cách xử lý an toàn hơn là gì?",
+      "q": "Một dược sĩ tư vấn thuốc và phát hiện bệnh nhân đang dùng thuốc khác có khả năng tương tác. Điều gì nên làm?",
       "opts": [
-        "Giấu việc chưa chắc chắn",
-        "Làm theo lời người không liên quan",
-        "Trao đổi với người có thẩm quyền/chuyên môn phù hợp và tuân thủ quy trình",
-        "Tự đoán để xử lý thật nhanh"
+        "Sửa số liệu để phù hợp với giá trị kỳ vọng trước khi ra quyết định",
+        "Kiểm tra tương tác và đánh giá với bác sĩ/người kê đơn khi cần trước khi thay đổi hoặc phối hợp thuốc",
+        "Ưu tiên chi phí thấp hơn mà không cân nhắc rủi ro theo dữ liệu hiện có",
+        "Coi mọi nghề sức khỏe có cùng yêu cầu đào tạo với cùng mục tiêu"
+      ],
+      "a": 1,
+      "e": "Tương tác thuốc cần được đánh giá theo từng hoạt chất, liều, bệnh cảnh và người kê đơn.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một bệnh nhân nói “tôi thấy đỡ nên muốn ngừng thuốc”. Cách giao tiếp nào phù hợp hơn?",
+      "opts": [
+        "Tìm hiểu thuốc dùng cho mục đích gì, giải thích rủi ro và hướng dẫn trao đổi với người phụ trách điều trị",
+        "Đánh giá thông tin sức khỏe dựa chủ yếu vào mức độ phổ biến theo dữ liệu hiện có",
+        "Coi mọi nghề sức khỏe có cùng yêu cầu đào tạo với cùng mục tiêu",
+        "Ưu tiên tốc độ xử lý hơn độ tin cậy của kết quả trước khi ra quyết định"
+      ],
+      "a": 0,
+      "e": "Tuân thủ điều trị cần giao tiếp rõ ràng và quyết định dựa trên chỉ định cụ thể, không chỉ cảm giác hiện tại.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một xét nghiệm có độ nhạy cao được dùng để sàng lọc. Ý nghĩa quan trọng của độ nhạy là gì?",
+      "opts": [
+        "Sửa số liệu để phù hợp với giá trị kỳ vọng trước khi ra quyết định",
+        "Khả năng phát hiện người thực sự có tình trạng bệnh, trong điều kiện xét nghiệm được đánh giá",
+        "Dùng cùng một hướng dẫn cho mọi bệnh nhân với cùng mục tiêu",
+        "Xem một nguồn thông tin như đủ cho mọi quyết định theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Sensitivity liên quan đến tỷ lệ true positive trong số người thực sự có bệnh; predictive value còn phụ thuộc prevalence.",
+      "art": "🧠"
+    },
+    {
+      "q": "Hai kỹ thuật viên đo cùng một mẫu và cho kết quả hơi khác nhau. Khái niệm nào cần xem xét?",
+      "opts": [
+        "Xem kết quả xét nghiệm mà không xét chất lượng mẫu với cùng mục tiêu",
+        "Xem một nguồn thông tin như đủ cho mọi quyết định trước khi ra quyết định",
+        "Sửa số liệu để phù hợp với giá trị kỳ vọng theo dữ liệu hiện có",
+        "Độ lặp lại/precision và độ đúng/accuracy của phương pháp cùng điều kiện đo"
+      ],
+      "a": 3,
+      "e": "Precision và accuracy trả lời các câu hỏi khác nhau về độ ổn định và mức gần giá trị thật.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một người thích sinh học nhưng không muốn thường xuyên tiếp xúc trực tiếp với bệnh nhân. Điều nào mở rộng lựa chọn nghề?",
+      "opts": [
+        "Có thể tìm hiểu xét nghiệm, nghiên cứu, dược, dữ liệu y tế hoặc các vai trò hậu cần chuyên môn tùy đào tạo",
+        "Xem kết quả xét nghiệm mà không xét chất lượng mẫu trước khi ra quyết định",
+        "Đưa ra kết luận mà không xét giới hạn của phương pháp theo dữ liệu hiện có",
+        "Xử lý sự cố cá nhân mà không xem xét nguyên nhân hệ thống với cùng mục tiêu"
+      ],
+      "a": 0,
+      "e": "Ngành sức khỏe có nhiều vai trò ngoài khám trực tiếp; yêu cầu đào tạo khác nhau theo nghề.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một bệnh viện muốn giảm thời gian chờ nhưng không muốn chỉ tăng nhân sự. Phân tích nào nên bắt đầu?",
+      "opts": [
+        "Bỏ qua tiền sử thuốc khi đánh giá điều trị trước khi ra quyết định",
+        "Giả định bệnh nhân đã hiểu nếu họ không đặt câu hỏi",
+        "Chỉ dựa vào một dấu hiệu nổi bật mà không xét bối cảnh",
+        "Lập bản đồ quy trình và đo thời gian ở từng bước để tìm bottleneck"
+      ],
+      "a": 3,
+      "e": "Process mapping giúp xác định điểm nghẽn trước khi chọn giải pháp nguồn lực.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một bệnh nhân có nhiều bệnh nền và nhiều thuốc. Vì sao việc thu thập medication history chính xác quan trọng?",
+      "opts": [
+        "Coi mọi nghề sức khỏe có cùng yêu cầu đào tạo trước khi ra quyết định",
+        "Nó giúp phát hiện trùng thuốc, tương tác và các yếu tố có thể ảnh hưởng kế hoạch chăm sóc",
+        "Đưa ra kết luận mà không xét giới hạn của phương pháp theo dữ liệu hiện có",
+        "Xử lý sự cố cá nhân mà không xem xét nguyên nhân hệ thống với cùng mục tiêu"
+      ],
+      "a": 1,
+      "e": "Medication reconciliation giảm nguy cơ sai sót khi thông tin thuốc thay đổi giữa các bối cảnh chăm sóc.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một kỹ thuật viên xét nghiệm thấy QC của máy lệch khỏi giới hạn kiểm soát. Hành động nào phù hợp hơn?",
+      "opts": [
+        "Giả định bệnh nhân đã hiểu nếu họ không đặt câu hỏi trước khi ra quyết định",
+        "Điều tra QC và nguyên nhân trước khi tin cậy hoặc trả kết quả từ hệ thống đó",
+        "Đánh giá thông tin sức khỏe dựa chủ yếu vào mức độ phổ biến",
+        "Xử lý sự cố cá nhân mà không xem xét nguyên nhân hệ thống với cùng mục tiêu"
+      ],
+      "a": 1,
+      "e": "QC là hàng rào phát hiện vấn đề của hệ thống xét nghiệm; cần điều tra trước khi sử dụng kết quả.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một bệnh nhân nghe nhiều lời khuyên dinh dưỡng trái ngược trên mạng. Cách đánh giá thông tin nào tốt hơn?",
+      "opts": [
+        "Bỏ qua tiền sử thuốc khi đánh giá điều trị với cùng mục tiêu",
+        "Xem nguồn, chất lượng bằng chứng, đối tượng áp dụng và trao đổi với chuyên gia khi có bệnh lý",
+        "Coi mọi nghề sức khỏe có cùng yêu cầu đào tạo theo dữ liệu hiện có",
+        "Ưu tiên tốc độ xử lý hơn độ tin cậy của kết quả trước khi ra quyết định"
+      ],
+      "a": 1,
+      "e": "Thông tin sức khỏe cần đánh giá nguồn và bằng chứng, đồng thời xét bối cảnh cá nhân.",
+      "art": "🧠"
+    },
+    {
+      "q": "Trong vật lý trị liệu, một bài tập khiến bệnh nhân đau tăng rõ rệt. Cách tiếp cận nào phù hợp?",
+      "opts": [
+        "Ưu tiên chi phí thấp hơn mà không cân nhắc rủi ro theo dữ liệu hiện có",
+        "Coi mọi nghề sức khỏe có cùng yêu cầu đào tạo với cùng mục tiêu",
+        "Xem một nguồn thông tin như đủ cho mọi quyết định trước khi ra quyết định",
+        "Đánh giá phản ứng và điều chỉnh chương trình theo tình trạng, mục tiêu và hướng dẫn chuyên môn"
+      ],
+      "a": 3,
+      "e": "Chương trình phục hồi cần được theo dõi và điều chỉnh theo đáp ứng, không theo một quy tắc cứng cho mọi người.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một nhân viên y tế phát hiện mình nhập nhầm thông tin nhưng chưa gây hậu quả. Điều nào phù hợp với văn hóa an toàn?",
+      "opts": [
+        "Báo cáo và sửa theo quy trình để tìm nguyên nhân hệ thống, thay vì che giấu",
+        "Dùng cùng một hướng dẫn cho mọi bệnh nhân trước khi ra quyết định",
+        "Xử lý sự cố cá nhân mà không xem xét nguyên nhân hệ thống",
+        "Giả định bệnh nhân đã hiểu nếu họ không đặt câu hỏi theo dữ liệu hiện có"
+      ],
+      "a": 0,
+      "e": "Near miss và lỗi cần được ghi nhận phù hợp để giảm khả năng tái diễn.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một sinh viên nghĩ nghề y chủ yếu cần “chịu được máu”. Điều gì còn quan trọng?",
+      "opts": [
+        "Ưu tiên tốc độ xử lý hơn độ tin cậy của kết quả theo dữ liệu hiện có",
+        "Coi mọi nghề sức khỏe có cùng yêu cầu đào tạo trước khi ra quyết định",
+        "Xử lý sự cố cá nhân mà không xem xét nguyên nhân hệ thống với cùng mục tiêu",
+        "Kiến thức khoa học, kỹ năng thực hành, giao tiếp, đạo đức, kỷ luật và khả năng làm việc trong quy trình an toàn"
+      ],
+      "a": 3,
+      "e": "Công việc chăm sóc sức khỏe đòi hỏi tổ hợp năng lực, không chỉ một đặc điểm.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một bệnh nhân không hiểu thuật ngữ chuyên môn nên làm sai hướng dẫn tại nhà. Bài học giao tiếp nào rõ nhất?",
+      "opts": [
+        "Kiểm tra người bệnh đã hiểu bằng cách yêu cầu họ diễn đạt lại hướng dẫn theo cách của mình",
+        "Giả định bệnh nhân đã hiểu nếu họ không đặt câu hỏi trước khi ra quyết định",
+        "Chỉ dựa vào một dấu hiệu nổi bật mà không xét bối cảnh với cùng mục tiêu",
+        "Bỏ qua tiền sử thuốc khi đánh giá điều trị theo dữ liệu hiện có"
+      ],
+      "a": 0,
+      "e": "Teach-back giúp kiểm tra hiểu biết thực tế thay vì suy đoán từ việc bệnh nhân gật đầu.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một bệnh viện chia sẻ dữ liệu bệnh nhân cho bên thứ ba. Yếu tố nào phải được xem xét trước?",
+      "opts": [
+        "Đưa ra kết luận mà không xét giới hạn của phương pháp theo dữ liệu hiện có",
+        "Coi mọi nghề sức khỏe có cùng yêu cầu đào tạo trước khi ra quyết định",
+        "Sửa số liệu để phù hợp với giá trị kỳ vọng với cùng mục tiêu",
+        "Căn cứ pháp lý, mục đích sử dụng, quyền riêng tư, bảo mật và phạm vi dữ liệu được phép chia sẻ"
+      ],
+      "a": 3,
+      "e": "Dữ liệu sức khỏe có tính nhạy cảm cao; việc sử dụng/chia sẻ phải tuân thủ yêu cầu pháp lý và bảo mật phù hợp.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một người muốn theo dược nhưng thích phân tích dữ liệu hơn giao tiếp bán hàng. Điều gì nên tìm hiểu?",
+      "opts": [
+        "Đánh giá thông tin sức khỏe dựa chủ yếu vào mức độ phổ biến với cùng mục tiêu",
+        "Đưa ra kết luận mà không xét giới hạn của phương pháp theo dữ liệu hiện có",
+        "Các hướng như nghiên cứu, pharmacovigilance, dữ liệu dược hoặc sản xuất tùy bằng cấp và vị trí",
+        "Xem kết quả xét nghiệm mà không xét chất lượng mẫu trước khi ra quyết định"
       ],
       "a": 2,
-      "e": "Nhận biết giới hạn chuyên môn và xin hỗ trợ là một phần của thực hành an toàn."
+      "e": "Hệ sinh thái dược có nhiều vai trò ngoài bán hàng, nhưng mỗi vai trò có yêu cầu đào tạo riêng.",
+      "art": "🧠"
     },
     {
-      "q": "Một bệnh nhân từ chối một thủ thuật sau khi đã được giải thích đầy đủ và có khả năng ra quyết định. Yếu tố đạo đức nào liên quan trực tiếp?",
+      "q": "Một nhóm chăm sóc sức khỏe tranh luận về một quy trình mới. Cách quyết định nào có cơ sở hơn?",
       "opts": [
-        "Tăng số lượt khám",
-        "Tôn trọng quyền tự quyết của người bệnh",
-        "Giảm thời gian làm việc",
-        "Tối đa hóa doanh thu"
+        "Giả định bệnh nhân đã hiểu nếu họ không đặt câu hỏi với cùng mục tiêu",
+        "Coi mọi nghề sức khỏe có cùng yêu cầu đào tạo theo dữ liệu hiện có",
+        "Xem bằng chứng, an toàn người bệnh, nguồn lực, quy định và kết quả cần đạt trước khi triển khai",
+        "Đưa ra kết luận mà không xét giới hạn của phương pháp trước khi ra quyết định"
       ],
-      "a": 1,
-      "e": "Quyền tự quyết là nguyên tắc đạo đức quan trọng khi người bệnh có năng lực quyết định và đã được cung cấp thông tin phù hợp."
+      "a": 2,
+      "e": "Quyết định y tế cần cân bằng bằng chứng, an toàn, tính khả thi và bối cảnh.",
+      "art": "🧠"
     },
     {
-      "q": "Một bạn sợ máu nhưng thích tìm hiểu về sức khỏe. Kết luận nào hợp lý nhất?",
+      "q": "Một người đang cân nhắc ngành sức khỏe muốn kiểm chứng sự phù hợp. Hoạt động nào sát thực tế hơn?",
       "opts": [
-        "Sợ máu đồng nghĩa không thích khoa học",
-        "Chắc chắn không thể làm bất kỳ nghề y tế nào",
-        "Chỉ có thể làm bác sĩ",
-        "Nên tìm hiểu nhiều vai trò trong y tế vì mức độ tiếp xúc với máu và môi trường làm việc khác nhau"
-      ],
-      "a": 3,
-      "e": "Các nghề y tế có môi trường và nhiệm vụ rất khác nhau; sở thích và khả năng cần được tìm hiểu cụ thể."
-    },
-    {
-      "q": "Một nhóm nghiên cứu thấy kết quả của một thử nghiệm chưa đủ mạnh để kết luận hiệu quả điều trị. Cách trình bày nào phù hợp?",
-      "opts": [
-        "Bỏ qua cỡ mẫu",
-        "Nêu kết quả cùng giới hạn và mức độ chắc chắn, tránh khẳng định quá mức",
-        "Khẳng định chắc chắn để dễ thuyết phục",
-        "Chỉ công bố kết quả thuận lợi"
-      ],
-      "a": 1,
-      "e": "Kết luận khoa học cần phản ánh bằng chứng và giới hạn của nghiên cứu."
-    },
-    {
-      "q": "Một bệnh nhân dùng thuốc nhưng không hiểu phải uống vào thời điểm nào. Vấn đề giao tiếp nào cần được ưu tiên?",
-      "opts": [
-        "Nói bằng thuật ngữ càng chuyên môn càng tốt",
-        "Cho rằng bệnh nhân sẽ tự tìm hiểu",
-        "Chỉ đọc tên thuốc",
-        "Xác nhận người bệnh hiểu đúng cách dùng và những điều cần lưu ý"
+        "Chỉ tập trung vào kỹ thuật mà bỏ qua giao tiếp và an toàn trước khi ra quyết định",
+        "Xem một nguồn thông tin như đủ cho mọi quyết định theo dữ liệu hiện có",
+        "Chọn phương án mới nhất mà không xem bằng chứng với cùng mục tiêu",
+        "Tìm hiểu chương trình đào tạo và quan sát/trao đổi về công việc thực tế trong phạm vi phù hợp"
       ],
       "a": 3,
-      "e": "Hướng dẫn dùng thuốc cần rõ ràng và nên kiểm tra lại sự hiểu biết để giảm sai sót."
-    },
-    {
-      "q": "Một sinh viên thích sinh học nhưng không thích môi trường cấp cứu nhiều áp lực. Điều nào nên được cân nhắc?",
-      "opts": [
-        "Bỏ hoàn toàn lĩnh vực sức khỏe",
-        "So sánh các chuyên ngành và môi trường làm việc thực tế thay vì suy ra từ tên ngành",
-        "Chọn cấp cứu vì có nhiều việc nhất",
-        "Chọn nghề chỉ theo điểm đầu vào"
-      ],
-      "a": 1,
-      "e": "Các vai trò trong y tế có nhịp độ và môi trường rất khác nhau."
-    },
-    {
-      "q": "Một cơ sở y tế muốn cải thiện chất lượng. Chỉ số nào hữu ích hơn việc chỉ đếm số bệnh nhân phục vụ?",
-      "opts": [
-        "Số poster trong bệnh viện",
-        "Các chỉ số chất lượng và an toàn phù hợp với mục tiêu chăm sóc",
-        "Số cuộc gọi quảng cáo",
-        "Số lượt xem fanpage"
-      ],
-      "a": 1,
-      "e": "Chất lượng cần được đánh giá bằng các chỉ số liên quan trực tiếp đến an toàn, kết quả và trải nghiệm chăm sóc."
-    },
-    {
-      "q": "Một bệnh nhân nghe nhiều thông tin sức khỏe trên mạng và yêu cầu áp dụng ngay. Cách tiếp cận phù hợp nhất?",
-      "opts": [
-        "Áp dụng ngay vì nhiều người chia sẻ",
-        "Đánh giá nguồn thông tin, bối cảnh cá nhân và trao đổi với nhân viên y tế phù hợp",
-        "Bỏ qua mọi thông tin trên mạng",
-        "Chọn phương án có quảng cáo nhiều nhất"
-      ],
-      "a": 1,
-      "e": "Thông tin sức khỏe cần được đánh giá về nguồn, bằng chứng và mức độ phù hợp với từng người."
-    },
-    {
-      "q": "Muốn biết mình có phù hợp với một nghề chăm sóc sức khỏe, cách tìm hiểu nào thực tế hơn?",
-      "opts": [
-        "Chọn theo tên nghề nghe hay",
-        "Chỉ xem phim về bệnh viện",
-        "Chỉ xem mức lương",
-        "Tìm hiểu chương trình đào tạo, quan sát công việc phù hợp và nói chuyện với người đang làm nghề"
-      ],
-      "a": 3,
-      "e": "Trải nghiệm và tìm hiểu công việc/đào tạo thực tế giúp đánh giá sự phù hợp tốt hơn."
+      "e": "Tiếp xúc với công việc và yêu cầu đào tạo thực tế giúp giảm khoảng cách giữa tưởng tượng và nghề thật.",
+      "art": "🧠"
     }
   ],
   "engineering": [
     {
-      "q": "Một kỹ sư thiết kế chi tiết máy chịu tải lặp đi lặp lại. Ngoài việc 'chịu được tải tối đa', yếu tố nào cần quan tâm?",
+      "q": "Một chi tiết máy bị gãy lặp lại ở cùng vị trí sau vài chu kỳ tải. Kỹ sư nên nghĩ đến yếu tố nào?",
       "opts": [
-        "Độ bền mỏi và điều kiện tải theo thời gian",
-        "Màu sơn của chi tiết",
-        "Tên file thiết kế",
-        "Số người theo dõi sản phẩm"
-      ],
-      "a": 0,
-      "e": "Tải lặp có thể gây mỏi vật liệu, nên độ bền mỏi là yếu tố quan trọng."
-    },
-    {
-      "q": "Một dây chuyền tự động thường dừng khi cảm biến báo sai trạng thái. Kỹ sư tự động hóa nên kiểm tra gì trước?",
-      "opts": [
-        "Chỉ thay toàn bộ dây chuyền",
-        "Đổi logo nhà máy",
-        "Tăng tốc độ băng chuyền ngay",
-        "Tín hiệu cảm biến, logic điều khiển và điều kiện kích hoạt"
-      ],
-      "a": 3,
-      "e": "Cần kiểm tra từ tín hiệu đầu vào đến logic điều khiển để xác định điểm gây lỗi."
-    },
-    {
-      "q": "Một kỹ sư điện chọn thiết bị bảo vệ cho mạch. Vì sao không thể chỉ chọn thiết bị có dòng định mức càng lớn càng tốt?",
-      "opts": [
-        "Thiết bị bảo vệ chỉ để trang trí",
-        "Dòng định mức không liên quan",
-        "Dòng càng lớn luôn an toàn hơn",
-        "Thiết bị phải phù hợp với dòng tải, khả năng chịu đựng và yêu cầu bảo vệ của hệ thống"
-      ],
-      "a": 3,
-      "e": "Thiết bị bảo vệ cần được lựa chọn theo điều kiện vận hành và mục tiêu bảo vệ, không đơn giản là càng lớn càng tốt."
-    },
-    {
-      "q": "Một robot công nghiệp cần nhận biết vật thể ở các vị trí khác nhau. Thành phần nào có thể cung cấp thông tin đầu vào cho hệ thống điều khiển?",
-      "opts": [
-        "Cảm biến hoặc hệ thống thị giác máy",
-        "Chỉ khung robot",
-        "Chỉ nguồn điện",
-        "Chỉ phần mềm văn phòng"
-      ],
-      "a": 0,
-      "e": "Robot có thể dùng cảm biến, camera và các nguồn dữ liệu khác để nhận biết môi trường."
-    },
-    {
-      "q": "Trong CAD, thay đổi một kích thước làm các phần liên quan tự cập nhật theo quan hệ đã thiết lập. Lợi ích chính là gì?",
-      "opts": [
-        "Giảm công sức sửa thủ công và giữ tính nhất quán của mô hình",
-        "Thay thế hoàn toàn kiểm tra thực tế",
-        "Tăng điện áp động cơ",
-        "Làm vật liệu nhẹ hơn"
-      ],
-      "a": 0,
-      "e": "Mô hình tham số giúp các quan hệ hình học cập nhật theo thay đổi đầu vào."
-    },
-    {
-      "q": "Một công trình có tải trọng lớn hơn dự kiến. Việc nào phù hợp với tư duy kỹ thuật?",
-      "opts": [
-        "Tính lại theo điều kiện tải mới và kiểm tra các giả định thiết kế",
-        "Chỉ sơn thêm lớp bảo vệ",
-        "Giảm số lượng biển báo",
-        "Giữ nguyên vì bản vẽ đã ký"
-      ],
-      "a": 0,
-      "e": "Thiết kế phải được kiểm tra theo điều kiện thực tế; thay đổi tải có thể làm thay đổi yêu cầu an toàn."
-    },
-    {
-      "q": "Một nhóm cơ điện tử cần phối hợp cơ khí, điện và điều khiển. Rủi ro lớn nếu mỗi nhóm thiết kế độc lập mà không thống nhất giao diện là gì?",
-      "opts": [
-        "Robot sẽ tự học nhanh hơn",
-        "Không có rủi ro",
-        "Chi phí chắc chắn giảm",
-        "Các hệ thống có thể không tương thích về kích thước, tín hiệu hoặc yêu cầu vận hành"
-      ],
-      "a": 3,
-      "e": "Hệ thống tích hợp phụ thuộc vào các giao diện và ràng buộc giữa nhiều chuyên môn."
-    },
-    {
-      "q": "Một kỹ sư muốn giảm lỗi sản xuất do thao tác lắp ráp. Cách tiếp cận nào có tính hệ thống hơn?",
-      "opts": [
-        "Đổi đồng phục",
-        "Chỉ nhắc công nhân cẩn thận hơn",
-        "Tăng nhạc trong xưởng",
-        "Phân tích nguyên nhân, thiết kế chống lỗi và chuẩn hóa quy trình"
-      ],
-      "a": 3,
-      "e": "Phân tích nguyên nhân và poka-yoke/chuẩn hóa quy trình có thể giảm phụ thuộc vào sự cẩn thận của cá nhân."
-    },
-    {
-      "q": "Một prototype hoạt động trong phòng thí nghiệm nhưng thất bại khi dùng ngoài thực tế. Bài học quan trọng là gì?",
-      "opts": [
-        "Prototype thành công nghĩa là sản phẩm đã hoàn thiện",
-        "Điều kiện thử nghiệm cần đại diện cho môi trường vận hành thực tế",
-        "Không cần thử lại",
-        "Chỉ cần thay logo"
-      ],
-      "a": 1,
-      "e": "Điều kiện môi trường, tải, nhiệt độ, rung và cách sử dụng thực tế có thể khác đáng kể so với thử nghiệm ban đầu."
-    },
-    {
-      "q": "Một kỹ sư nhận hai phương án: phương án A rẻ hơn nhưng khó bảo trì, B đắt hơn nhưng dễ bảo trì. Vì sao không nên chỉ so giá mua ban đầu?",
-      "opts": [
-        "Cần xem tổng chi phí vòng đời và yêu cầu vận hành/bảo trì",
-        "Vì bảo trì không có chi phí",
-        "Vì giá mua không bao giờ quan trọng",
-        "Vì phương án đắt luôn tốt hơn"
-      ],
-      "a": 0,
-      "e": "Chi phí vòng đời có thể bao gồm vận hành, bảo trì, downtime và thay thế."
-    },
-    {
-      "q": "Trong hệ thống điều khiển, nếu cảm biến đầu vào bị lỗi nhưng bộ điều khiển vẫn nhận giá trị 'bình thường', nguy cơ nào đáng chú ý?",
-      "opts": [
-        "Không ảnh hưởng",
-        "Hệ thống chắc chắn an toàn hơn",
-        "Động cơ tự giảm công suất",
-        "Hệ thống có thể ra quyết định dựa trên thông tin sai"
-      ],
-      "a": 3,
-      "e": "Đầu vào sai có thể dẫn đến điều khiển sai nếu không có cơ chế phát hiện lỗi."
-    },
-    {
-      "q": "Một kỹ sư xây dựng phát hiện bản vẽ kiến trúc và kết cấu có vị trí cột không khớp. Bước phù hợp nhất là gì?",
-      "opts": [
-        "Tự ý sửa một bản vẽ",
-        "Thi công theo bản vẽ bất kỳ",
-        "Bỏ qua vì có thể sửa sau",
-        "Phối hợp các bên để xác nhận và xử lý xung đột trước khi thi công"
-      ],
-      "a": 3,
-      "e": "Xử lý xung đột thiết kế trước thi công giúp giảm rework và rủi ro."
-    },
-    {
-      "q": "Một nhà máy muốn giảm thời gian máy dừng đột xuất. Dữ liệu nào hữu ích nhất để bắt đầu?",
-      "opts": [
-        "Màu máy móc",
-        "Số cửa sổ trong xưởng",
-        "Lịch sử sự cố, thời gian dừng, nguyên nhân và điều kiện vận hành",
-        "Tên ca trưởng"
+        "Chỉ tăng độ bền của một chi tiết mà không xem toàn hệ thống",
+        "Đánh giá phương án theo giá mua ban đầu theo dữ liệu hiện có",
+        "Ứng suất tập trung, tải chu kỳ, vật liệu và hình học tại vùng hỏng",
+        "Bỏ qua bảo trì vì hệ thống đang hoạt động ổn định"
       ],
       "a": 2,
-      "e": "Dữ liệu downtime và nguyên nhân giúp xác định mẫu hỏng hóc và ưu tiên cải tiến."
+      "e": "Hỏng lặp lại tại cùng vị trí có thể liên quan fatigue và stress concentration, cần phân tích tải và hình học.",
+      "art": "🧠"
     },
     {
-      "q": "Một sinh viên thích vật lý, máy móc và giải quyết bài toán thực tế. Ngành nào có thể đáng tìm hiểu?",
+      "q": "Một hệ thống tự động phản ứng chậm dù PLC vẫn chạy đúng chương trình. Điều gì nên được kiểm tra?",
       "opts": [
-        "Cơ khí, cơ điện tử hoặc các chuyên ngành kỹ thuật liên quan",
-        "Chỉ truyền thông",
-        "Không có ngành phù hợp",
-        "Chỉ kế toán"
+        "Chu kỳ quét, cảm biến, truyền thông, cơ cấu chấp hành và độ trễ trong toàn chuỗi",
+        "Tăng công suất trước khi xác định vị trí gây giới hạn theo dữ liệu hiện có",
+        "Chốt thiết kế sau khi đã mua toàn bộ vật tư trước khi ra quyết định",
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống với cùng mục tiêu"
       ],
       "a": 0,
-      "e": "Sở thích này có thể liên quan đến nhiều ngành kỹ thuật; cần tìm hiểu sâu hơn về từng chuyên ngành."
+      "e": "Độ trễ là thuộc tính của cả hệ thống; cần xác định nó nằm ở sensing, control, communication hay actuation.",
+      "art": "🧠"
     },
     {
-      "q": "Trong một dự án kỹ thuật, vì sao tiêu chuẩn và quy chuẩn quan trọng?",
+      "q": "Một thiết kế cơ khí đạt tải tĩnh nhưng không đạt tuổi thọ mong muốn. Điều gì có thể bị bỏ sót?",
       "opts": [
-        "Chúng giúp đặt yêu cầu về an toàn, chất lượng và cách thiết kế/kiểm tra phù hợp",
-        "Có thể thay thế mọi thử nghiệm",
-        "Chỉ để làm hồ sơ đẹp hơn",
-        "Chỉ áp dụng cho marketing"
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống",
+        "Tăng công suất trước khi xác định vị trí gây giới hạn",
+        "Thay linh kiện ngay trước khi đo lại điều kiện vận hành",
+        "Tải biến thiên và phân tích fatigue thay vì chỉ kiểm tra ứng suất tĩnh"
+      ],
+      "a": 3,
+      "e": "Thiết kế chịu tải chu kỳ cần xem fatigue life, không chỉ safety factor cho một tải tĩnh.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một mạch điện có điện áp đúng nhưng thiết bị nóng bất thường. Thông tin nào cần kiểm tra?",
+      "opts": [
+        "Dòng điện, công suất tiêu tán, điện trở, điều kiện tản nhiệt và điểm phát nhiệt",
+        "Chỉ kiểm tra tải tĩnh khi hệ thống chịu tải biến thiên trước khi ra quyết định",
+        "Tăng công suất trước khi xác định vị trí gây giới hạn theo dữ liệu hiện có",
+        "Chốt thiết kế sau khi đã mua toàn bộ vật tư với cùng mục tiêu"
       ],
       "a": 0,
-      "e": "Tiêu chuẩn/quy chuẩn giúp định hình các yêu cầu kỹ thuật và an toàn tùy lĩnh vực."
+      "e": "Nhiệt thường liên quan công suất tiêu tán và đường tản nhiệt, không thể kết luận chỉ từ điện áp.",
+      "art": "🧠"
     },
     {
-      "q": "Một kỹ sư cần chọn vật liệu cho chi tiết vừa chịu lực vừa tiếp xúc môi trường ăn mòn. Cách chọn hợp lý nhất?",
+      "q": "Một robot đạt vị trí chính xác trong phòng thí nghiệm nhưng lệch khi mang tải. Nguyên nhân nào đáng xem xét?",
       "opts": [
-        "Chọn vật liệu rẻ nhất",
-        "Chọn theo màu sắc",
-        "Chọn vật liệu nhẹ nhất",
-        "Xem đồng thời cơ tính, khả năng chống ăn mòn, môi trường và chi phí"
+        "Tin kết quả mô phỏng mà không kiểm tra giả định với cùng mục tiêu",
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống theo dữ liệu hiện có",
+        "Chỉ kiểm tra tải tĩnh khi hệ thống chịu tải biến thiên trước khi ra quyết định",
+        "Độ cứng, biến dạng, tải trọng, hiệu chuẩn và sai số mô hình khi điều kiện thay đổi"
       ],
       "a": 3,
-      "e": "Vật liệu phải đáp ứng tập hợp yêu cầu kỹ thuật và kinh tế của ứng dụng."
+      "e": "Tải có thể gây biến dạng và làm mô hình/hiệu chuẩn không còn phù hợp với điều kiện ban đầu.",
+      "art": "🧠"
     },
     {
-      "q": "Một nhóm thiết kế muốn biết thiết kế mới có an toàn trước khi chế tạo hàng loạt. Phương án nào có thể hỗ trợ?",
+      "q": "Trong CAD, một thiết kế đẹp nhưng không thể gia công với máy hiện có. Bài học nào quan trọng?",
       "opts": [
-        "Chỉ hỏi người bán hàng",
-        "Chỉ nhìn bản vẽ",
-        "Sản xuất hàng loạt trước rồi kiểm tra",
-        "Mô phỏng/tính toán kết hợp prototype và thử nghiệm phù hợp"
-      ],
-      "a": 3,
-      "e": "Mô phỏng và thử nghiệm giúp phát hiện vấn đề trước khi mở rộng sản xuất, dù không phải lúc nào cũng thay thế hoàn toàn thử nghiệm thực tế."
-    },
-    {
-      "q": "Một hệ thống có nhiều bộ phận nhưng mục tiêu cuối cùng là giảm năng lượng tiêu thụ. Chỉ tối ưu từng bộ phận riêng lẻ có thể gây vấn đề gì?",
-      "opts": [
-        "Tối ưu cục bộ có thể không tối ưu toàn hệ thống",
-        "Mọi bộ phận luôn độc lập",
-        "Năng lượng sẽ tự giảm",
-        "Không cần đo năng lượng"
+        "Thiết kế phải xét cả yêu cầu chức năng, dung sai, vật liệu và khả năng sản xuất",
+        "Thiết kế theo hình học mà không xét khả năng gia công theo dữ liệu hiện có",
+        "Chỉ tăng độ bền của một chi tiết mà không xem toàn hệ thống trước khi ra quyết định",
+        "Tăng công suất trước khi xác định vị trí gây giới hạn với cùng mục tiêu"
       ],
       "a": 0,
-      "e": "Tương tác giữa các bộ phận có thể khiến phương án tốt cho một bộ phận lại không tốt cho toàn hệ thống."
+      "e": "Design for manufacturing yêu cầu thiết kế phù hợp quy trình và năng lực sản xuất.",
+      "art": "🧠"
     },
     {
-      "q": "Một bạn nghĩ kỹ sư chủ yếu làm việc tay chân với máy móc. Thực tế nghề kỹ thuật thường còn bao gồm gì?",
+      "q": "Một công trình cần chịu tải lớn hơn dự kiến nhưng ngân sách không đổi. Bước nào nên làm trước?",
       "opts": [
-        "Chỉ vẽ tranh",
-        "Chỉ bán thiết bị",
-        "Chỉ sửa máy bằng tay",
-        "Phân tích, thiết kế, tính toán, mô phỏng, thử nghiệm, tài liệu và phối hợp dự án"
+        "Chỉ kiểm tra tải tĩnh khi hệ thống chịu tải biến thiên theo dữ liệu hiện có",
+        "Thay linh kiện ngay trước khi đo lại điều kiện vận hành trước khi ra quyết định",
+        "Bỏ qua bảo trì vì hệ thống đang hoạt động ổn định với cùng mục tiêu",
+        "Xác định tải thiết kế, tiêu chuẩn, hệ số an toàn và các phương án kết cấu trước khi chọn vật liệu"
       ],
       "a": 3,
-      "e": "Công việc kỹ thuật rất đa dạng và thường kết hợp phân tích, thiết kế, thử nghiệm và phối hợp."
+      "e": "Thiết kế kết cấu cần bắt đầu từ yêu cầu và tải, rồi mới tối ưu vật liệu/geometry trong ràng buộc.",
+      "art": "🧠"
     },
     {
-      "q": "Muốn biết mình có hợp ngành kỹ thuật, hoạt động nào cho tín hiệu tốt hơn việc chỉ xem tên ngành?",
+      "q": "Một cảm biến có độ phân giải cao nhưng kết quả dao động lớn. Điều nào phân biệt đúng hai vấn đề?",
       "opts": [
-        "Chọn theo bạn bè",
-        "Chỉ chọn ngành có điểm đầu vào cao",
-        "Chỉ xem lương khởi điểm",
-        "Thử một dự án nhỏ liên quan thiết kế, chế tạo, lập trình điều khiển hoặc mô phỏng và xem mình thích quá trình nào"
+        "Tin kết quả mô phỏng mà không kiểm tra giả định với cùng mục tiêu",
+        "Resolution cao không đảm bảo precision; cần xem nhiễu và độ lặp lại của phép đo",
+        "Đánh giá phương án theo giá mua ban đầu trước khi ra quyết định",
+        "Chốt thiết kế sau khi đã mua toàn bộ vật tư theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Resolution, precision và accuracy là các thuộc tính khác nhau của hệ đo.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một nhóm muốn thêm AI vào hệ thống máy móc nhưng chưa xác định bài toán. Cách tiếp cận nào hợp lý?",
+      "opts": [
+        "Bỏ qua bảo trì vì hệ thống đang hoạt động ổn định trước khi ra quyết định",
+        "Xác định vấn đề có giá trị, dữ liệu sẵn có và tiêu chí thành công trước khi chọn AI",
+        "Chọn công nghệ theo độ phức tạp thay vì yêu cầu với cùng mục tiêu",
+        "Chốt thiết kế sau khi đã mua toàn bộ vật tư theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Công nghệ nên phục vụ problem; dữ liệu và metric quyết định tính khả thi của giải pháp.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một kỹ sư nhận bản vẽ có dung sai rất chặt ở mọi kích thước. Rủi ro nào có thể tăng?",
+      "opts": [
+        "Chi phí và tỷ lệ phế phẩm có thể tăng nếu dung sai không cần thiết cho chức năng",
+        "Chọn công nghệ theo độ phức tạp thay vì yêu cầu trước khi ra quyết định",
+        "Chỉ kiểm tra tải tĩnh khi hệ thống chịu tải biến thiên theo dữ liệu hiện có",
+        "Chỉ kiểm tra prototype mà không xem khả năng lặp lại sản xuất với cùng mục tiêu"
+      ],
+      "a": 0,
+      "e": "Dung sai nên gắn với chức năng; kiểm soát quá chặt có thể làm tăng chi phí mà không tạo thêm giá trị.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một dây chuyền có tỷ lệ lỗi tăng sau khi thay đổi tốc độ. Điều tra nào có tính hệ thống?",
+      "opts": [
+        "Thay linh kiện ngay trước khi đo lại điều kiện vận hành theo dữ liệu hiện có",
+        "Chỉ tăng độ bền của một chi tiết mà không xem toàn hệ thống trước khi ra quyết định",
+        "So sánh điều kiện trước/sau, xác định biến thay đổi và kiểm tra tác động đến quy trình",
+        "Tin kết quả mô phỏng mà không kiểm tra giả định với cùng mục tiêu"
+      ],
+      "a": 2,
+      "e": "So sánh có kiểm soát giúp liên hệ thay đổi với kết quả và tránh kết luận từ một mẫu đơn lẻ.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một thiết kế cơ khí dùng vật liệu mạnh hơn nhưng sản phẩm vẫn hỏng tại mối nối. Điều gì có thể xảy ra?",
+      "opts": [
+        "Bỏ qua bảo trì vì hệ thống đang hoạt động ổn định theo dữ liệu hiện có",
+        "Failure có thể nằm ở joint, tải truyền, hình học hoặc stress concentration thay vì độ bền vật liệu khối",
+        "Chỉ kiểm tra prototype mà không xem khả năng lặp lại sản xuất với cùng mục tiêu",
+        "Đánh giá phương án theo giá mua ban đầu trước khi ra quyết định"
+      ],
+      "a": 1,
+      "e": "Hệ thống thường hỏng tại yếu điểm; tăng strength của một thành phần không giải quyết mọi failure mode.",
+      "art": "🧠"
+    },
+    {
+      "q": "Trong tự động hóa, sensor báo “đã đến vị trí” nhưng cơ cấu thực tế chưa đạt vị trí an toàn. Điều gì cần ưu tiên?",
+      "opts": [
+        "Kiểm tra cách đặt sensor, điều kiện xác nhận và cơ chế fail-safe/interlock",
+        "Dựa vào một tín hiệu cảm biến mà không có điều kiện xác nhận",
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống",
+        "Thiết kế theo hình học mà không xét khả năng gia công với cùng mục tiêu"
+      ],
+      "a": 0,
+      "e": "Safety logic cần tránh phụ thuộc mù quáng vào một tín hiệu và phải có điều kiện xác nhận phù hợp.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một kỹ sư phải chọn giữa hai phương án: phương án A hiệu suất cao hơn nhưng khó bảo trì, B hiệu suất thấp hơn nhưng dễ bảo trì. Cách đánh giá phù hợp?",
+      "opts": [
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống trước khi ra quyết định",
+        "Chỉ tăng độ bền của một chi tiết mà không xem toàn hệ thống theo dữ liệu hiện có",
+        "So sánh tổng vòng đời: hiệu suất, downtime, bảo trì, chi phí và yêu cầu vận hành",
+        "Ưu tiên hiệu suất tức thời mà không xét vòng đời với cùng mục tiêu"
+      ],
+      "a": 2,
+      "e": "Engineering trade-off nên xét lifecycle cost và reliability, không chỉ một thông số.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một nguyên mẫu hoạt động tốt nhưng khi sản xuất hàng loạt tỷ lệ lỗi tăng. Điều gì có thể bị bỏ qua?",
+      "opts": [
+        "Đánh giá phương án theo giá mua ban đầu trước khi ra quyết định",
+        "Độ biến thiên quy trình, dung sai, kiểm soát chất lượng và khả năng lặp lại của sản xuất",
+        "Chỉ kiểm tra prototype mà không xem khả năng lặp lại sản xuất với cùng mục tiêu",
+        "Ưu tiên hiệu suất tức thời mà không xét vòng đời theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Prototype chứng minh khả năng ở mẫu cụ thể; mass production cần process capability và control.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một người thích tháo lắp máy nhưng không thích làm việc hoàn toàn bằng tay. Ngành nào vẫn có thể phù hợp?",
+      "opts": [
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống trước khi ra quyết định",
+        "Chỉ tăng độ bền của một chi tiết mà không xem toàn hệ thống với cùng mục tiêu",
+        "Cơ điện tử, tự động hóa, robotics hoặc thiết kế cơ khí có thể kết hợp phần cứng với điều khiển",
+        "Ưu tiên hiệu suất tức thời mà không xét vòng đời theo dữ liệu hiện có"
+      ],
+      "a": 2,
+      "e": "Kỹ thuật có nhiều vai trò kết hợp cơ khí, điện, điều khiển và phần mềm.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một dự án kỹ thuật trễ vì thiết kế thay đổi liên tục sau khi mua vật tư. Biện pháp nào giúp giảm rủi ro?",
+      "opts": [
+        "Thay linh kiện ngay trước khi đo lại điều kiện vận hành theo dữ liệu hiện có",
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống trước khi ra quyết định",
+        "Bỏ qua bảo trì vì hệ thống đang hoạt động ổn định với cùng mục tiêu",
+        "Chốt yêu cầu và interface quan trọng sớm, quản lý change và xác định dependency trước khi mua"
       ],
       "a": 3,
-      "e": "Trải nghiệm công việc gần thực tế giúp kiểm tra sự phù hợp với cách tư duy và hoạt động đặc trưng của ngành."
+      "e": "Change control và quản lý interface giúp giảm chi phí thay đổi sau khi đã cam kết vật tư.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một kỹ sư kiểm tra mô phỏng cho kết quả rất đẹp nhưng không khớp thử nghiệm. Điều gì nên nghi ngờ?",
+      "opts": [
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống",
+        "Chốt thiết kế sau khi đã mua toàn bộ vật tư theo dữ liệu hiện có",
+        "Tin kết quả mô phỏng mà không kiểm tra giả định trước khi ra quyết định",
+        "Giả định mô hình, điều kiện biên, thông số vật liệu và cách đo thực nghiệm"
+      ],
+      "a": 3,
+      "e": "Simulation chỉ tốt trong phạm vi assumptions; mismatch là tín hiệu để kiểm tra mô hình và experiment.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một sinh viên cân nhắc ngành kỹ thuật nhưng chỉ biết “kỹ thuật là làm máy”. Cách tìm hiểu thực tế hơn?",
+      "opts": [
+        "Chỉ kiểm tra prototype mà không xem khả năng lặp lại sản xuất với cùng mục tiêu",
+        "Giảm dung sai ở mọi kích thước để tăng độ chính xác trước khi ra quyết định",
+        "Xem các chuyên ngành, dự án, công cụ và môi trường làm việc cụ thể rồi thử một dự án nhỏ",
+        "Chọn công nghệ theo độ phức tạp thay vì yêu cầu theo dữ liệu hiện có"
+      ],
+      "a": 2,
+      "e": "Kỹ thuật rất rộng; trải nghiệm dự án giúp hình dung công việc cụ thể hơn.",
+      "art": "🧠"
+    },
+    {
+      "q": "Trong một dự án an toàn máy, yêu cầu “máy không chạy khi cửa mở” nên được xem là gì?",
+      "opts": [
+        "Một safety requirement cần được thiết kế, kiểm chứng và xác nhận theo mức rủi ro phù hợp",
+        "Xem safety như một phần giao diện thay vì yêu cầu hệ thống trước khi ra quyết định",
+        "Thiết kế theo hình học mà không xét khả năng gia công với cùng mục tiêu",
+        "Giảm dung sai ở mọi kích thước để tăng độ chính xác theo dữ liệu hiện có"
+      ],
+      "a": 0,
+      "e": "Safety requirement phải đi vào thiết kế và verification, không dựa vào hành vi người vận hành.",
+      "art": "🧠"
     }
   ],
   "marketing": [
     {
-      "q": "Một video có 1 triệu lượt xem nhưng chỉ tạo rất ít khách hàng tiềm năng. Kết luận nào phù hợp nhất?",
+      "q": "Một quảng cáo có CTR cao nhưng số khách mua thấp. Chỉ số CTR cao cho biết điều gì, và chưa cho biết điều gì?",
       "opts": [
-        "1 triệu lượt xem luôn đồng nghĩa doanh thu cao",
-        "Không cần xem thêm dữ liệu",
-        "Lượt xem cao chưa đủ để chứng minh mục tiêu kinh doanh đã đạt",
-        "Video chắc chắn thất bại ở mọi mặt"
-      ],
-      "a": 2,
-      "e": "Hiệu quả phải được đánh giá theo mục tiêu; awareness và conversion là các tầng khác nhau."
-    },
-    {
-      "q": "Một thương hiệu muốn tiếp cận sinh viên nhưng nội dung hiện tại dùng thuật ngữ quá chuyên môn. Việc nào nên làm trước?",
-      "opts": [
-        "Nghiên cứu cách nhóm mục tiêu nói, nghĩ và ra quyết định rồi điều chỉnh thông điệp",
-        "Tăng giá sản phẩm",
-        "Đăng nhiều hơn mà không đổi nội dung",
-        "Đổi logo"
-      ],
-      "a": 0,
-      "e": "Hiểu audience giúp điều chỉnh ngôn ngữ, thông điệp và kênh phù hợp."
-    },
-    {
-      "q": "Một chiến dịch có nhiều lượt tương tác nhưng khách hàng nhớ sai tên thương hiệu. Vấn đề nào cần xem xét?",
-      "opts": [
-        "Tốc độ mạng Wi-Fi",
-        "Chỉ số follower của đối thủ",
-        "Mức độ liên kết giữa nội dung chiến dịch và nhận diện thương hiệu",
-        "Số lượng nhân viên kế toán"
-      ],
-      "a": 2,
-      "e": "Tương tác không đảm bảo brand linkage; nội dung cần giúp người xem liên kết thông điệp với thương hiệu."
-    },
-    {
-      "q": "Một Content Creator nhận brief 'tạo nội dung viral'. Câu hỏi nào giúp biến brief mơ hồ thành mục tiêu rõ hơn?",
-      "opts": [
-        "Màu gì sẽ đẹp?",
-        "Có thể bỏ qua đối tượng không?",
-        "Viral để đạt mục tiêu gì, với nhóm nào và đo bằng chỉ số nào?",
-        "Đăng càng nhiều càng tốt?"
-      ],
-      "a": 2,
-      "e": "Mục tiêu, đối tượng và KPI giúp định hướng nội dung thay vì chỉ theo đuổi lượt xem."
-    },
-    {
-      "q": "Một website có traffic tăng mạnh từ tìm kiếm nhưng tỷ lệ thoát ở trang sản phẩm cao. Nhóm marketing nên kiểm tra gì?",
-      "opts": [
-        "Màu đồng phục",
-        "Ý định tìm kiếm, mức độ phù hợp nội dung và trải nghiệm trang sản phẩm",
-        "Chỉ số follower TikTok",
-        "Tên phòng marketing"
+        "Suy ra hiệu quả kinh doanh chỉ từ reach hoặc views với cùng mục tiêu",
+        "Nó cho thấy nhiều người bấm; chưa chứng minh landing page hoặc offer tạo chuyển đổi tốt",
+        "Đánh giá influencer chủ yếu bằng số follower theo dữ liệu hiện có",
+        "Xem follower như đại diện trực tiếp cho khách hàng trước khi ra quyết định"
       ],
       "a": 1,
-      "e": "Traffic chỉ có giá trị khi nội dung và trang đích phù hợp với ý định người dùng."
+      "e": "CTR đo hành vi click; cần xem conversion rate, CAC và economics để đánh giá sâu hơn.",
+      "art": "🧠"
     },
     {
-      "q": "Một chiến dịch quảng cáo A có CPA 80.000đ và B có CPA 120.000đ. Nếu A có tỷ lệ khách hàng quay lại thấp hơn nhiều, vì sao không nên chọn chỉ dựa vào CPA?",
+      "q": "Một landing page có conversion tăng sau khi đổi headline, nhưng đồng thời traffic từ kênh khác cũng tăng. Cách kết luận thận trọng hơn?",
       "opts": [
-        "Khách hàng quay lại không liên quan",
-        "CPA không bao giờ có ý nghĩa",
-        "Giá trị khách hàng theo thời gian có thể khác nhau",
-        "B luôn tốt hơn vì đắt hơn"
-      ],
-      "a": 2,
-      "e": "CPA chỉ phản ánh chi phí có được chuyển đổi; cần xem chất lượng và giá trị dài hạn của khách hàng."
-    },
-    {
-      "q": "Một PR team nhận tin đồn tiêu cực chưa được xác minh. Cách xử lý nào phù hợp hơn?",
-      "opts": [
-        "Đổ lỗi cho đối thủ",
-        "Xác minh thông tin, đánh giá mức độ ảnh hưởng và chuẩn bị phản hồi dựa trên dữ kiện",
-        "Xóa mọi bình luận liên quan",
-        "Phản bác ngay bằng thông tin chưa kiểm tra"
-      ],
-      "a": 1,
-      "e": "Truyền thông khủng hoảng cần xác minh và phản hồi có căn cứ để tránh làm vấn đề nghiêm trọng hơn."
-    },
-    {
-      "q": "Một thương hiệu có hình ảnh rất nhất quán nhưng khách hàng không hiểu sản phẩm giải quyết vấn đề gì. Điều này cho thấy branding không thể thay thế yếu tố nào?",
-      "opts": [
-        "Giá trị và thông điệp sản phẩm phải rõ ràng với khách hàng",
-        "Số lượng font",
-        "Logo",
-        "Màu sắc"
-      ],
-      "a": 0,
-      "e": "Nhận diện thương hiệu cần đi cùng proposition rõ ràng và giá trị thực tế."
-    },
-    {
-      "q": "Một marketer muốn biết người dùng đến từ quảng cáo nào trước khi mua. Công việc nào liên quan trực tiếp?",
-      "opts": [
-        "Viết slogan không đo lường",
-        "Thiết lập tracking/attribution phù hợp và phân tích hành trình chuyển đổi",
-        "Đổi tên chiến dịch",
-        "Chụp ảnh sản phẩm"
-      ],
-      "a": 1,
-      "e": "Tracking và attribution giúp liên hệ nguồn traffic với hành vi chuyển đổi, trong phạm vi dữ liệu cho phép."
-    },
-    {
-      "q": "Một bài quảng cáo có CTR cao nhưng landing page tải chậm. Điều gì có thể xảy ra?",
-      "opts": [
-        "CTR chắc chắn giảm về 0 ngay lập tức",
-        "Không có ảnh hưởng",
-        "Người dùng mất hứng thú hoặc rời trang trước khi chuyển đổi",
-        "Landing page chậm luôn tăng doanh thu"
-      ],
-      "a": 2,
-      "e": "Tốc độ và trải nghiệm trang đích có thể ảnh hưởng đến khả năng tiếp tục hành trình."
-    },
-    {
-      "q": "Một Copywriter viết hai tiêu đề: một tiêu đề rất giật gân nhưng không phản ánh đúng nội dung, một tiêu đề hấp dẫn nhưng chính xác. Vấn đề với tiêu đề đầu là gì?",
-      "opts": [
-        "Không liên quan đến thương hiệu",
-        "Chỉ ảnh hưởng màu nền",
-        "Có thể tạo click nhưng làm giảm niềm tin và chất lượng trải nghiệm",
-        "Luôn tốt hơn vì CTR cao"
-      ],
-      "a": 2,
-      "e": "Clickbait có thể tăng click ngắn hạn nhưng gây thất vọng và ảnh hưởng niềm tin."
-    },
-    {
-      "q": "Một Social Media Manager thấy đối thủ có trend mới và muốn sao chép ngay. Câu hỏi chiến lược nào nên được đặt ra?",
-      "opts": [
-        "Trend này có phù hợp với thương hiệu, audience và mục tiêu không?",
-        "Không cần quan tâm thương hiệu",
-        "Trend càng lớn càng phù hợp",
-        "Đối thủ làm thì chắc chắn mình phải làm"
-      ],
-      "a": 0,
-      "e": "Không phải trend nào cũng phù hợp; tính liên quan đến thương hiệu và mục tiêu là quan trọng."
-    },
-    {
-      "q": "Một chiến dịch awareness đạt đúng lượng reach nhưng brand recall thấp. Điều nào có thể cần xem xét?",
-      "opts": [
-        "Đổi bộ phận kế toán",
-        "Giảm số lần hiển thị về 0",
-        "Thông điệp và mức độ ghi nhớ/nhận diện thương hiệu trong nội dung",
-        "Chỉ tăng ngân sách mà không thay đổi gì"
-      ],
-      "a": 2,
-      "e": "Reach là mức tiếp cận; recall phản ánh mức độ người xem nhớ thương hiệu/thông điệp."
-    },
-    {
-      "q": "Một SEO Specialist phát hiện nhiều bài viết cùng nhắm một từ khóa và cạnh tranh lẫn nhau. Vấn đề có thể là gì?",
-      "opts": [
-        "Keyword cannibalization và cấu trúc nội dung chưa được tổ chức tốt",
-        "Website chắc chắn bị hack",
-        "Logo quá nhỏ",
-        "Máy chủ hết điện"
-      ],
-      "a": 0,
-      "e": "Nhiều trang cùng cạnh tranh cho một ý định tìm kiếm có thể làm tín hiệu SEO bị phân tán."
-    },
-    {
-      "q": "Một marketer thử hai phiên bản landing page. Để so sánh công bằng hơn, yếu tố nào cần kiểm soát?",
-      "opts": [
-        "Giữ các điều kiện quan trọng tương đương và phân bổ người dùng hợp lý giữa các phiên bản",
-        "Chỉ cho phiên bản B chạy vào cuối tuần",
-        "Đổi nhiều yếu tố cùng lúc",
-        "Chọn kết quả mình thích"
-      ],
-      "a": 0,
-      "e": "A/B test cần thiết kế để khác biệt chính nằm ở biến được kiểm tra và tránh thiên lệch phân bổ."
-    },
-    {
-      "q": "Một thương hiệu có nhiều người theo dõi nhưng tỷ lệ tương tác giảm dần. Câu hỏi phân tích nào hữu ích?",
-      "opts": [
-        "Đổi logo ngay",
-        "Follower càng nhiều thì tương tác luôn tăng",
-        "Chỉ nhìn tổng follower",
-        "Tương tác giảm ở nội dung nào, nhóm audience nào và giai đoạn nào?"
+        "Tăng ngân sách trước khi xác định điểm nghẽn của funnel với cùng mục tiêu",
+        "Gán toàn bộ thay đổi doanh số cho campaign mà không xét yếu tố khác trước khi ra quyết định",
+        "Chọn creative theo cảm giác mà không xác định objective theo dữ liệu hiện có",
+        "Cần kiểm soát hoặc phân tích các yếu tố thay đổi đồng thời trước khi gán toàn bộ tác động cho headline"
       ],
       "a": 3,
-      "e": "Phân tích theo nội dung, audience và thời gian giúp tìm mẫu thay vì nhìn một con số tổng."
+      "e": "Nhiều biến thay đổi cùng lúc tạo confounding; A/B test hoặc phân tích phù hợp giúp tách tác động.",
+      "art": "🧠"
     },
     {
-      "q": "Một chiến dịch đạt KPI số leads nhưng đội Sales nói phần lớn leads không phù hợp. Vấn đề nào nên được xem xét?",
+      "q": "Một chiến dịch có CPM thấp hơn đối thủ nhưng doanh số thấp hơn. Điều gì nhắc marketer không nên chỉ nhìn CPM?",
       "opts": [
-        "Đổi màu biểu mẫu",
-        "Định nghĩa lead chất lượng và cách phối hợp giữa Marketing–Sales",
-        "Bỏ KPI",
-        "Chỉ tăng số lượng leads"
-      ],
-      "a": 1,
-      "e": "Marketing và Sales cần thống nhất tiêu chí lead phù hợp, không chỉ số lượng."
-    },
-    {
-      "q": "Một người hướng nội thích viết, nghiên cứu hành vi khách hàng và phân tích dữ liệu. Kết luận nào hợp lý về marketing?",
-      "opts": [
-        "Người hướng nội không thể làm marketing",
-        "Marketing chỉ cần kỹ năng giao tiếp",
-        "Chỉ có thể làm Sales",
-        "Vẫn có nhiều vai trò phù hợp; marketing không chỉ là nói chuyện trước đám đông"
+        "Tăng tần suất nội dung mà không xem audience fatigue theo dữ liệu hiện có",
+        "Tối ưu click mà không theo dõi chất lượng chuyển đổi với cùng mục tiêu",
+        "Đánh giá influencer chủ yếu bằng số follower trước khi ra quyết định",
+        "CPM phản ánh chi phí trên lượt hiển thị, không phản ánh trực tiếp chất lượng traffic hay hiệu quả kinh doanh"
       ],
       "a": 3,
-      "e": "Marketing gồm content, research, analytics, SEO, strategy và nhiều vai trò khác nhau."
+      "e": "Chi phí media cần được đặt cạnh chất lượng audience, conversion và mục tiêu kinh doanh.",
+      "art": "🧠"
     },
     {
-      "q": "Một bạn nghĩ marketing chủ yếu là đăng TikTok/Facebook. Điều gì phản ánh đầy đủ hơn?",
+      "q": "Một thương hiệu muốn nhắm Gen Z nhưng nội dung được viết theo cách nội bộ của công ty. Bước nào nên làm trước khi sản xuất hàng loạt?",
       "opts": [
-        "Marketing chỉ là thiết kế ảnh",
-        "Marketing gồm nghiên cứu khách hàng, định vị, sản phẩm/giá/kênh, truyền thông và đo lường tùy doanh nghiệp",
-        "Marketing chỉ là chạy quảng cáo",
-        "Marketing không cần dữ liệu"
+        "Tăng ngân sách trước khi xác định điểm nghẽn của funnel trước khi ra quyết định",
+        "Làm rõ audience, insight, context sử dụng và thông điệp phù hợp rồi kiểm tra với người thật",
+        "Chọn audience theo quy mô thay vì mức độ phù hợp theo dữ liệu hiện có",
+        "Gán toàn bộ thay đổi doanh số cho campaign mà không xét yếu tố khác với cùng mục tiêu"
       ],
       "a": 1,
-      "e": "Marketing là hệ thống hoạt động rộng hơn truyền thông mạng xã hội."
+      "e": "Audience definition và message-market fit nên đi trước quy mô sản xuất.",
+      "art": "🧠"
     },
     {
-      "q": "Muốn biết mình có hợp marketing/truyền thông, thử nghiệm nào sát công việc hơn?",
+      "q": "Một video có hàng triệu lượt xem nhưng hầu hết lượt xem đến từ ngoài thị trường mục tiêu. Kết luận nào hợp lý?",
       "opts": [
-        "Chọn vì nghề đang hot",
-        "Chỉ xem video 'nghề marketing là gì'",
-        "Làm một mini campaign: xác định audience, viết thông điệp, tạo nội dung, theo dõi dữ liệu và rút kinh nghiệm",
-        "Chỉ xem mức lương"
+        "Thay đổi nhiều yếu tố cùng lúc rồi gán kết quả cho một yếu tố trước khi ra quyết định",
+        "Reach lớn nhưng có thể không tạo giá trị tương ứng nếu audience không phù hợp mục tiêu",
+        "Xem follower như đại diện trực tiếp cho khách hàng với cùng mục tiêu",
+        "Chỉ đo kết quả trong thời gian quá ngắn để kết luận theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Reach/Views cần được đọc trong relation với target audience và objective.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một SEO page có traffic tăng nhưng leads giảm. Điều gì nên kiểm tra?",
+      "opts": [
+        "Search intent, loại truy vấn, chất lượng traffic và thay đổi conversion trên page",
+        "Đánh giá influencer chủ yếu bằng số follower theo dữ liệu hiện có",
+        "Tăng tần suất nội dung mà không xem audience fatigue trước khi ra quyết định",
+        "Dùng ý kiến nội bộ thay cho phản hồi từ audience với cùng mục tiêu"
+      ],
+      "a": 0,
+      "e": "Traffic không đồng nghĩa business outcome; cần xem intent và funnel.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một marketer nhận thấy khách hàng phản ứng tốt với thông điệp A trong khảo sát nhưng khi chạy thật conversion thấp. Điều gì có thể giải thích?",
+      "opts": [
+        "Suy ra hiệu quả kinh doanh chỉ từ reach hoặc views với cùng mục tiêu",
+        "Stated preference và hành vi thực tế có thể khác; cần kiểm tra offer, context, audience và experiment",
+        "Dùng ý kiến nội bộ thay cho phản hồi từ audience trước khi ra quyết định",
+        "Dùng một khảo sát nhỏ như bằng chứng cho toàn bộ thị trường theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Ý định được nói ra không luôn dự đoán hành vi; thử nghiệm thực tế bổ sung bằng chứng.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một brand campaign muốn tăng awareness. Metric nào phù hợp hơn chỉ nhìn sales ngay trong tuần đầu?",
+      "opts": [
+        "Reach, frequency, brand lift/recall hoặc các chỉ số nhận biết phù hợp mục tiêu",
+        "Tối ưu click mà không theo dõi chất lượng chuyển đổi với cùng mục tiêu",
+        "Chọn creative theo cảm giác mà không xác định objective theo dữ liệu hiện có",
+        "Gán toàn bộ thay đổi doanh số cho campaign mà không xét yếu tố khác"
+      ],
+      "a": 0,
+      "e": "Objective awareness cần metric phản ánh exposure và brand response, dù vẫn có thể theo dõi downstream outcomes.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một copywriter có hai headline: một gây tò mò mạnh nhưng dễ hiểu sai, một rõ ràng nhưng ít gây tò mò. Cách quyết định tốt hơn?",
+      "opts": [
+        "Đánh giá chiến dịch bằng một metric duy nhất trước khi ra quyết định",
+        "Xác định objective và thử nghiệm tác động lên click lẫn chất lượng chuyển đổi, không chỉ chọn theo cảm giác",
+        "Chỉ đo kết quả trong thời gian quá ngắn để kết luận theo dữ liệu hiện có",
+        "Chọn creative theo cảm giác mà không xác định objective với cùng mục tiêu"
+      ],
+      "a": 1,
+      "e": "Creative cần được đánh giá theo mục tiêu và downstream effect, không chỉ cảm giác hoặc click.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một chiến dịch retargeting có ROAS cao nhưng quy mô nhỏ. Vì sao không nên suy ra có thể mở ngân sách vô hạn?",
+      "opts": [
+        "Xem follower như đại diện trực tiếp cho khách hàng với cùng mục tiêu",
+        "Gán toàn bộ thay đổi doanh số cho campaign mà không xét yếu tố khác trước khi ra quyết định",
+        "Tệp retargeting có giới hạn và hiệu quả có thể giảm khi mở rộng sang audience kém gần chuyển đổi hơn",
+        "Tăng ngân sách trước khi xác định điểm nghẽn của funnel theo dữ liệu hiện có"
       ],
       "a": 2,
-      "e": "Một mini campaign cho trải nghiệm từ nghiên cứu đến triển khai và đo lường, gần với quy trình thực tế."
+      "e": "Performance có thể thay đổi khi mở rộng tệp; marginal returns cần được xem xét.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một brand muốn xây positioning nhưng đang liệt kê hàng chục đặc điểm sản phẩm. Positioning cần làm rõ thêm điều gì?",
+      "opts": [
+        "Xem follower như đại diện trực tiếp cho khách hàng với cùng mục tiêu",
+        "Đối tượng, category/frame of reference, khác biệt có ý nghĩa và lý do để tin",
+        "Xem engagement cao là thành công bất kể sentiment trước khi ra quyết định",
+        "Chọn audience theo quy mô thay vì mức độ phù hợp theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Positioning liên quan cách thương hiệu được hiểu trong tâm trí target so với alternatives.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một social post có engagement cao vì tranh luận tiêu cực. Có nên xem engagement là thành công?",
+      "opts": [
+        "Tăng tần suất nội dung mà không xem audience fatigue theo dữ liệu hiện có",
+        "Chỉ đo kết quả trong thời gian quá ngắn để kết luận với cùng mục tiêu",
+        "Không đủ kết luận; cần xem sentiment, brand impact và objective của chiến dịch",
+        "Suy ra hiệu quả kinh doanh chỉ từ reach hoặc views trước khi ra quyết định"
+      ],
+      "a": 2,
+      "e": "Engagement không mang giá trị cố định; chất lượng tương tác và mục tiêu mới quyết định ý nghĩa.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một email campaign có open rate tăng sau khi đổi subject line nhưng click không tăng. Điều này gợi ý gì?",
+      "opts": [
+        "Subject line có thể cải thiện mở email nhưng nội dung/offer hoặc CTA chưa cải thiện hành động tiếp theo",
+        "Đánh giá influencer chủ yếu bằng số follower trước khi ra quyết định",
+        "Tăng tần suất nội dung mà không xem audience fatigue với cùng mục tiêu",
+        "Dùng ý kiến nội bộ thay cho phản hồi từ audience theo dữ liệu hiện có"
+      ],
+      "a": 0,
+      "e": "Funnel email có nhiều bước; cải thiện bước mở không đảm bảo cải thiện click/conversion.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một marketer muốn biết khách hàng rời bỏ vì giá hay vì trải nghiệm. Phương pháp nào giúp phân biệt tốt hơn?",
+      "opts": [
+        "Gán toàn bộ thay đổi doanh số cho campaign mà không xét yếu tố khác",
+        "Tăng tần suất nội dung mà không xem audience fatigue với cùng mục tiêu",
+        "Dùng ý kiến nội bộ thay cho phản hồi từ audience theo dữ liệu hiện có",
+        "Kết hợp dữ liệu hành vi với phỏng vấn/khảo sát và so sánh theo cohort hoặc nhóm khách"
+      ],
+      "a": 3,
+      "e": "Triangulation giúp phân biệt giả thuyết và tìm mẫu trong hành vi.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một agency báo chiến dịch “tăng brand awareness 40%” nhưng không nói cách đo. Điều gì cần hỏi?",
+      "opts": [
+        "Dùng ý kiến nội bộ thay cho phản hồi từ audience theo dữ liệu hiện có",
+        "Suy ra hiệu quả kinh doanh chỉ từ reach hoặc views với cùng mục tiêu",
+        "Awareness được định nghĩa thế nào, baseline ra sao, mẫu nào và phương pháp đo thay đổi là gì",
+        "Tăng tần suất nội dung mà không xem audience fatigue trước khi ra quyết định"
+      ],
+      "a": 2,
+      "e": "Một con số phần trăm cần có định nghĩa metric, baseline, population và phương pháp đo để diễn giải.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một thương hiệu muốn dùng influencer có audience rất lớn nhưng audience lệch xa khách hàng mục tiêu. Cách đánh giá nào phù hợp?",
+      "opts": [
+        "Gán toàn bộ thay đổi doanh số cho campaign mà không xét yếu tố khác với cùng mục tiêu",
+        "Xem audience fit, credibility, expected reach trong target và khả năng tạo hành động chứ không chỉ follower",
+        "Tối ưu click mà không theo dõi chất lượng chuyển đổi trước khi ra quyết định",
+        "Đánh giá influencer chủ yếu bằng số follower theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Influencer effectiveness phụ thuộc mức phù hợp và chất lượng audience cùng mục tiêu chiến dịch.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một marketer thấy doanh số tăng sau khi chạy campaign và muốn nhận toàn bộ công lao cho campaign. Vấn đề phân tích nào xuất hiện?",
+      "opts": [
+        "Chọn audience theo quy mô thay vì mức độ phù hợp trước khi ra quyết định",
+        "Tăng tần suất nội dung mà không xem audience fatigue với cùng mục tiêu",
+        "Doanh số có thể chịu mùa vụ, giá, phân phối và các yếu tố khác; cần đánh giá incrementality hoặc control khi có thể",
+        "Xem engagement cao là thành công bất kể sentiment theo dữ liệu hiện có"
+      ],
+      "a": 2,
+      "e": "Temporal correlation chưa đủ để xác định causal impact.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một content creator nói “nội dung này không cần data vì sáng tạo là cảm tính”. Quan điểm nào cân bằng hơn?",
+      "opts": [
+        "Dùng một khảo sát nhỏ như bằng chứng cho toàn bộ thị trường với cùng mục tiêu",
+        "Sáng tạo tạo giả thuyết; dữ liệu và phản hồi giúp kiểm tra, tối ưu và hiểu audience mà không thay thế judgment",
+        "Gán toàn bộ thay đổi doanh số cho campaign mà không xét yếu tố khác trước khi ra quyết định",
+        "Dùng ý kiến nội bộ thay cho phản hồi từ audience theo dữ liệu hiện có"
+      ],
+      "a": 1,
+      "e": "Marketing thường kết hợp creative judgment với evidence để học và tối ưu.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một người thích viết nhưng không thích bán hàng trực tiếp. Nghề nào trong marketing có thể đáng tìm hiểu?",
+      "opts": [
+        "Dùng ý kiến nội bộ thay cho phản hồi từ audience theo dữ liệu hiện có",
+        "Tăng tần suất nội dung mà không xem audience fatigue với cùng mục tiêu",
+        "Thay đổi nhiều yếu tố cùng lúc rồi gán kết quả cho một yếu tố trước khi ra quyết định",
+        "Content, copywriting, SEO, editorial hoặc content strategy tùy kỹ năng và môi trường"
+      ],
+      "a": 3,
+      "e": "Marketing có nhiều vai trò khác nhau, với mức độ giao tiếp và bán hàng trực tiếp khác nhau.",
+      "art": "🧠"
+    },
+    {
+      "q": "Một bạn muốn kiểm chứng mình có hợp marketing hay không. Bài thử nào phản ánh nhiều phần công việc?",
+      "opts": [
+        "Gán toàn bộ thay đổi doanh số cho campaign mà không xét yếu tố khác theo dữ liệu hiện có",
+        "Chọn một sản phẩm, xác định audience, viết proposition, tạo nội dung, đo phản hồi và rút kinh nghiệm",
+        "Xem engagement cao là thành công bất kể sentiment trước khi ra quyết định",
+        "Xem follower như đại diện trực tiếp cho khách hàng với cùng mục tiêu"
+      ],
+      "a": 1,
+      "e": "Mini-project đi qua research, positioning, execution và measurement nên cho tín hiệu thực tế hơn.",
+      "art": "🧠"
     }
   ]
-}
+};
     let quizState = {industry:null,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:"",resultSoundPlayed:false};
     let soundOn = true;
 
@@ -1858,6 +1966,34 @@
       winner: new Audio("/sounds/winner.mp3"),
       fail: new Audio("/sounds/fail.mp3")
     };
+
+    // Easter egg + global click sound. Đặt 2 file trong public/sounds/.
+    const clickSound = new Audio("/sounds/240721__amishaque__click.mp3");
+    const indianSong = new Audio("/sounds/indian-song.mp3");
+    clickSound.preload = "auto";
+    clickSound.volume = 0.22;
+    indianSong.preload = "auto";
+    indianSong.loop = true;
+    indianSong.volume = 0.65;
+    let easterEggOn = false;
+
+    document.addEventListener("click", () => {
+      try {
+        clickSound.pause();
+        clickSound.currentTime = 0;
+        const p = clickSound.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+      } catch {}
+    }, true);
+
+    function triggerEasterEgg() {
+      easterEggOn = true;
+      try {
+        indianSong.currentTime = 0;
+        const p = indianSong.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+      } catch {}
+    }
     Object.values(quizSounds).forEach(audio => {
       audio.preload = "auto";
       audio.volume = 0.8;
@@ -1901,7 +2037,7 @@
     function answerQuestion(choice){
       if(quizState.answered) return; quizState.answered=true; const list=getQuestions(),item=list[quizState.index];
       const buttons=[...quizPanel.querySelectorAll(".option-btn")]; buttons.forEach(b=>b.disabled=true); buttons[item.a].classList.add("correct");
-      if(choice===item.a){quizState.score++;playQuizSound("ding");}else{buttons[choice].classList.add("wrong");beep("wrong");}
+      if(choice===item.a){quizState.score++;playQuizSound("ding");}else{buttons[choice].classList.add("wrong");playQuizSound("wrong");}
       const ex=quizPanel.querySelector("#quizExplain"); ex.style.display="block"; ex.innerHTML=`<strong>${choice===item.a?"✅ Chính xác!":"💡 Đáp án đúng là "+String.fromCharCode(65+item.a)+"."}</strong> ${item.e}`;
       quizPanel.querySelector("#quizNext").style.display="block";
     }
@@ -1912,7 +2048,7 @@
         if(quizState.score>=15) playQuizSound("winner");
         else playQuizSound("fail");
       }
-      beep("finish"); const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry];
+      const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry];
       quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>Hoàn thành!</h2><p style="color:#64748b">${meta.emoji} ${meta.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${pct>=80?"Bạn có nhiều điểm mạnh đáng khám phá!":pct>=60?"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!":"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"}</h3><p style="color:#64748b;line-height:1.6">Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp.</p><div class="result-actions"><button class="primary-action" id="againBtn">🔄 Làm lại</button><button class="secondary-action" id="otherBtn">🎮 Chọn ngành khác</button><button class="secondary-action" id="chatBtn">💬 Trò chuyện với AI về lĩnh vực này</button></div></div>`;
       quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;quizState.resultSoundPlayed=false;renderQuestion();};
       quizPanel.querySelector("#otherBtn").onclick=renderQuizHome;
