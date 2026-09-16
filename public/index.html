@@ -852,20 +852,42 @@
 
     let quizState = {industry:null,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:""};
     let soundOn = true;
-    function beep(type="click"){
-      if(!soundOn) return;
+
+    /*
+     * Âm thanh quiz dùng file MP3 local trong /public/sounds.
+     * Không cần thư viện ngoài và không gọi mạng bên thứ ba.
+     */
+    const quizSounds = {
+      ding: new Audio("/sounds/ding.mp3"),
+      wrong: new Audio("/sounds/wrong.mp3"),
+      winner: new Audio("/sounds/winner.mp3"),
+      fail: new Audio("/sounds/fail.mp3")
+    };
+
+    Object.values(quizSounds).forEach(audio => {
+      audio.preload = "auto";
+      audio.volume = 0.8;
+    });
+
+    function playQuizSound(name){
+      if(!soundOn || !quizSounds[name]) return;
+
+      const audio = quizSounds[name];
+
       try{
-        const C=window.AudioContext||window.webkitAudioContext; if(!C) return;
-        const c=new C(),o=c.createOscillator(),g=c.createGain();
-        const f=type==="correct"?660:type==="wrong"?190:type==="finish"?880:420;
-        o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.08,c.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.16);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.18);setTimeout(()=>c.close(),250);
+        audio.pause();
+        audio.currentTime = 0;
+        const promise = audio.play();
+        if(promise && typeof promise.catch === "function"){
+          promise.catch(() => {});
+        }
       }catch{}
     }
     function renderQuizHome(){
-      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-hero"><div class="big-emoji">🎮</div><h2>Quiz khám phá ngành nghề</h2><p>Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.</p></div><div class="industry-grid">${Object.entries(INDUSTRIES).map(([key,v])=>`<button class="industry-card" data-industry="${key}" type="button"><div class="industry-art">${v.art}</div><h3>${v.emoji} ${v.title}</h3><p>${v.desc}</p></button>`).join("")}</div><div class="quiz-note">🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz.</div>`;
+      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-hero"><div class="big-emoji">🎮</div><h2>Quiz khám phá ngành nghề</h2><p>Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.</p></div><div class="industry-grid">${Object.entries(INDUSTRIES).map(([key,v])=>`<button class="industry-card" data-industry="${key}" type="button"><div class="industry-art">${v.art}</div><h3>${v.emoji} ${v.title}</h3><p>${v.desc}</p></button>`).join("")}</div><div class="quiz-note">🔊 Âm thanh: ding khi đúng • buzzer khi sai • 🏆 winner từ 15/20 • fail dưới 15/20.</div>`;
       quizPanel.querySelectorAll(".industry-card").forEach(b=>b.addEventListener("click",()=>startQuiz(b.dataset.industry)));
     }
-    function startQuiz(industry){ quizState={industry,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:""}; beep(); renderQuestion(); }
+    function startQuiz(industry){ quizState={industry,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:""}; renderQuestion(); }
     function getQuestions(){ return quizState.personal ? quizState.personalQuestions : QUIZ[quizState.industry]; }
     function renderQuestion(){
       const list=getQuestions(), item=list[quizState.index], meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯",art:"🧠"}:INDUSTRIES[quizState.industry];
@@ -879,13 +901,23 @@
     function answerQuestion(choice){
       if(quizState.answered) return; quizState.answered=true; const list=getQuestions(),item=list[quizState.index];
       const buttons=[...quizPanel.querySelectorAll(".option-btn")]; buttons.forEach(b=>b.disabled=true); buttons[item.a].classList.add("correct");
-      if(choice===item.a){quizState.score++;beep("correct");}else{buttons[choice].classList.add("wrong");beep("wrong");}
+      if(choice===item.a){quizState.score++;playQuizSound("ding");}else{buttons[choice].classList.add("wrong");playQuizSound("wrong");}
       const ex=quizPanel.querySelector("#quizExplain"); ex.style.display="block"; ex.innerHTML=`<strong>${choice===item.a?"✅ Chính xác!":"💡 Đáp án đúng là "+String.fromCharCode(65+item.a)+"."}</strong> ${item.e}`;
       quizPanel.querySelector("#quizNext").style.display="block";
     }
     function nextQuestion(){ if(!quizState.answered)return; if(quizState.index>=getQuestions().length-1){renderResult();return;} quizState.index++;quizState.answered=false;renderQuestion(); }
     function renderResult(){
-      beep("finish"); const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry];
+      const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry];
+
+      /*
+       * 15/20 trở lên = Winner.
+       * Dưới 15/20 = Fail.
+       */
+      if(quizState.score >= 15){
+        playQuizSound("winner");
+      }else{
+        playQuizSound("fail");
+      }
       quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>Hoàn thành!</h2><p style="color:#64748b">${meta.emoji} ${meta.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${pct>=80?"Bạn có nhiều điểm mạnh đáng khám phá!":pct>=60?"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!":"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"}</h3><p style="color:#64748b;line-height:1.6">Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp.</p><div class="result-actions"><button class="primary-action" id="againBtn">🔄 Làm lại</button><button class="secondary-action" id="otherBtn">🎮 Chọn ngành khác</button><button class="secondary-action" id="chatBtn">💬 Trò chuyện với AI về lĩnh vực này</button></div></div>`;
       quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;renderQuestion();};
       quizPanel.querySelector("#otherBtn").onclick=renderQuizHome;
