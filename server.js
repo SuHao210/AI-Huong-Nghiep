@@ -18,8 +18,15 @@ const app = express();
 const PORT =
     Number(process.env.PORT) || 3000;
 
+/*
+ * Mặc định dùng Gemini 3.5 Flash-Lite để ưu tiên độ trễ thấp
+ * và thông lượng cao cho lớp học đông người.
+ *
+ * Nếu sau này muốn đổi model, chỉ cần đặt GEMINI_MODEL trên Render.
+ */
 const MODEL =
-    "gemini-3.8-flash";
+    process.env.GEMINI_MODEL ||
+    "gemini-3.5-flash-lite";
 
 const API_KEY =
     process.env.GEMINI_API_KEY;
@@ -80,13 +87,40 @@ app.use(
    Bạn có thể tăng sau.
    ========================================================= */
 
+/*
+ * Rate limit theo SESSION thay vì chỉ theo IP.
+ *
+ * Điều này rất quan trọng khi 40 học sinh cùng dùng chung
+ * Wi-Fi của lớp: tất cả có thể có cùng public IP.
+ */
+function sessionOrIpKey(req) {
+    const sessionId = req.headers["x-session-id"];
+
+    if (
+        typeof sessionId === "string" &&
+        sessionId.length >= 10 &&
+        sessionId.length <= 100
+    ) {
+        return `session:${sessionId}`;
+    }
+
+    return `ip:${req.ip}`;
+}
+
 const chatLimiter =
     rateLimit({
 
         windowMs:
             10 * 60 * 1000,
 
+        /*
+         * Mỗi trình duyệt/session được 30 tin nhắn / 10 phút.
+         * Không còn giới hạn 30 tin nhắn cho cả lớp dùng chung Wi-Fi.
+         */
         limit: 30,
+
+        keyGenerator:
+            sessionOrIpKey,
 
         standardHeaders: true,
 
@@ -94,7 +128,7 @@ const chatLimiter =
 
         message: {
             error:
-                "Bạn gửi quá nhiều tin nhắn. Vui lòng thử lại sau ít phút."
+                "Bạn gửi khá nhiều tin nhắn. Vui lòng thử lại sau ít phút."
         }
 
     });
@@ -103,9 +137,16 @@ const chatLimiter =
 const personalizedQuizLimiter =
     rateLimit({
         windowMs: 60 * 60 * 1000,
+
         limit: 3,
+
+        keyGenerator:
+            sessionOrIpKey,
+
         standardHeaders: true,
+
         legacyHeaders: false,
+
         message: {
             error:
                 "Bạn đã tạo quá nhiều quiz riêng trong thời gian ngắn. Vui lòng thử lại sau."
@@ -117,8 +158,12 @@ const personalizedQuizLimiter =
  * Các request còn lại được xếp hàng ngắn; nếu hàng đầy sẽ từ chối
  * thay vì để máy chủ tạo một loạt request cùng lúc tới Gemini.
  */
-const MAX_GEMINI_CONCURRENCY = 4;
-const MAX_GEMINI_QUEUE = 16;
+/*
+ * Cho phép nhiều học sinh được xử lý cùng lúc.
+ * Gemini vẫn là nơi quyết định hạn mức RPM/TPM thực tế của project.
+ */
+const MAX_GEMINI_CONCURRENCY = 16;
+const MAX_GEMINI_QUEUE = 64;
 let activeGeminiRequests = 0;
 const geminiQueue = [];
 
@@ -444,6 +489,19 @@ Không cần lúc nào cũng dùng emoji.
 
 Nếu người dùng trả lời ngắn,
 hãy giúp họ mở rộng câu trả lời bằng câu hỏi dễ.
+
+==================================================
+TỐI ƯU TỐC ĐỘ
+==================================================
+
+Ưu tiên trả lời gọn, rõ và đi thẳng vào ý chính.
+
+Nếu câu hỏi đơn giản, chỉ cần 2-5 câu hoặc một câu hỏi
+tiếp theo phù hợp.
+
+Không viết phần mở đầu dài dòng.
+
+Không lặp lại toàn bộ những gì người dùng vừa nói.
 
 ==================================================
 QUAN TRỌNG
