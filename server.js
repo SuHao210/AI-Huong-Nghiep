@@ -100,6 +100,87 @@ const chatLimiter =
     });
 
 
+const personalizedQuizLimiter =
+    rateLimit({
+        windowMs: 60 * 60 * 1000,
+        limit: 3,
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: {
+            error:
+                "Bạn đã tạo quá nhiều quiz riêng trong thời gian ngắn. Vui lòng thử lại sau."
+        }
+    });
+
+/*
+ * Giới hạn số tác vụ Gemini chạy đồng thời trên một instance.
+ * Các request còn lại được xếp hàng ngắn; nếu hàng đầy sẽ từ chối
+ * thay vì để máy chủ tạo một loạt request cùng lúc tới Gemini.
+ */
+const MAX_GEMINI_CONCURRENCY = 4;
+const MAX_GEMINI_QUEUE = 16;
+let activeGeminiRequests = 0;
+const geminiQueue = [];
+
+function acquireGeminiSlot() {
+    if (activeGeminiRequests < MAX_GEMINI_CONCURRENCY) {
+        activeGeminiRequests++;
+        return Promise.resolve(() => releaseGeminiSlot());
+    }
+
+    if (geminiQueue.length >= MAX_GEMINI_QUEUE) {
+        const error = new Error("SERVER_BUSY");
+        error.code = "SERVER_BUSY";
+        return Promise.reject(error);
+    }
+
+    return new Promise((resolve) => {
+        geminiQueue.push(resolve);
+    });
+}
+
+function releaseGeminiSlot() {
+    const next = geminiQueue.shift();
+    if (next) {
+        next(() => releaseGeminiSlot());
+        return;
+    }
+    activeGeminiRequests = Math.max(0, activeGeminiRequests - 1);
+}
+
+async function withGeminiSlot(task) {
+    const release = await acquireGeminiSlot();
+    try {
+        return await task();
+    } finally {
+        release();
+    }
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function is429(error) {
+    const text = String(error?.message || error || "");
+    return /429|rate.?limit|resource.?exhausted/i.test(text);
+}
+
+async function createInteractionWithRetry(request, attempts = 2) {
+    let lastError;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+        try {
+            return await ai.interactions.create(request);
+        } catch (error) {
+            lastError = error;
+            if (!is429(error) || attempt === attempts - 1) throw error;
+            await sleep(600 * (attempt + 1));
+        }
+    }
+    throw lastError;
+}
+
+
 /* =========================================================
    SESSION
    =========================================================
@@ -428,6 +509,8 @@ function getSession(req, res) {
             sessionId,
             {
                 lastInteractionId: null,
+                lastAssistantText: "",
+                lastRecommendation: null,
                 createdAt: Date.now(),
                 lastUsedAt: Date.now()
             }
@@ -560,6 +643,15 @@ app.post(
         const session =
             getSession(req, res);
 
+        let releaseGeminiSlot;
+        try {
+            releaseGeminiSlot = await acquireGeminiSlot();
+        } catch (error) {
+            return res.status(503).json({
+                error: getFriendlyError(error)
+            });
+        }
+
 
         /* -------------------------
            SSE HEADERS
@@ -665,9 +757,7 @@ app.post(
                ------------------------- */
 
             const stream =
-                await ai.interactions.create(
-                    request
-                );
+                await createInteractionWithRetry(request, 2);
 
 
             let newInteractionId =
@@ -769,17 +859,12 @@ app.post(
                             ?.message ||
                         "Gemini interaction failed.";
 
-
                     sendEvent({
-
-                        type:
-                            "error",
-
-                        message:
-                            errorMessage
-
+                        type: "error",
+                        message: getFriendlyError({ message: errorMessage })
                     });
 
+                    return res.end();
                 }
 
             }
@@ -796,6 +881,15 @@ app.post(
 
                 session.lastInteractionId =
                     newInteractionId;
+                session.lastAssistantText =
+                    fullText;
+                if (/NGHỀ NGHIỆP ĐÁNG THỬ/i.test(fullText)) {
+                    session.lastRecommendation = {
+                        interactionId: newInteractionId,
+                        text: fullText,
+                        createdAt: Date.now()
+                    };
+                }
 
             }
 
@@ -843,8 +937,215 @@ app.post(
 
             res.end();
 
+        } finally {
+            releaseGeminiSlot?.();
         }
 
+    }
+);
+
+
+/* =========================================================
+   QUIZ RIÊNG TỪ CUỘC TRÒ CHUYỆN
+   ========================================================= */
+
+const INDUSTRY_RULES = {
+    it: {
+        title: "Công nghệ thông tin",
+        terms: [
+            "data analyst", "data scientist", "software engineer",
+            "software developer", "lập trình viên", "developer",
+            "ux/ui designer", "ui/ux", "game designer",
+            "gameplay programmer", "product designer", "devops",
+            "cybersecurity", "an ninh mạng", "kỹ sư phần mềm",
+            "kiểm thử phần mềm", "qa engineer"
+        ]
+    },
+    business: {
+        title: "Kinh doanh & Tài chính",
+        terms: [
+            "business analyst", "financial analyst", "finance", "tài chính",
+            "kinh doanh", "sales", "bán hàng", "business development",
+            "chuyên viên kinh doanh", "phân tích kinh doanh", "ngân hàng",
+            "accountant", "kế toán", "investment"
+        ]
+    },
+    health: {
+        title: "Y tế & Chăm sóc sức khỏe",
+        terms: [
+            "bác sĩ", "điều dưỡng", "dược sĩ", "pharmacist", "y tế",
+            "healthcare", "chăm sóc sức khỏe", "kỹ thuật viên xét nghiệm",
+            "vật lý trị liệu", "physiotherapist", "nutritionist", "dinh dưỡng"
+        ]
+    },
+    engineering: {
+        title: "Kỹ thuật & Công nghệ",
+        terms: [
+            "kỹ sư", "engineering", "kỹ thuật", "cơ khí", "điện",
+            "điện tử", "tự động hóa", "robotics", "civil engineer",
+            "xây dựng", "cơ điện tử", "mechatronics", "mechanical"
+        ]
+    },
+    marketing: {
+        title: "Marketing & Truyền thông",
+        terms: [
+            "marketing", "digital marketing", "content strategist",
+            "content creator", "truyền thông", "social media", "copywriter",
+            "seo", "branding", "quảng cáo", "pr", "quan hệ công chúng",
+            "creator", "biên tập viên"
+        ]
+    }
+};
+
+const PERSONAL_QUIZ_SCHEMA = {
+    type: "object",
+    properties: {
+        questions: {
+            type: "array",
+            minItems: 20,
+            maxItems: 20,
+            items: {
+                type: "object",
+                properties: {
+                    question: { type: "string" },
+                    options: {
+                        type: "array",
+                        minItems: 4,
+                        maxItems: 4,
+                        items: { type: "string" }
+                    },
+                    answer: { type: "integer", minimum: 0, maximum: 3 },
+                    explanation: { type: "string" }
+                },
+                required: ["question", "options", "answer", "explanation"],
+                additionalProperties: false
+            }
+        }
+    },
+    required: ["questions"],
+    additionalProperties: false
+};
+
+function getMatchingIndustries(text) {
+    const lower = String(text || "").toLowerCase();
+    return Object.entries(INDUSTRY_RULES)
+        .filter(([, rule]) => rule.terms.some(term => lower.includes(term)))
+        .map(([key]) => key);
+}
+
+function getInteractionOutputText(interaction) {
+    if (typeof interaction?.output_text === "string") {
+        return interaction.output_text;
+    }
+    const outputs = interaction?.outputs || [];
+    return outputs
+        .map(output => output?.text || output?.content?.map?.(x => x?.text || "").join("") || "")
+        .join("")
+        .trim();
+}
+
+app.post(
+    "/api/personalized-quiz",
+    personalizedQuizLimiter,
+    async (req, res) => {
+        const sessionId = req.headers["x-session-id"];
+        const industry = typeof req.body?.industry === "string" ? req.body.industry : "";
+        const careerLabel = typeof req.body?.careerLabel === "string" ? req.body.careerLabel : "";
+
+        if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
+            return res.status(400).json({ error: "Không tìm thấy cuộc trò chuyện hiện tại." });
+        }
+
+        if (!INDUSTRY_RULES[industry]) {
+            return res.status(400).json({ error: "Lĩnh vực quiz không hợp lệ." });
+        }
+
+        const session = sessions.get(sessionId);
+        const recommendation = session.lastRecommendation;
+        const recommendationText = recommendation?.text || "";
+
+        // Server-side enforcement: the button can only work when the latest AI
+        // response actually reached its career recommendation section and
+        // mentioned a profession supported by the selected quiz family.
+        if (!/NGHỀ NGHIỆP ĐÁNG THỬ/i.test(recommendationText)) {
+            return res.status(403).json({ error: "Quiz riêng chỉ mở sau khi AI đưa ra gợi ý nghề nghiệp." });
+        }
+
+        const matches = getMatchingIndustries(recommendationText);
+        if (!matches.includes(industry)) {
+            return res.status(403).json({ error: "Nghề được gợi ý chưa có bộ quiz riêng cho lĩnh vực này." });
+        }
+
+        try {
+            const prompt = `
+Hãy tạo một bộ QUIZ HƯỚNG NGHIỆP RIÊNG gồm ĐÚNG 20 câu cho người dùng hiện tại.
+
+Lĩnh vực được gợi ý: ${INDUSTRY_RULES[industry].title}
+Nghề/lĩnh vực hiển thị trên nút: ${careerLabel || INDUSTRY_RULES[industry].title}
+
+YÊU CẦU QUAN TRỌNG:
+- Dựa vào TOÀN BỘ ngữ cảnh cuộc trò chuyện trước đó và đặc điểm người dùng đã chia sẻ.
+- Quiz phải cá nhân hóa: tình huống, cách hỏi và trọng tâm phải liên quan tới sở thích, điểm mạnh, cách suy nghĩ, động lực và điều người dùng đã nói.
+- Không hỏi lại nguyên văn các câu trong cuộc trò chuyện.
+- Không biến quiz thành bài kiểm tra kiến thức chuyên ngành nặng.
+- 20 câu, mỗi câu có đúng 4 lựa chọn.
+- answer là chỉ số 0,1,2,3 của đáp án đúng.
+- explanation ngắn, dễ hiểu, giải thích vì sao đáp án đúng phù hợp với tình huống; không phán rằng người dùng chắc chắn hợp nghề.
+- Các đáp án nên có độ phân biệt, không để đáp án đúng luôn ở cùng một vị trí.
+- Không thêm markdown, không thêm văn bản ngoài JSON.
+- Quiz chỉ mang tính khám phá và tham khảo.
+`;
+
+            const interaction = await withGeminiSlot(() =>
+                createInteractionWithRetry({
+                    model: MODEL,
+                    previous_interaction_id: recommendation.interactionId,
+                    input: prompt,
+                    response_format: {
+                        type: "text",
+                        mime_type: "application/json",
+                        schema: PERSONAL_QUIZ_SCHEMA
+                    },
+                    generation_config: {
+                        thinking_level: "low",
+                        max_output_tokens: 6500
+                    },
+                    store: false
+                }, 2)
+            );
+
+            const outputText = getInteractionOutputText(interaction);
+            let parsed;
+            try {
+                parsed = JSON.parse(outputText);
+            } catch {
+                return res.status(502).json({ error: "AI trả về quiz không đúng định dạng. Vui lòng thử lại." });
+            }
+
+            if (!Array.isArray(parsed?.questions) || parsed.questions.length !== 20) {
+                return res.status(502).json({ error: "AI chưa tạo đủ 20 câu quiz. Vui lòng thử lại." });
+            }
+
+            const questions = parsed.questions.map((q, index) => ({
+                question: String(q.question || `Câu ${index + 1}`),
+                options: Array.isArray(q.options) ? q.options.slice(0, 4).map(String) : [],
+                answer: Number(q.answer),
+                explanation: String(q.explanation || "")
+            }));
+
+            if (questions.some(q => q.options.length !== 4 || !Number.isInteger(q.answer) || q.answer < 0 || q.answer > 3)) {
+                return res.status(502).json({ error: "AI trả về một câu hỏi không hợp lệ. Vui lòng thử lại." });
+            }
+
+            res.json({
+                ok: true,
+                title: `Quiz riêng: ${INDUSTRY_RULES[industry].title}`,
+                questions
+            });
+        } catch (error) {
+            console.error("Personalized quiz error:", error);
+            res.status(503).json({ error: getFriendlyError(error) });
+        }
     }
 );
 
@@ -893,6 +1194,9 @@ function getFriendlyError(error) {
         error?.message ||
         "Lỗi không xác định.";
 
+    if (error?.code === "SERVER_BUSY" || message === "SERVER_BUSY") {
+        return "Máy chủ đang có nhiều người dùng cùng lúc. Vui lòng thử lại sau ít giây.";
+    }
 
     if (
         message.includes("API key") ||
@@ -936,8 +1240,8 @@ function getFriendlyError(error) {
     ) {
 
         return (
-            "Không tìm thấy model Gemini. " +
-            "Hãy kiểm tra model trong server.js."
+            "Gemini tạm thời không xử lý được yêu cầu. " +
+            "Vui lòng thử lại sau ít giây."
         );
 
     }
