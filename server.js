@@ -1168,7 +1168,11 @@ YÊU CẦU QUAN TRỌNG:
                         thinking_level: "low",
                         max_output_tokens: 6500
                     },
-                    store: false
+                    // Gemini requires store=true whenever previous_interaction_id is used.
+                    // This quiz interaction is intentionally NOT copied into the main chat session
+                    // (we do not update session.lastInteractionId below), so the conversation flow
+                    // remains separate while still using the previous recommendation as context.
+                    store: true
                 }, 2)
             );
 
