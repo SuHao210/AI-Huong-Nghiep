@@ -737,202 +737,1191 @@
     };
     const Q = (q,opts,a,e,art) => ({q,opts,a,e,art});
     const QUIZ = {
-      it:[
-        Q("Khi gặp một vấn đề phức tạp, bạn thường làm gì trước?",["Chia nhỏ vấn đề","Làm thử ngay","Hỏi người có kinh nghiệm","Tìm một cách hoàn toàn mới"],0,"Chia nhỏ giúp bạn nhìn rõ cấu trúc của vấn đề."),
-        Q("Một bảng dữ liệu có nhiều giá trị bất thường. Bạn sẽ?",["Bỏ qua","Kiểm tra nguồn và quy tắc dữ liệu","Xóa ngẫu nhiên","Đổi màu bảng"],1,"Kiểm tra dữ liệu trước khi phân tích giúp tránh kết luận sai."),
-        Q("Bạn thích công việc nào hơn?",["Xây một công cụ","Tổ chức sự kiện","Chăm sóc khách hàng","Viết bài"],0,"Xây công cụ thường gắn với tư duy sản phẩm và công nghệ."),
-        Q("Khi code chạy sai, phản ứng đầu tiên của bạn là?",["Bỏ cuộc","Đọc lỗi và tái hiện lỗi","Đổ lỗi cho máy","Viết lại tất cả"],1,"Debug có hệ thống là kỹ năng cốt lõi trong phát triển phần mềm."),
-        Q("Điều nào hấp dẫn bạn nhất?",["Tự động hóa việc lặp lại","Thuyết phục người khác","Chăm sóc người bệnh","Thiết kế poster"],0,"Tự động hóa là một tư duy ứng dụng công nghệ rất phổ biến."),
-        Q("Bạn muốn sản phẩm mình tạo ra được đánh giá bằng?",["Khả năng hoạt động","Màu sắc","Số người biết đến","Cảm xúc"],0,"Sản phẩm số cần đáp ứng chức năng và nhu cầu người dùng."),
-        Q("Bạn thấy thoải mái với việc học công cụ mới?",["Rất thích","Chỉ khi bắt buộc","Không thích","Tùy hôm"],0,"Công nghệ thay đổi nhanh nên khả năng học công cụ mới rất hữu ích."),
-        Q("Một website tải chậm, bạn muốn kiểm tra gì?",["Hiệu năng và tài nguyên","Logo","Tên miền trước tiên","Font chữ duy nhất"],0,"Đo và tìm điểm nghẽn là cách tiếp cận kỹ thuật."),
-        Q("Bạn thích làm việc với thông tin nào?",["Dữ liệu và hệ thống","Tin đồn","Khẩu hiệu","Trang trí"],0,"Dữ liệu và hệ thống là nền tảng của nhiều nghề IT."),
-        Q("Khi hai cách giải quyết đều có ưu nhược điểm, bạn sẽ?",["So sánh tiêu chí","Chọn ngẫu nhiên","Chọn cách dài nhất","Tránh quyết định"],0,"Đặt tiêu chí giúp quyết định kỹ thuật minh bạch hơn."),
-        Q("Bạn có hứng thú tìm hiểu vì sao một ứng dụng hoạt động?",["Có","Ít","Không","Chỉ khi lỗi"],0,"Tò mò về cơ chế bên trong là tín hiệu tốt cho việc khám phá công nghệ."),
-        Q("Bạn thích nhiệm vụ nào hơn?",["Tìm lỗi trong hệ thống","Trang trí phòng","Viết lời chúc","Bán vé"],0,"Tìm lỗi cần sự tỉ mỉ và tư duy phân tích."),
-        Q("Nếu người dùng dùng sản phẩm khác dự kiến, bạn sẽ?",["Quan sát và cải thiện","Bảo họ dùng đúng","Bỏ qua","Xóa tính năng"],0,"Sản phẩm tốt cần học từ hành vi người dùng thực tế."),
-        Q("Bạn có thích các bài toán có nhiều bước logic?",["Có","Một chút","Không","Chưa thử"],0,"Tư duy logic hỗ trợ nhiều lĩnh vực IT."),
-        Q("Khi học một công nghệ mới, bạn thích?",["Làm dự án nhỏ","Chỉ xem lý thuyết","Chờ người dạy làm","Không thử"],0,"Dự án nhỏ giúp biến kiến thức thành kỹ năng."),
-        Q("Bạn nghĩ bảo mật quan trọng vì?",["Bảo vệ dữ liệu và người dùng","Làm web đẹp hơn","Tăng âm lượng","Giảm giá"],0,"Bảo mật liên quan trực tiếp đến dữ liệu, tài sản và niềm tin."),
-        Q("Bạn có thể kiên nhẫn tìm nguyên nhân của lỗi lâu không?",["Có","Khó nhưng thử","Không","Chưa biết"],0,"Kiên nhẫn là lợi thế khi debug và xử lý vấn đề phức tạp."),
-        Q("Bạn thích tạo ra thứ có thể được dùng nhiều lần?",["Có","Không","Tùy","Chưa nghĩ"],0,"Tư duy tạo hệ thống có khả năng tái sử dụng rất hữu ích trong IT."),
-        Q("Khi có yêu cầu mơ hồ, bạn nên?",["Làm rõ mục tiêu","Đoán rồi làm","Bỏ qua","Chờ mãi"],0,"Làm rõ yêu cầu giảm sai lệch giữa sản phẩm và nhu cầu."),
-        Q("Sau quiz này, hoạt động nào giúp kiểm chứng hứng thú IT tốt nhất?",["Làm một dự án nhỏ","Chỉ xem video nghề","Mua máy thật đắt","Không làm gì"],0,"Một dự án nhỏ cho bạn trải nghiệm công việc thực tế với chi phí thấp.")
+  "it": [
+    {
+      "q": "Công nghệ thông tin (CNTT) chủ yếu liên quan đến lĩnh vực nào?",
+      "opts": [
+        "Chỉ lắp ráp điện thoại",
+        "Chỉ sửa chữa máy tính",
+        "Chỉ thiết kế website",
+        "Khai thác và xử lý thông tin bằng công nghệ"
       ],
-      business:[
-        Q("Khi doanh số giảm, bạn muốn xem gì trước?",["Dữ liệu và nguyên nhân","Màu logo","Tên nhân viên","Không cần xem"],0,"Dữ liệu giúp xác định vấn đề thay vì đoán."),
-        Q("Một khách hàng chưa quyết định mua. Bạn sẽ?",["Tìm hiểu nhu cầu","Ép mua","Bỏ qua","Giảm giá ngay"],0,"Hiểu nhu cầu là nền tảng của bán hàng và tư vấn."),
-        Q("Bạn thích công việc nào?",["Phân tích thị trường","Sửa máy","Điều trị bệnh","Thiết kế 3D"],0,"Phân tích thị trường phù hợp với nhiều vai trò kinh doanh."),
-        Q("Khi có hai phương án đầu tư, bạn nên?",["So sánh lợi nhuận và rủi ro","Chọn phương án nghe hay","Chọn ngẫu nhiên","Không xem số liệu"],0,"Quyết định tài chính cần cân nhắc cả lợi nhuận và rủi ro."),
-        Q("Bạn có thích thương lượng để tìm điểm chung?",["Có","Một chút","Không","Chưa thử"],0,"Đàm phán là kỹ năng quan trọng trong nhiều vai trò kinh doanh."),
-        Q("Một sản phẩm tốt nhưng ít người mua. Bạn kiểm tra?",["Nhu cầu và cách tiếp cận thị trường","Đổi tên ngay","Xóa sản phẩm","Tăng giá ngay"],0,"Sản phẩm cần phù hợp nhu cầu và được tiếp cận đúng khách hàng."),
-        Q("Bạn thích làm việc với con số?",["Có","Tùy","Không","Chưa biết"],0,"Số liệu hỗ trợ phân tích và ra quyết định kinh doanh."),
-        Q("Nếu đồng đội đưa ra ý tưởng khác bạn, bạn sẽ?",["So sánh bằng tiêu chí","Bác ngay","Im lặng","Tránh làm chung"],0,"So sánh bằng tiêu chí giúp đội nhóm quyết định khách quan."),
-        Q("Điều nào hấp dẫn bạn hơn?",["Tìm cơ hội tăng trưởng","Sửa code","Chăm sóc bệnh nhân","Lắp robot"],0,"Tìm cơ hội tăng trưởng là hoạt động cốt lõi của nhiều vai trò kinh doanh."),
-        Q("Khi ngân sách hạn chế, bạn sẽ?",["Ưu tiên mục tiêu quan trọng","Chi đều cho mọi thứ","Chi hết","Không làm"],0,"Ưu tiên nguồn lực là kỹ năng quản trị."),
-        Q("Bạn có tò mò về lý do khách hàng chọn một thương hiệu?",["Có","Một chút","Không","Chưa nghĩ"],0,"Hiểu hành vi khách hàng giúp xây sản phẩm và chiến lược tốt hơn."),
-        Q("Khi một kế hoạch không đạt mục tiêu, bạn sẽ?",["Đo lại và điều chỉnh","Đổ lỗi","Bỏ luôn","Giữ nguyên"],0,"Quản trị tốt cần theo dõi kết quả và điều chỉnh."),
-        Q("Bạn thích môi trường nào?",["Nhiều mục tiêu và tương tác","Ít thay đổi","Chỉ làm một mình","Không có deadline"],0,"Kinh doanh thường có mục tiêu, khách hàng và thay đổi liên tục."),
-        Q("Một báo cáo tốt nên?",["Rõ dữ liệu và kết luận","Thật dài","Nhiều màu","Không cần nguồn"],0,"Báo cáo tốt giúp người đọc hiểu dữ liệu và quyết định."),
-        Q("Bạn có thích tìm cách tăng hiệu quả?",["Có","Một chút","Không","Chưa thử"],0,"Tối ưu hiệu quả là trọng tâm của nhiều vai trò kinh doanh."),
-        Q("Khi khách hàng phàn nàn, bước đầu tiên?",["Lắng nghe và xác định vấn đề","Tranh luận","Xóa phản hồi","Đổ lỗi"],0,"Lắng nghe giúp xác định nhu cầu và nguyên nhân thực tế."),
-        Q("Bạn muốn đo thành công bằng?",["Mục tiêu và kết quả","Cảm giác","Số cuộc họp","Độ dài báo cáo"],0,"Kết quả và mục tiêu là thước đo rõ ràng hơn."),
-        Q("Bạn có thích xây dựng kế hoạch?",["Có","Tùy","Không","Chưa biết"],0,"Lập kế hoạch giúp phối hợp nguồn lực và thời gian."),
-        Q("Khi thị trường thay đổi, bạn sẽ?",["Theo dõi và thích nghi","Giữ nguyên mọi thứ","Bỏ cuộc","Chờ người khác"],0,"Khả năng thích nghi rất quan trọng trong môi trường kinh doanh."),
-        Q("Hoạt động nào giúp kiểm chứng hứng thú kinh doanh?",["Thử bán một sản phẩm nhỏ","Chỉ đọc lý thuyết","Mua khóa học đắt","Không thử"],0,"Một thử nghiệm bán hàng nhỏ cho trải nghiệm thực tế nhanh.")
+      "a": 3,
+      "e": "CNTT bao gồm nhiều hoạt động như phát triển phần mềm, dữ liệu, mạng, an toàn thông tin và các hệ thống xử lý thông tin."
+    },
+    {
+      "q": "Công việc của lập trình viên chủ yếu là gì?",
+      "opts": [
+        "Chỉ thiết kế logo",
+        "Viết và duy trì chương trình phần mềm",
+        "Chỉ nhập dữ liệu",
+        "Chỉ sửa phần cứng máy tính"
       ],
-      health:[
-        Q("Khi một người cần giúp đỡ, bạn thường?",["Lắng nghe và hỗ trợ","Tránh xa","Chỉ đưa lời khuyên","Không quan tâm"],0,"Lắng nghe là kỹ năng quan trọng trong chăm sóc sức khỏe."),
-        Q("Bạn hứng thú với môn nào hơn?",["Sinh học","Thiết kế logo","Kinh doanh","Lập trình"],0,"Sinh học là nền tảng của nhiều lĩnh vực sức khỏe."),
-        Q("Khi thông tin sức khỏe mâu thuẫn, bạn nên?",["Kiểm tra nguồn đáng tin","Chọn điều dễ nghe","Đoán","Chia sẻ ngay"],0,"Thông tin sức khỏe cần được kiểm chứng cẩn thận."),
-        Q("Bạn có kiên nhẫn với công việc tỉ mỉ?",["Có","Một chút","Không","Chưa biết"],0,"Nhiều công việc y tế cần độ chính xác và kiên nhẫn."),
-        Q("Bạn thích công việc nào hơn?",["Giúp người cải thiện sức khỏe","Bán quảng cáo","Lắp máy","Viết code"],0,"Động lực phục vụ người khác phù hợp với nhiều nghề chăm sóc sức khỏe."),
-        Q("Một quy trình an toàn quan trọng vì?",["Giảm rủi ro cho người bệnh","Làm nhanh hơn mọi lúc","Trang trí hồ sơ","Tăng quảng cáo"],0,"An toàn người bệnh là ưu tiên quan trọng."),
-        Q("Bạn có tò mò cơ thể hoạt động thế nào?",["Có","Một chút","Không","Chưa nghĩ"],0,"Tò mò khoa học hỗ trợ việc học y sinh."),
-        Q("Khi làm việc nhóm, bạn ưu tiên?",["Trao đổi thông tin rõ","Làm một mình","Giữ thông tin","Tránh trách nhiệm"],0,"Phối hợp chính xác rất quan trọng trong chăm sóc sức khỏe."),
-        Q("Bạn xử lý tình huống căng thẳng bằng cách?",["Bình tĩnh theo quy trình","Hoảng loạn","Bỏ đi","Đổ lỗi"],0,"Bình tĩnh và tuân thủ quy trình giúp giảm sai sót."),
-        Q("Bạn có thích đọc tài liệu khoa học?",["Có","Tùy chủ đề","Không","Chưa thử"],0,"Nghề sức khỏe đòi hỏi học tập liên tục."),
-        Q("Khi không chắc về một thông tin, bạn sẽ?",["Hỏi/kiểm tra chuyên môn","Nói chắc chắn","Đoán","Bỏ qua"],0,"Biết giới hạn và kiểm tra lại giúp bảo đảm an toàn."),
-        Q("Bạn thích nhiệm vụ nào?",["Theo dõi thay đổi của người bệnh","Trang trí","Bán hàng","Lập trình game"],0,"Theo dõi diễn biến là một phần quan trọng của chăm sóc."),
-        Q("Bạn có thể tuân thủ quy định nghiêm túc?",["Có","Khá tốt","Khó","Chưa biết"],0,"Quy trình và quy định giúp bảo vệ người bệnh và nhân viên."),
-        Q("Điều gì khiến bạn tự hào hơn?",["Giúp ai đó khỏe hơn","Có nhiều lượt thích","Mua đồ mới","Thắng tranh luận"],0,"Động lực giúp người khác là một tín hiệu đáng khám phá."),
-        Q("Bạn có thích giải thích điều khó hiểu theo cách dễ hiểu?",["Có","Một chút","Không","Chưa thử"],0,"Giao tiếp dễ hiểu rất hữu ích khi hướng dẫn người bệnh."),
-        Q("Nếu lịch làm việc thay đổi đột xuất, bạn sẽ?",["Ưu tiên việc quan trọng và thích nghi","Bỏ cuộc","Phàn nàn trước","Không làm gì"],0,"Môi trường chăm sóc sức khỏe đôi khi cần sự linh hoạt."),
-        Q("Bạn thích khoa học ứng dụng vào đời sống?",["Có","Một chút","Không","Chưa nghĩ"],0,"Y tế là lĩnh vực ứng dụng khoa học trực tiếp vào đời sống."),
-        Q("Khi mắc lỗi nhỏ, bạn nên?",["Báo và khắc phục theo quy trình","Che giấu","Đổ lỗi","Bỏ qua"],0,"Minh bạch và khắc phục là nguyên tắc an toàn quan trọng."),
-        Q("Bạn muốn học kỹ năng nào?",["Sơ cứu","Thiết kế banner","Bán hàng","Dựng video"],0,"Sơ cứu là kỹ năng thực tế liên quan trực tiếp đến sức khỏe."),
-        Q("Hoạt động nào giúp kiểm chứng hứng thú y tế?",["Tìm hiểu một nghề và trải nghiệm hoạt động phù hợp","Chỉ xem phim y khoa","Mua dụng cụ","Không thử"],0,"Trải nghiệm thực tế có hướng dẫn giúp hiểu công việc hơn.")
+      "a": 1,
+      "e": "Lập trình viên xây dựng, kiểm thử, sửa lỗi và duy trì phần mềm bằng mã nguồn."
+    },
+    {
+      "q": "Ngôn ngữ lập trình được sử dụng để làm gì?",
+      "opts": [
+        "Trang trí máy tính",
+        "Viết các câu lệnh để máy tính thực hiện",
+        "Thay thế hoàn toàn hệ điều hành",
+        "Tăng tốc độ Internet bằng phần cứng"
       ],
-      engineering:[
-        Q("Một máy móc hoạt động không ổn định, bạn làm gì?",["Tìm nguyên nhân theo từng phần","Đập bỏ","Đoán","Bỏ qua"],0,"Phân tích hệ thống giúp khoanh vùng lỗi."),
-        Q("Bạn thích môn nào hơn?",["Vật lý","Ngữ văn","Marketing","Tâm lý"],0,"Vật lý hỗ trợ nhiều lĩnh vực kỹ thuật."),
-        Q("Bạn thích thiết kế thứ gì?",["Cơ cấu và hệ thống","Poster","Bài quảng cáo","Kịch bản"],0,"Thiết kế hệ thống là phần quan trọng của kỹ thuật."),
-        Q("Khi bản thiết kế chưa đạt yêu cầu, bạn?",["Đo và cải tiến","Bỏ luôn","Đổ lỗi","Trang trí thêm"],0,"Kỹ thuật dựa nhiều vào đo lường và cải tiến."),
-        Q("Bạn có thích làm việc với máy móc?",["Có","Một chút","Không","Chưa thử"],0,"Hứng thú với máy móc là một điểm khởi đầu tốt."),
-        Q("Một cây cầu cần ưu tiên điều gì?",["An toàn và độ bền","Màu sắc","Quảng cáo","Tốc độ thi công bất chấp"],0,"An toàn và độ bền là yêu cầu cốt lõi."),
-        Q("Bạn thích công việc có quy trình rõ nhưng vẫn cần sáng tạo?",["Có","Tùy","Không","Chưa biết"],0,"Kỹ thuật kết hợp tiêu chuẩn với giải pháp sáng tạo."),
-        Q("Robot không làm đúng nhiệm vụ, bạn kiểm tra?",["Cảm biến, chương trình và cơ cấu","Logo","Màu vỏ","Tên robot"],0,"Robot là hệ thống liên kết nhiều thành phần."),
-        Q("Bạn có kiên nhẫn đo lại nhiều lần?",["Có","Khá","Không","Chưa thử"],0,"Đo lường chính xác giúp giảm sai số."),
-        Q("Điều gì hấp dẫn bạn?",["Biến ý tưởng thành vật thật","Viết slogan","Chụp ảnh","Bán hàng"],0,"Kỹ thuật thường biến yêu cầu thành sản phẩm/hệ thống thực."),
-        Q("Nếu hai vật liệu đều dùng được, bạn nên?",["So sánh chi phí, độ bền và yêu cầu","Chọn cái đẹp","Chọn ngẫu nhiên","Chọn cái đắt"],0,"Lựa chọn kỹ thuật cần dựa trên tiêu chí cụ thể."),
-        Q("Bạn thích tìm hiểu vì sao máy hoạt động?",["Có","Một chút","Không","Chưa nghĩ"],0,"Tò mò về cơ chế là lợi thế khi học kỹ thuật."),
-        Q("Một dây chuyền chậm hơn dự kiến, bạn?",["Tìm điểm nghẽn","Tăng người ngay","Bỏ qua","Đổi logo"],0,"Tìm điểm nghẽn giúp tối ưu hệ thống."),
-        Q("Bạn có thích vẽ sơ đồ và bản thiết kế?",["Có","Một chút","Không","Chưa thử"],0,"Sơ đồ giúp mô tả và kiểm soát hệ thống."),
-        Q("Khi thử nghiệm thất bại, bạn?",["Ghi nhận dữ liệu và thử lại","Giấu kết quả","Bỏ luôn","Đổ lỗi"],0,"Thất bại thử nghiệm cung cấp dữ liệu để cải tiến."),
-        Q("Bạn muốn học công cụ nào?",["CAD/mô phỏng","Thiết kế bài đăng","CRM","Biên tập video"],0,"CAD và mô phỏng thường được dùng trong thiết kế kỹ thuật."),
-        Q("Một thiết bị cần an toàn, bạn ưu tiên?",["Thiết kế bảo vệ và kiểm thử","Làm nhanh","Giảm kiểm tra","Bỏ cảnh báo"],0,"An toàn cần được thiết kế và kiểm thử từ đầu."),
-        Q("Bạn thích giải quyết bài toán có giới hạn rõ?",["Có","Tùy","Không","Chưa biết"],0,"Kỹ thuật thường làm việc với các ràng buộc cụ thể."),
-        Q("Khi thông số thay đổi, bạn?",["Tính lại ảnh hưởng","Không quan tâm","Đoán","Giữ kết quả cũ"],0,"Thay đổi thông số có thể ảnh hưởng toàn hệ thống."),
-        Q("Hoạt động nào giúp kiểm chứng hứng thú kỹ thuật?",["Làm một mô hình hoặc dự án nhỏ","Chỉ xem video","Mua đồ đắt","Không thử"],0,"Dự án nhỏ giúp trải nghiệm tư duy thiết kế và thử nghiệm.")
+      "a": 1,
+      "e": "Ngôn ngữ lập trình giúp con người mô tả các lệnh và logic để máy tính thực hiện."
+    },
+    {
+      "q": "Một kỹ năng quan trọng đối với nhiều công việc CNTT là gì?",
+      "opts": [
+        "Chỉ cần giao tiếp tốt",
+        "Tư duy logic và giải quyết vấn đề",
+        "Chỉ cần nhớ thật nhiều thông tin",
+        "Không cần học thêm sau khi tốt nghiệp"
       ],
-      marketing:[
-        Q("Một nội dung ít người xem, bạn muốn kiểm tra gì?",["Khán giả, thông điệp và cách phân phối","Màu nền duy nhất","Xóa ngay","Đăng lại y hệt"],0,"Marketing cần hiểu người xem và thông điệp."),
-        Q("Bạn thích hoạt động nào?",["Nghĩ ý tưởng chiến dịch","Sửa máy","Phân tích xét nghiệm","Lập trình"],0,"Ý tưởng chiến dịch là một phần của marketing."),
-        Q("Một thương hiệu cần điều gì?",["Thông điệp nhất quán và phù hợp khách hàng","Logo thật to","Nhiều chữ","Đăng càng nhiều càng tốt"],0,"Thương hiệu cần định vị và thông điệp nhất quán."),
-        Q("Bạn có thích viết để thuyết phục?",["Có","Một chút","Không","Chưa thử"],0,"Copywriting và nội dung cần khả năng diễn đạt thuyết phục."),
-        Q("Bạn muốn biết khách hàng nghĩ gì bằng cách?",["Khảo sát/phỏng vấn và dữ liệu","Đoán","Hỏi một người","Không cần biết"],0,"Nghiên cứu khách hàng giúp giảm phỏng đoán."),
-        Q("Một quảng cáo nhiều lượt xem nhưng ít mua hàng, bạn?",["Xem lại chất lượng khách hàng và chuyển đổi","Tăng lượt xem bằng mọi giá","Xóa thương hiệu","Đổi font"],0,"Lượt xem không đồng nghĩa với hiệu quả kinh doanh."),
-        Q("Bạn thích làm việc với hình ảnh và chữ?",["Có","Tùy","Không","Chưa thử"],0,"Nội dung thường kết hợp hình ảnh, chữ và câu chuyện."),
-        Q("Khi ý tưởng bị phản đối, bạn?",["Hỏi lý do và thử cải thiện","Cãi ngay","Bỏ luôn","Không nghe"],0,"Feedback giúp ý tưởng tốt hơn."),
-        Q("Bạn có tò mò vì sao một video viral?",["Có","Một chút","Không","Chưa nghĩ"],0,"Phân tích nội dung hiệu quả giúp học marketing."),
-        Q("Một chiến dịch nên có?",["Mục tiêu, đối tượng và cách đo","Chỉ slogan","Chỉ ảnh đẹp","Không cần mục tiêu"],0,"Ba yếu tố này giúp chiến dịch có định hướng và đo lường."),
-        Q("Bạn thích kể chuyện?",["Có","Một chút","Không","Chưa thử"],0,"Storytelling là kỹ năng hữu ích trong truyền thông."),
-        Q("Khi khách hàng thay đổi hành vi, bạn?",["Theo dõi và điều chỉnh thông điệp","Giữ nguyên mãi","Đổ lỗi","Bỏ qua"],0,"Marketing cần thích nghi với khán giả."),
-        Q("Bạn muốn học công cụ nào?",["Analytics và công cụ nội dung","Máy CNC","Thiết bị xét nghiệm","CAD"],0,"Analytics giúp đo và tối ưu hoạt động marketing."),
-        Q("Một bài đăng tốt nên?",["Rõ đối tượng, thông điệp và hành động","Thật dài","Càng nhiều emoji càng tốt","Không cần mục tiêu"],0,"Nội dung tốt có mục tiêu rõ và phù hợp người nhận."),
-        Q("Bạn có thích thử nhiều phiên bản ý tưởng?",["Có","Một chút","Không","Chưa thử"],0,"A/B testing và thử nghiệm là thói quen tốt trong marketing."),
-        Q("Khi thương hiệu bị hiểu sai, bạn?",["Kiểm tra thông điệp và phản hồi","Đăng nhiều hơn không đổi nội dung","Bỏ qua","Xóa tất cả"],0,"Cần tìm nguyên nhân trước khi thay đổi chiến lược."),
-        Q("Bạn thích công việc có phản hồi nhanh?",["Có","Tùy","Không","Chưa biết"],0,"Nhiều kênh marketing cho phản hồi tương đối nhanh."),
-        Q("Bạn có quan tâm đến tâm lý người tiêu dùng?",["Có","Một chút","Không","Chưa nghĩ"],0,"Tâm lý và hành vi khách hàng là nền tảng quan trọng."),
-        Q("Một ý tưởng sáng tạo tốt cần?",["Phù hợp mục tiêu và người nhận","Chỉ thật lạ","Càng phức tạp càng tốt","Không cần lý do"],0,"Sáng tạo hiệu quả phải phục vụ mục tiêu."),
-        Q("Hoạt động nào giúp kiểm chứng hứng thú marketing?",["Làm một chiến dịch nhỏ cho một sản phẩm","Chỉ xem quảng cáo","Mua máy ảnh đắt","Không thử"],0,"Một chiến dịch nhỏ cho trải nghiệm nghiên cứu, nội dung và đo lường.")
-      ]
-    };
-    Object.values(QUIZ).forEach(list=>list.forEach((x,i)=>x.art ||= Object.values(INDUSTRIES)[Object.keys(QUIZ).indexOf(Object.keys(QUIZ).find(k=>QUIZ[k]===list))]?.art || "✨"));
-
-    let quizState = {industry:null,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:""};
+      "a": 1,
+      "e": "Nhiều vị trí CNTT cần phân tích vấn đề, chia nhỏ nhiệm vụ và tìm giải pháp."
+    },
+    {
+      "q": "Database (cơ sở dữ liệu) dùng chủ yếu để làm gì?",
+      "opts": [
+        "Tăng độ sáng màn hình",
+        "Thay thế bàn phím",
+        "Lưu trữ và quản lý dữ liệu",
+        "Tạo hiệu ứng hình ảnh"
+      ],
+      "a": 2,
+      "e": "Cơ sở dữ liệu giúp lưu trữ, tổ chức, truy vấn và quản lý dữ liệu."
+    },
+    {
+      "q": "AI là viết tắt của cụm từ nào?",
+      "opts": [
+        "Artificial Intelligence",
+        "Automatic Internet",
+        "Artificial Internet",
+        "Advanced Information"
+      ],
+      "a": 0,
+      "e": "AI là viết tắt của Artificial Intelligence, nghĩa là trí tuệ nhân tạo."
+    },
+    {
+      "q": "Cybersecurity tập trung vào vấn đề gì?",
+      "opts": [
+        "Bảo vệ hệ thống, mạng và dữ liệu khỏi các mối đe dọa",
+        "Thiết kế máy tính",
+        "Tăng tốc độ CPU",
+        "Thiết kế poster"
+      ],
+      "a": 0,
+      "e": "An toàn thông tin tập trung vào bảo vệ hệ thống, mạng, dữ liệu và người dùng trước các rủi ro."
+    },
+    {
+      "q": "Data Analyst thường làm công việc nào?",
+      "opts": [
+        "Thiết kế nhà",
+        "Sửa điện thoại",
+        "Phân tích dữ liệu để tìm ra thông tin hữu ích",
+        "Điều trị bệnh"
+      ],
+      "a": 2,
+      "e": "Data Analyst dùng dữ liệu để tìm xu hướng, thông tin và hỗ trợ ra quyết định."
+    },
+    {
+      "q": "Cloud Computing có thể hiểu đơn giản là gì?",
+      "opts": [
+        "Sử dụng máy tính không cần Internet",
+        "Lưu dữ liệu trên giấy",
+        "Chỉ dùng máy tính đặt trong phòng máy",
+        "Sử dụng tài nguyên máy tính qua Internet"
+      ],
+      "a": 3,
+      "e": "Điện toán đám mây cho phép sử dụng các tài nguyên như máy chủ, lưu trữ hoặc dịch vụ qua mạng."
+    },
+    {
+      "q": "Git thường được sử dụng trong phát triển phần mềm để làm gì?",
+      "opts": [
+        "Quản lý phiên bản mã nguồn",
+        "Thiết kế hình ảnh",
+        "Tạo bảng tính",
+        "Quản lý tiền lương"
+      ],
+      "a": 0,
+      "e": "Git giúp theo dõi lịch sử thay đổi mã nguồn và hỗ trợ làm việc nhóm."
+    },
+    {
+      "q": "UX/UI liên quan nhiều đến vấn đề nào?",
+      "opts": [
+        "Sản xuất máy móc",
+        "Điều trị bệnh",
+        "Trải nghiệm và giao diện người dùng",
+        "Quản lý tài chính"
+      ],
+      "a": 2,
+      "e": "UX tập trung vào trải nghiệm; UI tập trung nhiều vào giao diện và cách người dùng tương tác."
+    },
+    {
+      "q": "Một đặc điểm quan trọng của ngành CNTT là gì?",
+      "opts": [
+        "Không cần cập nhật kiến thức",
+        "Không cần thực hành",
+        "Học một lần là đủ",
+        "Công nghệ thay đổi nhanh nên cần học hỏi liên tục"
+      ],
+      "a": 3,
+      "e": "Công nghệ thay đổi nhanh nên người làm CNTT thường phải cập nhật kiến thức và công cụ."
+    },
+    {
+      "q": "Khi một chương trình xuất hiện lỗi, lập trình viên thường cần làm gì?",
+      "opts": [
+        "Phân tích và tìm nguyên nhân của lỗi",
+        "Bỏ qua lỗi",
+        "Xóa toàn bộ chương trình ngay",
+        "Đổi máy tính"
+      ],
+      "a": 0,
+      "e": "Quá trình tìm và sửa lỗi thường bắt đầu bằng việc tái hiện, phân tích và xác định nguyên nhân."
+    },
+    {
+      "q": "Một người muốn theo CNTT không nhất thiết phải:",
+      "opts": [
+        "Có khả năng học hỏi",
+        "Biết tất cả mọi ngôn ngữ lập trình",
+        "Có tư duy giải quyết vấn đề",
+        "Thực hành thường xuyên"
+      ],
+      "a": 1,
+      "e": "Không ai cần biết mọi ngôn ngữ. Nên chọn công cụ phù hợp với chuyên môn và tiếp tục học."
+    },
+    {
+      "q": "Điểm nào cần lưu ý khi chọn CNTT?",
+      "opts": [
+        "Cần cân nhắc khả năng học tập liên tục và thích nghi công nghệ",
+        "Đây là ngành không bao giờ cần học thêm",
+        "Chỉ cần thích chơi game",
+        "Chỉ cần biết sử dụng Facebook"
+      ],
+      "a": 0,
+      "e": "Nên tìm hiểu yêu cầu học tập và tính chất công việc thay vì chỉ nhìn vào tên ngành."
+    },
+    {
+      "q": "Software Engineer thường tham gia vào quá trình nào?",
+      "opts": [
+        "Chỉ bán máy tính",
+        "Chỉ sửa màn hình",
+        "Chỉ nhập dữ liệu",
+        "Phân tích, thiết kế, xây dựng và duy trì phần mềm"
+      ],
+      "a": 3,
+      "e": "Software Engineer có thể tham gia nhiều giai đoạn của vòng đời phần mềm."
+    },
+    {
+      "q": "Kỹ năng tiếng Anh có thể hữu ích với người học CNTT vì:",
+      "opts": [
+        "Không có tài liệu CNTT bằng tiếng Việt",
+        "Máy tính chỉ hoạt động bằng tiếng Anh",
+        "Lập trình bắt buộc phải nói tiếng Anh",
+        "Nhiều tài liệu và công nghệ được trình bày bằng tiếng Anh"
+      ],
+      "a": 3,
+      "e": "Tiếng Anh giúp tiếp cận tài liệu, tài liệu kỹ thuật và cộng đồng công nghệ rộng hơn."
+    },
+    {
+      "q": "Làm CNTT có nhất thiết phải làm việc một mình?",
+      "opts": [
+        "Không, nhiều dự án cần làm việc nhóm",
+        "Có, luôn luôn làm một mình",
+        "Không bao giờ cần giao tiếp",
+        "Chỉ được làm việc nhóm khi còn đi học"
+      ],
+      "a": 0,
+      "e": "Phát triển sản phẩm thường cần phối hợp giữa kỹ thuật, thiết kế, sản phẩm và các bên liên quan."
+    },
+    {
+      "q": "Một hiểu lầm phổ biến về CNTT là:",
+      "opts": [
+        "Kỹ năng giao tiếp cũng có thể quan trọng",
+        "Có nhiều vị trí ngoài lập trình",
+        "Chỉ cần giỏi Toán là chắc chắn phù hợp CNTT",
+        "CNTT có nhiều chuyên ngành khác nhau"
+      ],
+      "a": 2,
+      "e": "CNTT có nhiều hướng; năng lực phù hợp còn phụ thuộc chuyên ngành và yêu cầu công việc."
+    },
+    {
+      "q": "Trước khi chọn CNTT, điều quan trọng nhất là nên:",
+      "opts": [
+        "Chọn vì bạn bè chọn",
+        "Chọn chỉ vì mức lương được nhắc đến nhiều",
+        "Chọn vì ngành đang nổi tiếng",
+        "Tìm hiểu công việc thực tế và thử trải nghiệm những hoạt động liên quan"
+      ],
+      "a": 3,
+      "e": "Trải nghiệm nhỏ và tìm hiểu công việc thực tế giúp có hình dung thực tế hơn về ngành."
+    }
+  ],
+  "business": [
+    {
+      "q": "Kinh doanh chủ yếu hướng tới việc nào?",
+      "opts": [
+        "Chỉ quản lý tiền mặt",
+        "Chỉ bán hàng online",
+        "Chỉ quảng cáo",
+        "Tạo ra và cung cấp sản phẩm/dịch vụ đáp ứng nhu cầu thị trường"
+      ],
+      "a": 3,
+      "e": "Kinh doanh bao gồm việc tạo và cung cấp giá trị cho khách hàng, cùng nhiều hoạt động vận hành và quản lý."
+    },
+    {
+      "q": "Tài chính tập trung nhiều vào vấn đề nào?",
+      "opts": [
+        "Thiết kế sản phẩm",
+        "Quản lý và sử dụng nguồn tiền",
+        "Lập trình phần mềm",
+        "Điều trị bệnh"
+      ],
+      "a": 1,
+      "e": "Tài chính liên quan đến việc quản lý nguồn vốn, dòng tiền, đầu tư, rủi ro và các quyết định tài chính."
+    },
+    {
+      "q": "Doanh thu là gì?",
+      "opts": [
+        "Tiền lương của nhân viên",
+        "Tổng số tiền doanh nghiệp nợ",
+        "Chi phí quảng cáo",
+        "Khoản tiền doanh nghiệp thu được từ hoạt động bán hàng/cung cấp dịch vụ"
+      ],
+      "a": 3,
+      "e": "Doanh thu phản ánh khoản thu từ hoạt động kinh doanh trước khi trừ các chi phí."
+    },
+    {
+      "q": "Lợi nhuận được hiểu đơn giản là:",
+      "opts": [
+        "Phần còn lại sau khi lấy doanh thu trừ các chi phí liên quan",
+        "Toàn bộ tiền vay",
+        "Toàn bộ doanh thu",
+        "Tiền vốn ban đầu"
+      ],
+      "a": 0,
+      "e": "Lợi nhuận là phần chênh lệch còn lại sau khi doanh thu được trừ các chi phí liên quan."
+    },
+    {
+      "q": "Marketing khác Sales ở điểm nào?",
+      "opts": [
+        "Sales chỉ làm quảng cáo",
+        "Marketing tập trung nhiều vào thị trường, khách hàng và nhu cầu; Sales tập trung nhiều vào quá trình bán hàng",
+        "Hai lĩnh vực hoàn toàn giống nhau",
+        "Marketing chỉ thu tiền"
+      ],
+      "a": 1,
+      "e": "Marketing và Sales có liên hệ nhưng có trọng tâm công việc khác nhau."
+    },
+    {
+      "q": "Business Analyst thường làm gì?",
+      "opts": [
+        "Lắp ráp máy móc",
+        "Phân tích nhu cầu và vấn đề kinh doanh để hỗ trợ đưa ra giải pháp",
+        "Điều trị bệnh",
+        "Viết tiểu thuyết"
+      ],
+      "a": 1,
+      "e": "Business Analyst kết nối nhu cầu kinh doanh với yêu cầu và giải pháp phù hợp."
+    },
+    {
+      "q": "Financial Analyst thường phân tích:",
+      "opts": [
+        "Dữ liệu và thông tin tài chính",
+        "Mã nguồn phần mềm",
+        "Hệ thống điện",
+        "Thiết kế đồ họa"
+      ],
+      "a": 0,
+      "e": "Financial Analyst thường sử dụng dữ liệu tài chính để đánh giá tình hình và hỗ trợ quyết định."
+    },
+    {
+      "q": "Một kỹ năng quan trọng trong kinh doanh là:",
+      "opts": [
+        "Chỉ cần nói nhiều",
+        "Giao tiếp và giải quyết vấn đề",
+        "Không cần hiểu khách hàng",
+        "Chỉ cần tính toán nhanh"
+      ],
+      "a": 1,
+      "e": "Nhiều vị trí kinh doanh cần giao tiếp, phân tích nhu cầu và xử lý vấn đề."
+    },
+    {
+      "q": "Thị trường là nơi:",
+      "opts": [
+        "Chỉ có nhà máy hoạt động",
+        "Người mua và người bán tương tác để trao đổi hàng hóa/dịch vụ",
+        "Chỉ có ngân hàng hoạt động",
+        "Chỉ có doanh nghiệp hoạt động"
+      ],
+      "a": 1,
+      "e": "Thị trường là môi trường trong đó người mua và người bán tương tác về hàng hóa hoặc dịch vụ."
+    },
+    {
+      "q": "Nghiên cứu thị trường giúp doanh nghiệp:",
+      "opts": [
+        "Không cần marketing",
+        "Đảm bảo chắc chắn sản phẩm sẽ thành công",
+        "Không cần cạnh tranh",
+        "Hiểu khách hàng và thị trường tốt hơn"
+      ],
+      "a": 3,
+      "e": "Nghiên cứu thị trường cung cấp thông tin hỗ trợ hiểu khách hàng và bối cảnh cạnh tranh; không đảm bảo thành công."
+    },
+    {
+      "q": "Quản trị rủi ro tài chính nhằm:",
+      "opts": [
+        "Tăng chi phí bằng mọi cách",
+        "Nhận diện và kiểm soát những rủi ro liên quan đến tài chính",
+        "Chỉ tăng doanh thu",
+        "Loại bỏ hoàn toàn mọi rủi ro"
+      ],
+      "a": 1,
+      "e": "Quản trị rủi ro hướng đến nhận diện, đánh giá và kiểm soát rủi ro chứ không thể loại bỏ mọi rủi ro."
+    },
+    {
+      "q": "Kế toán có vai trò quan trọng trong việc:",
+      "opts": [
+        "Thiết kế website",
+        "Ghi nhận, xử lý và báo cáo thông tin tài chính",
+        "Quản lý bệnh viện",
+        "Sửa máy tính"
+      ],
+      "a": 1,
+      "e": "Kế toán cung cấp thông tin tài chính có hệ thống cho doanh nghiệp và các bên liên quan."
+    },
+    {
+      "q": "Một người làm kinh doanh cần hiểu khách hàng vì:",
+      "opts": [
+        "Doanh nghiệp không cần nghiên cứu thị trường",
+        "Khách hàng luôn mua bất kỳ sản phẩm nào",
+        "Giá sản phẩm không quan trọng",
+        "Nhu cầu khách hàng ảnh hưởng đến sản phẩm và chiến lược kinh doanh"
+      ],
+      "a": 3,
+      "e": "Hiểu khách hàng giúp doanh nghiệp xây dựng sản phẩm, dịch vụ và cách tiếp cận phù hợp."
+    },
+    {
+      "q": "Một đặc điểm cần cân nhắc khi chọn kinh doanh là:",
+      "opts": [
+        "Công việc có thể liên quan đến áp lực mục tiêu và kết quả",
+        "Không cần giao tiếp",
+        "Không cần cập nhật thị trường",
+        "Luôn có thu nhập cố định cao"
+      ],
+      "a": 0,
+      "e": "Một số vị trí kinh doanh gắn với mục tiêu, doanh số hoặc kết quả nên cần cân nhắc mức độ phù hợp với bản thân."
+    },
+    {
+      "q": "Làm tài chính có nghĩa là:",
+      "opts": [
+        "Chỉ làm ngân hàng",
+        "Chỉ làm việc với tiền mặt",
+        "Chỉ làm thu ngân",
+        "Có thể liên quan đến phân tích, đầu tư, quản trị rủi ro và nhiều hoạt động tài chính khác"
+      ],
+      "a": 3,
+      "e": "Tài chính là lĩnh vực rộng, không chỉ giới hạn ở tiền mặt hay ngân hàng."
+    },
+    {
+      "q": "Khi phân tích một quyết định kinh doanh, dữ liệu có vai trò:",
+      "opts": [
+        "Cung cấp cơ sở để đánh giá và ra quyết định",
+        "Không cần thiết",
+        "Luôn đưa ra đáp án chính xác tuyệt đối",
+        "Chỉ dùng cho kế toán"
+      ],
+      "a": 0,
+      "e": "Dữ liệu hỗ trợ quyết định nhưng cần được hiểu đúng bối cảnh và không tự động đảm bảo quyết định đúng."
+    },
+    {
+      "q": "Đạo đức nghề nghiệp trong tài chính quan trọng vì:",
+      "opts": [
+        "Chỉ cần thiết khi có kiểm tra",
+        "Không liên quan đến công việc",
+        "Chỉ để doanh nghiệp đẹp hình ảnh",
+        "Công việc liên quan đến thông tin và quyết định tài chính có thể ảnh hưởng đến nhiều bên"
+      ],
+      "a": 3,
+      "e": "Tính trung thực, trách nhiệm và bảo mật đặc biệt quan trọng khi xử lý thông tin tài chính."
+    },
+    {
+      "q": "Một người không thích giao tiếp có thể gặp khó khăn ở một số vị trí kinh doanh vì:",
+      "opts": [
+        "Mọi công việc kinh doanh đều phải bán hàng",
+        "Nhiều vị trí yêu cầu làm việc với khách hàng hoặc đồng nghiệp",
+        "Không thể học kinh doanh",
+        "Không thể làm việc với dữ liệu"
+      ],
+      "a": 1,
+      "e": "Một số vị trí cần giao tiếp nhiều, nhưng lĩnh vực kinh doanh cũng có các vai trò thiên về dữ liệu và phân tích."
+    },
+    {
+      "q": "Không nên chọn ngành kinh doanh/tài chính chỉ vì:",
+      "opts": [
+        "Muốn học về thị trường",
+        "Quan tâm đến doanh nghiệp",
+        "Thích phân tích số liệu",
+        "Nghe nói ngành có mức lương cao"
+      ],
+      "a": 3,
+      "e": "Mức thu nhập chỉ là một yếu tố; cần xem cả công việc, kỹ năng, môi trường và sở thích."
+    },
+    {
+      "q": "Trước khi chọn ngành này, nên tìm hiểu:",
+      "opts": [
+        "Công việc thực tế, yêu cầu kỹ năng và môi trường làm việc",
+        "Chỉ mức lương",
+        "Chỉ ý kiến của bạn bè",
+        "Chỉ tên trường đại học"
+      ],
+      "a": 0,
+      "e": "Tìm hiểu công việc thực tế giúp lựa chọn dựa trên thông tin đầy đủ hơn."
+    }
+  ],
+  "health": [
+    {
+      "q": "Mục tiêu cơ bản của lĩnh vực y tế là:",
+      "opts": [
+        "Chỉ làm xét nghiệm",
+        "Chỉ nghiên cứu máy móc",
+        "Phòng bệnh, chẩn đoán, điều trị và chăm sóc sức khỏe",
+        "Chỉ bán thuốc"
+      ],
+      "a": 2,
+      "e": "Y tế bao gồm nhiều hoạt động nhằm bảo vệ, duy trì và cải thiện sức khỏe."
+    },
+    {
+      "q": "Bác sĩ thường có vai trò:",
+      "opts": [
+        "Chỉ phát thuốc",
+        "Khám, chẩn đoán và điều trị bệnh trong phạm vi chuyên môn",
+        "Chỉ chăm sóc hành chính",
+        "Chỉ làm xét nghiệm máu"
+      ],
+      "a": 1,
+      "e": "Bác sĩ được đào tạo để đánh giá tình trạng sức khỏe, chẩn đoán và điều trị trong phạm vi chuyên môn."
+    },
+    {
+      "q": "Điều dưỡng có vai trò quan trọng trong:",
+      "opts": [
+        "Lập trình phần mềm",
+        "Chăm sóc và theo dõi người bệnh",
+        "Quản lý chứng khoán",
+        "Thiết kế bệnh viện"
+      ],
+      "a": 1,
+      "e": "Điều dưỡng tham gia chăm sóc, theo dõi và hỗ trợ người bệnh theo chuyên môn."
+    },
+    {
+      "q": "Dược sĩ liên quan chủ yếu đến:",
+      "opts": [
+        "Phẫu thuật",
+        "Xây dựng bệnh viện",
+        "Lập trình",
+        "Thuốc và việc sử dụng thuốc an toàn, hợp lý trong phạm vi chuyên môn"
+      ],
+      "a": 3,
+      "e": "Dược sĩ có chuyên môn về thuốc và việc sử dụng thuốc an toàn, hợp lý."
+    },
+    {
+      "q": "Một kỹ năng quan trọng trong ngành y tế là:",
+      "opts": [
+        "Chỉ cần nói chuyện hay",
+        "Không cần làm việc nhóm",
+        "Chỉ cần học thuộc",
+        "Cẩn thận và có trách nhiệm"
+      ],
+      "a": 3,
+      "e": "Y tế đòi hỏi sự chính xác, trách nhiệm và phối hợp với nhiều người."
+    },
+    {
+      "q": "Vì sao nhân viên y tế cần tuân thủ quy trình?",
+      "opts": [
+        "Chỉ để tiết kiệm thời gian",
+        "Vì sai sót có thể ảnh hưởng đến sức khỏe và an toàn người bệnh",
+        "Vì mọi ngành đều phải làm giống nhau",
+        "Không có lý do cụ thể"
+      ],
+      "a": 1,
+      "e": "Quy trình giúp giảm rủi ro và hỗ trợ thực hiện công việc an toàn, nhất quán."
+    },
+    {
+      "q": "Làm việc trong y tế thường đòi hỏi:",
+      "opts": [
+        "Không cần cập nhật kiến thức",
+        "Luôn làm việc một mình",
+        "Khả năng phối hợp với nhiều nhân viên và chuyên môn khác nhau",
+        "Không cần giao tiếp"
+      ],
+      "a": 2,
+      "e": "Chăm sóc sức khỏe thường là công việc liên ngành và cần phối hợp."
+    },
+    {
+      "q": "Một đặc điểm cần cân nhắc khi chọn ngành y tế là:",
+      "opts": [
+        "Không cần học lâu dài",
+        "Công việc luôn nhẹ nhàng",
+        "Có thể phải đối mặt với áp lực công việc và trách nhiệm cao",
+        "Không bao giờ phải trực"
+      ],
+      "a": 2,
+      "e": "Tùy nghề và nơi làm việc, lĩnh vực y tế có thể có áp lực, ca trực và trách nhiệm chuyên môn đáng kể."
+    },
+    {
+      "q": "Xét nghiệm y học giúp:",
+      "opts": [
+        "Thay thế hoàn toàn bác sĩ",
+        "Điều trị mọi bệnh",
+        "Thay thế thuốc",
+        "Cung cấp thông tin hỗ trợ chẩn đoán và theo dõi sức khỏe"
+      ],
+      "a": 3,
+      "e": "Kết quả xét nghiệm là một nguồn thông tin hỗ trợ đánh giá và theo dõi tình trạng sức khỏe."
+    },
+    {
+      "q": "Vật lý trị liệu tập trung nhiều vào:",
+      "opts": [
+        "Hỗ trợ phục hồi chức năng và vận động",
+        "Marketing",
+        "Quản lý tài chính",
+        "Lập trình"
+      ],
+      "a": 0,
+      "e": "Vật lý trị liệu hướng đến phục hồi hoặc cải thiện chức năng vận động và hoạt động thể chất."
+    },
+    {
+      "q": "Dinh dưỡng liên quan đến:",
+      "opts": [
+        "Chỉ bán thực phẩm",
+        "Chỉ giảm cân",
+        "Chế độ ăn và mối liên hệ giữa dinh dưỡng với sức khỏe",
+        "Chỉ nấu ăn"
+      ],
+      "a": 2,
+      "e": "Dinh dưỡng xem xét vai trò của thực phẩm và chế độ ăn đối với sức khỏe và bệnh tật."
+    },
+    {
+      "q": "Một người làm y tế cần giao tiếp tốt vì:",
+      "opts": [
+        "Không liên quan đến chăm sóc bệnh nhân",
+        "Chỉ cần thiết với bác sĩ",
+        "Cần trao đổi với người bệnh, gia đình và đồng nghiệp",
+        "Chỉ để quảng cáo bệnh viện"
+      ],
+      "a": 2,
+      "e": "Giao tiếp rõ ràng giúp trao đổi thông tin, hướng dẫn và phối hợp chăm sóc."
+    },
+    {
+      "q": "Ngành y tế yêu cầu cập nhật kiến thức vì:",
+      "opts": [
+        "Không có lý do",
+        "Kiến thức, phương pháp và công nghệ y khoa liên tục phát triển",
+        "Chỉ để thi lại",
+        "Kiến thức y khoa không bao giờ thay đổi"
+      ],
+      "a": 1,
+      "e": "Y khoa phát triển liên tục nên người làm nghề cần cập nhật kiến thức và hướng dẫn chuyên môn."
+    },
+    {
+      "q": "Một người sợ máu có chắc chắn không thể làm bất kỳ công việc nào trong y tế không?",
+      "opts": [
+        "Có, tất cả đều phải lấy máu",
+        "Có, tất cả đều phải phẫu thuật",
+        "Có, tất cả đều phải làm cấp cứu",
+        "Không, y tế có nhiều vị trí và chuyên ngành khác nhau"
+      ],
+      "a": 3,
+      "e": "Y tế có nhiều nhóm nghề với tính chất công việc khác nhau; vẫn cần tìm hiểu yêu cầu cụ thể của từng nghề."
+    },
+    {
+      "q": "Đạo đức nghề nghiệp trong y tế đặc biệt quan trọng vì:",
+      "opts": [
+        "Chỉ cần khi có kiểm tra",
+        "Công việc liên quan trực tiếp hoặc gián tiếp đến sức khỏe và quyền lợi người bệnh",
+        "Chỉ để bệnh viện có hình ảnh đẹp",
+        "Không liên quan đến chuyên môn"
+      ],
+      "a": 1,
+      "e": "Đạo đức và trách nhiệm nghề nghiệp liên quan đến an toàn, quyền lợi và sự tôn trọng người bệnh."
+    },
+    {
+      "q": "Làm việc trong ngành y tế không chỉ có nghề bác sĩ vì:",
+      "opts": [
+        "Chỉ có hai nghề",
+        "Tất cả đều giống nhau",
+        "Bác sĩ làm tất cả mọi việc",
+        "Có nhiều nhóm nghề như điều dưỡng, dược, xét nghiệm, phục hồi chức năng..."
+      ],
+      "a": 3,
+      "e": "Hệ thống y tế có nhiều chuyên môn bổ trợ cho nhau."
+    },
+    {
+      "q": "Một yếu tố nên cân nhắc trước khi chọn ngành y tế là:",
+      "opts": [
+        "Chỉ danh tiếng",
+        "Thời gian đào tạo, yêu cầu chuyên môn và tính chất công việc",
+        "Chỉ mức lương",
+        "Chỉ vì gia đình muốn"
+      ],
+      "a": 1,
+      "e": "Nên xem cả quá trình đào tạo, yêu cầu hành nghề và thực tế công việc."
+    },
+    {
+      "q": "Trong y tế, bảo mật thông tin người bệnh là:",
+      "opts": [
+        "Không cần thiết",
+        "Một vấn đề quan trọng trong nghề nghiệp",
+        "Chỉ quan trọng khi có truyền thông",
+        "Chỉ quan trọng với bệnh viện tư"
+      ],
+      "a": 1,
+      "e": "Thông tin sức khỏe là thông tin nhạy cảm và cần được xử lý theo quy định, đạo đức và chuyên môn."
+    },
+    {
+      "q": "Người phù hợp với lĩnh vực y tế thường cần có:",
+      "opts": [
+        "Chỉ khả năng ghi nhớ",
+        "Trách nhiệm, sự cẩn thận và khả năng học tập lâu dài",
+        "Chỉ khả năng giao tiếp",
+        "Chỉ khả năng làm việc nhanh"
+      ],
+      "a": 1,
+      "e": "Đây là những phẩm chất hữu ích, nhưng mức độ cần thiết còn phụ thuộc từng nghề trong lĩnh vực y tế."
+    },
+    {
+      "q": "Điều quan trọng trước khi chọn ngành y tế là:",
+      "opts": [
+        "Chọn theo bạn bè",
+        "Chỉ xem phim về bệnh viện",
+        "Chỉ xem mức lương",
+        "Tìm hiểu thực tế công việc và yêu cầu đào tạo của nghề"
+      ],
+      "a": 3,
+      "e": "Nên tìm hiểu chương trình đào tạo, môi trường làm việc và trải nghiệm thực tế nếu có thể."
+    }
+  ],
+  "engineering": [
+    {
+      "q": "Kỹ thuật thường sử dụng:",
+      "opts": [
+        "Kiến thức khoa học và toán học để thiết kế, xây dựng hoặc cải tiến hệ thống/sản phẩm",
+        "Chỉ kiến thức văn học",
+        "Chỉ kỹ năng bán hàng",
+        "Chỉ kỹ năng giao tiếp"
+      ],
+      "a": 0,
+      "e": "Kỹ thuật ứng dụng kiến thức khoa học và toán học để giải quyết vấn đề thực tế."
+    },
+    {
+      "q": "Kỹ sư cơ khí thường liên quan đến:",
+      "opts": [
+        "Chẩn đoán bệnh",
+        "Marketing",
+        "Kế toán",
+        "Máy móc, cơ cấu và hệ thống cơ khí"
+      ],
+      "a": 3,
+      "e": "Cơ khí tập trung vào máy móc, vật liệu, chuyển động, thiết kế và các hệ thống cơ học."
+    },
+    {
+      "q": "Kỹ thuật điện liên quan nhiều đến:",
+      "opts": [
+        "Quảng cáo",
+        "Tài chính",
+        "Quản lý bệnh nhân",
+        "Điện, hệ thống điện và các thiết bị điện"
+      ],
+      "a": 3,
+      "e": "Kỹ thuật điện bao gồm các hệ thống và thiết bị liên quan đến điện và năng lượng điện."
+    },
+    {
+      "q": "Tự động hóa nhằm:",
+      "opts": [
+        "Sử dụng hệ thống điều khiển và công nghệ để tự động thực hiện một phần hoặc toàn bộ quy trình",
+        "Thay thế mọi con người trong mọi công việc",
+        "Chỉ thiết kế website",
+        "Chỉ sửa điện thoại"
+      ],
+      "a": 0,
+      "e": "Tự động hóa dùng cảm biến, điều khiển và công nghệ để tự động hóa các công đoạn phù hợp."
+    },
+    {
+      "q": "Robotics liên quan đến:",
+      "opts": [
+        "Thiết kế, chế tạo, lập trình và ứng dụng robot",
+        "Chỉ thiết kế logo",
+        "Chỉ kinh doanh",
+        "Chỉ nghiên cứu thuốc"
+      ],
+      "a": 0,
+      "e": "Robot thường kết hợp cơ khí, điện/điện tử, điều khiển và phần mềm."
+    },
+    {
+      "q": "Một kỹ năng quan trọng của nhiều kỹ sư là:",
+      "opts": [
+        "Tư duy phân tích và giải quyết vấn đề",
+        "Chỉ khả năng ghi nhớ",
+        "Không cần toán học",
+        "Chỉ khả năng thuyết trình"
+      ],
+      "a": 0,
+      "e": "Kỹ sư thường phải phân tích yêu cầu, giới hạn và tìm giải pháp kỹ thuật."
+    },
+    {
+      "q": "Vì sao kỹ sư cần quan tâm đến an toàn?",
+      "opts": [
+        "Chỉ để hoàn thành hồ sơ",
+        "Chỉ cần thiết trong nhà máy",
+        "Không liên quan đến kỹ thuật",
+        "Thiết kế và vận hành hệ thống có thể ảnh hưởng đến con người và tài sản"
+      ],
+      "a": 3,
+      "e": "An toàn là yếu tố quan trọng khi thiết kế, xây dựng và vận hành hệ thống kỹ thuật."
+    },
+    {
+      "q": "CAD thường được sử dụng để:",
+      "opts": [
+        "Chạy quảng cáo",
+        "Quản lý tài chính",
+        "Phân tích bệnh",
+        "Thiết kế và vẽ kỹ thuật bằng máy tính"
+      ],
+      "a": 3,
+      "e": "CAD hỗ trợ tạo và chỉnh sửa bản vẽ, mô hình kỹ thuật bằng máy tính."
+    },
+    {
+      "q": "Kỹ thuật xây dựng liên quan đến:",
+      "opts": [
+        "Phát triển thuốc",
+        "Thiết kế, xây dựng và quản lý các công trình",
+        "Marketing",
+        "Phân tích cổ phiếu"
+      ],
+      "a": 1,
+      "e": "Xây dựng liên quan đến nhiều công đoạn của công trình như thiết kế, thi công và quản lý."
+    },
+    {
+      "q": "Cơ điện tử kết hợp nhiều lĩnh vực như:",
+      "opts": [
+        "Cơ khí, điện/điện tử và điều khiển",
+        "Chỉ marketing",
+        "Chỉ văn học",
+        "Chỉ tài chính"
+      ],
+      "a": 0,
+      "e": "Cơ điện tử là lĩnh vực liên ngành, thường kết hợp cơ khí, điện tử, điều khiển và phần mềm."
+    },
+    {
+      "q": "Một dự án kỹ thuật thường cần:",
+      "opts": [
+        "Chỉ thuyết trình",
+        "Chỉ vẽ bản thiết kế",
+        "Chỉ mua vật liệu",
+        "Tính toán, thiết kế, thử nghiệm và đánh giá"
+      ],
+      "a": 3,
+      "e": "Dự án kỹ thuật thường trải qua các bước thiết kế, kiểm tra, thử nghiệm và cải tiến."
+    },
+    {
+      "q": "Kỹ sư không chỉ làm việc trong nhà máy vì:",
+      "opts": [
+        "Kỹ sư chỉ làm ở nhà máy",
+        "Kỹ sư chỉ làm ngoài công trường",
+        "Kỹ sư chỉ làm trong phòng thí nghiệm",
+        "Kỹ sư có thể làm việc trong nhiều ngành và môi trường khác nhau"
+      ],
+      "a": 3,
+      "e": "Kỹ sư có thể làm ở văn phòng, nhà máy, công trường, phòng thí nghiệm hoặc nhiều môi trường khác."
+    },
+    {
+      "q": "Một điểm cần lưu ý khi học kỹ thuật là:",
+      "opts": [
+        "Không cần học các môn khoa học",
+        "Không cần thực hành",
+        "Một số chuyên ngành có nền tảng Toán, Vật lý hoặc các môn kỹ thuật khá quan trọng",
+        "Chỉ cần giao tiếp"
+      ],
+      "a": 2,
+      "e": "Yêu cầu cụ thể tùy chuyên ngành, nhưng nền tảng khoa học và thực hành thường quan trọng."
+    },
+    {
+      "q": "Prototype là:",
+      "opts": [
+        "Mẫu thử được tạo ra để kiểm tra và cải tiến thiết kế",
+        "Sản phẩm cuối cùng luôn luôn",
+        "Một phần mềm kế toán",
+        "Một loại bằng cấp"
+      ],
+      "a": 0,
+      "e": "Prototype giúp kiểm tra ý tưởng hoặc thiết kế trước khi hoàn thiện sản phẩm."
+    },
+    {
+      "q": "Kỹ thuật và công nghệ thường cần đổi mới vì:",
+      "opts": [
+        "Nhu cầu và công nghệ liên tục thay đổi",
+        "Thiết kế không cần cải tiến",
+        "Máy móc không bao giờ thay đổi",
+        "Chỉ vì marketing"
+      ],
+      "a": 0,
+      "e": "Công nghệ và yêu cầu sử dụng thay đổi nên kỹ sư thường phải cải tiến giải pháp."
+    },
+    {
+      "q": "Một kỹ sư có thể cần làm việc nhóm vì:",
+      "opts": [
+        "Chỉ để chia việc đơn giản",
+        "Không có lý do",
+        "Kỹ sư không được làm việc độc lập",
+        "Dự án thường cần nhiều chuyên môn phối hợp"
+      ],
+      "a": 3,
+      "e": "Dự án kỹ thuật thường liên quan nhiều chuyên môn và bên liên quan."
+    },
+    {
+      "q": "Một người thích tìm hiểu cách máy móc hoạt động có thể quan tâm đến:",
+      "opts": [
+        "Chỉ kế toán",
+        "Chỉ marketing",
+        "Chỉ ngôn ngữ học",
+        "Các lĩnh vực kỹ thuật như cơ khí, điện, điện tử hoặc cơ điện tử"
+      ],
+      "a": 3,
+      "e": "Đây là các hướng có liên hệ trực tiếp với máy móc và hệ thống kỹ thuật."
+    },
+    {
+      "q": "Một hiểu lầm về ngành kỹ thuật là:",
+      "opts": [
+        "Kỹ sư chỉ làm những công việc tay chân",
+        "Kỹ sư có thể tham gia thiết kế và giải quyết vấn đề",
+        "Kỹ thuật có nhiều chuyên ngành",
+        "Kỹ thuật có thể kết hợp với công nghệ"
+      ],
+      "a": 0,
+      "e": "Kỹ sư có thể làm công việc phân tích, thiết kế, mô phỏng, quản lý dự án và nhiều công việc khác."
+    },
+    {
+      "q": "Trước khi chọn kỹ thuật nên tìm hiểu:",
+      "opts": [
+        "Chỉ mức lương",
+        "Chỉ ngành đang nổi",
+        "Chỉ tên trường",
+        "Đặc thù từng chuyên ngành và môi trường làm việc"
+      ],
+      "a": 3,
+      "e": "Các chuyên ngành kỹ thuật có yêu cầu và môi trường làm việc rất khác nhau."
+    },
+    {
+      "q": "Một yếu tố quan trọng khi chọn ngành kỹ thuật là:",
+      "opts": [
+        "Vì nghe nói dễ xin việc",
+        "Chỉ vì ngành có chữ “công nghệ”",
+        "Vì bạn bè chọn",
+        "Cân nhắc sở thích với máy móc/công nghệ, khả năng khoa học và tính chất công việc thực tế"
+      ],
+      "a": 3,
+      "e": "Nên cân nhắc sở thích, năng lực nền tảng và thực tế công việc thay vì chỉ dựa vào xu hướng."
+    }
+  ],
+  "marketing": [
+    {
+      "q": "Marketing chủ yếu nhằm:",
+      "opts": [
+        "Chỉ thiết kế poster",
+        "Chỉ bán hàng",
+        "Hiểu nhu cầu khách hàng và tạo ra giá trị phù hợp cho thị trường",
+        "Chỉ chạy quảng cáo"
+      ],
+      "a": 2,
+      "e": "Marketing rộng hơn quảng cáo và bao gồm việc hiểu thị trường, khách hàng và tạo giá trị."
+    },
+    {
+      "q": "Truyền thông liên quan đến:",
+      "opts": [
+        "Việc xây dựng và truyền tải thông tin đến đối tượng mục tiêu",
+        "Chỉ quản lý tiền",
+        "Chỉ bán sản phẩm",
+        "Chỉ thiết kế website"
+      ],
+      "a": 0,
+      "e": "Truyền thông tập trung vào cách thông tin được xây dựng, truyền tải và tiếp nhận."
+    },
+    {
+      "q": "Đối tượng mục tiêu là:",
+      "opts": [
+        "Chỉ nhân viên công ty",
+        "Toàn bộ dân số trong mọi trường hợp",
+        "Nhóm người mà hoạt động marketing/truyền thông hướng đến",
+        "Chỉ người nổi tiếng"
+      ],
+      "a": 2,
+      "e": "Xác định đối tượng giúp thông điệp và kênh tiếp cận phù hợp hơn."
+    },
+    {
+      "q": "Content Marketing tập trung vào:",
+      "opts": [
+        "Chỉ thiết kế logo",
+        "Chỉ gọi điện cho khách hàng",
+        "Tạo và phân phối nội dung có giá trị cho đối tượng mục tiêu",
+        "Chỉ bán hàng trực tiếp"
+      ],
+      "a": 2,
+      "e": "Content Marketing dùng nội dung để cung cấp giá trị và hỗ trợ mục tiêu marketing."
+    },
+    {
+      "q": "SEO liên quan đến:",
+      "opts": [
+        "Chẩn đoán bệnh",
+        "Tối ưu nội dung/trang web để cải thiện khả năng xuất hiện trên công cụ tìm kiếm",
+        "Quản lý tài chính",
+        "Sản xuất máy móc"
+      ],
+      "a": 1,
+      "e": "SEO là tập hợp các hoạt động tối ưu để công cụ tìm kiếm hiểu và hiển thị nội dung phù hợp."
+    },
+    {
+      "q": "Social Media Marketing sử dụng:",
+      "opts": [
+        "Chỉ email nội bộ",
+        "Chỉ báo giấy",
+        "Các nền tảng mạng xã hội để tiếp cận và tương tác với đối tượng mục tiêu",
+        "Chỉ truyền hình"
+      ],
+      "a": 2,
+      "e": "Mạng xã hội là một nhóm kênh có thể dùng để tiếp cận, tương tác và xây dựng cộng đồng."
+    },
+    {
+      "q": "Một người làm marketing cần hiểu khách hàng vì:",
+      "opts": [
+        "Chỉ cần sáng tạo",
+        "Hiểu khách hàng giúp xây dựng thông điệp và chiến lược phù hợp hơn",
+        "Không cần nghiên cứu khách hàng",
+        "Khách hàng luôn thích mọi quảng cáo"
+      ],
+      "a": 1,
+      "e": "Hiểu nhu cầu và hành vi khách hàng giúp quyết định nội dung, sản phẩm và kênh phù hợp."
+    },
+    {
+      "q": "Branding liên quan đến:",
+      "opts": [
+        "Xây dựng và quản lý hình ảnh, nhận diện và giá trị thương hiệu",
+        "Chỉ giảm giá",
+        "Chỉ bán hàng",
+        "Chỉ thiết kế logo"
+      ],
+      "a": 0,
+      "e": "Thương hiệu bao gồm nhận diện, hình ảnh, trải nghiệm và những liên tưởng mà công chúng có về tổ chức/sản phẩm."
+    },
+    {
+      "q": "Một chiến dịch marketing nên dựa trên:",
+      "opts": [
+        "Chỉ số lượng bài đăng",
+        "Mục tiêu, đối tượng, thông điệp và cách đo lường phù hợp",
+        "Chỉ ngân sách",
+        "Chỉ cảm tính"
+      ],
+      "a": 1,
+      "e": "Một chiến dịch hiệu quả cần xác định mục tiêu và cách đánh giá kết quả, bên cạnh ngân sách và sáng tạo."
+    },
+    {
+      "q": "KPI trong marketing thường được dùng để:",
+      "opts": [
+        "Tạo logo",
+        "Tuyển dụng nhân viên",
+        "Đo lường mức độ đạt được các mục tiêu",
+        "Viết nội dung"
+      ],
+      "a": 2,
+      "e": "KPI là chỉ số được chọn để theo dõi mức độ thực hiện mục tiêu."
+    },
+    {
+      "q": "Copywriter thường tập trung vào:",
+      "opts": [
+        "Phân tích bệnh",
+        "Thiết kế máy móc",
+        "Viết nội dung phục vụ mục tiêu truyền thông/marketing",
+        "Lập trình hệ thống"
+      ],
+      "a": 2,
+      "e": "Copywriter chuyên về nội dung bằng chữ phục vụ các mục tiêu truyền thông hoặc marketing."
+    },
+    {
+      "q": "PR (Public Relations) tập trung nhiều vào:",
+      "opts": [
+        "Quan hệ và hình ảnh của tổ chức/thương hiệu với công chúng",
+        "Chỉ thiết kế website",
+        "Chỉ quảng cáo trả phí",
+        "Chỉ bán hàng"
+      ],
+      "a": 0,
+      "e": "PR quản lý quan hệ và giao tiếp giữa tổ chức với công chúng và các bên liên quan."
+    },
+    {
+      "q": "Marketing không đồng nghĩa hoàn toàn với quảng cáo vì:",
+      "opts": [
+        "Marketing chỉ là chạy Facebook Ads",
+        "Marketing chỉ là làm poster",
+        "Marketing còn bao gồm nghiên cứu thị trường, chiến lược, sản phẩm, khách hàng và nhiều hoạt động khác",
+        "Marketing và quảng cáo luôn giống nhau"
+      ],
+      "a": 2,
+      "e": "Quảng cáo là một công cụ/hoạt động trong marketing, không phải toàn bộ marketing."
+    },
+    {
+      "q": "Một người làm truyền thông cần chú ý đến:",
+      "opts": [
+        "Cách thông tin được truyền tải và cách công chúng tiếp nhận thông tin",
+        "Chỉ số lượng bài đăng",
+        "Chỉ số người theo dõi",
+        "Chỉ lượt thích"
+      ],
+      "a": 0,
+      "e": "Truyền thông cần quan tâm đến thông điệp, kênh, đối tượng và cách công chúng tiếp nhận."
+    },
+    {
+      "q": "Một nội dung có nhiều lượt xem không nhất thiết:",
+      "opts": [
+        "Có nghĩa là chiến dịch đã đạt mọi mục tiêu marketing",
+        "Là nội dung có người xem",
+        "Có khả năng tiếp cận nhiều người",
+        "Có thể được đo lường"
+      ],
+      "a": 0,
+      "e": "Lượt xem chỉ là một chỉ số; cần xem mục tiêu cụ thể và các chỉ số liên quan khác."
+    },
+    {
+      "q": "Marketing hiện đại có thể sử dụng dữ liệu để:",
+      "opts": [
+        "Không cần hiểu khách hàng",
+        "Đảm bảo mọi chiến dịch thành công",
+        "Thay thế hoàn toàn sự sáng tạo",
+        "Phân tích hành vi, đo lường hiệu quả và hỗ trợ quyết định"
+      ],
+      "a": 3,
+      "e": "Dữ liệu hỗ trợ phân tích và tối ưu nhưng không thay thế hoàn toàn chiến lược hay sáng tạo."
+    },
+    {
+      "q": "Một đặc điểm cần cân nhắc khi chọn marketing/truyền thông là:",
+      "opts": [
+        "Không cần giao tiếp",
+        "Công việc có thể đòi hỏi sự sáng tạo, cập nhật xu hướng và thích nghi nhanh",
+        "Không cần nghiên cứu",
+        "Công việc luôn giống nhau mỗi ngày"
+      ],
+      "a": 1,
+      "e": "Nhiều vị trí thay đổi theo thị trường, nền tảng và hành vi người dùng."
+    },
+    {
+      "q": "Ngành marketing có nhất thiết phải là người hướng ngoại mới làm được không?",
+      "opts": [
+        "Có, tất cả đều phải nói trước đám đông",
+        "Có, không có công việc hậu trường",
+        "Có, tất cả đều phải bán hàng",
+        "Không, nhiều vị trí còn cần phân tích, nghiên cứu, viết hoặc làm dữ liệu"
+      ],
+      "a": 3,
+      "e": "Marketing có nhiều vai trò; một số thiên về dữ liệu, nội dung, nghiên cứu hoặc chiến lược."
+    },
+    {
+      "q": "Một điều không nên làm khi chọn marketing là:",
+      "opts": [
+        "Tìm hiểu kỹ năng cần thiết",
+        "Chỉ chọn vì nghĩ marketing là “làm TikTok và đăng Facebook”",
+        "Tìm hiểu nhiều vị trí nghề nghiệp",
+        "Thử làm một dự án nhỏ"
+      ],
+      "a": 1,
+      "e": "Marketing gồm nhiều công việc khác nhau ngoài mạng xã hội."
+    },
+    {
+      "q": "Trước khi chọn marketing/truyền thông, nên:",
+      "opts": [
+        "Chỉ dựa vào mức lương",
+        "Chỉ xem quảng cáo",
+        "Thử các hoạt động như viết nội dung, nghiên cứu khách hàng, thiết kế chiến dịch hoặc phân tích dữ liệu",
+        "Chỉ xem TikTok"
+      ],
+      "a": 2,
+      "e": "Thử các nhiệm vụ nhỏ giúp hiểu mình thích và phù hợp với phần nào của lĩnh vực."
+    }
+  ]
+};
+    let quizState = {industry:null,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:"",resultSoundPlayed:false};
     let soundOn = true;
 
-    /*
-     * Âm thanh quiz dùng file MP3 local trong /public/sounds.
-     * Không cần thư viện ngoài và không gọi mạng bên thứ ba.
-     */
+    // Âm thanh Quiz dùng các file MP3 đặt trong public/sounds.
     const quizSounds = {
       ding: new Audio("/sounds/ding.mp3"),
       wrong: new Audio("/sounds/wrong.mp3"),
       winner: new Audio("/sounds/winner.mp3"),
       fail: new Audio("/sounds/fail.mp3")
     };
-
     Object.values(quizSounds).forEach(audio => {
       audio.preload = "auto";
       audio.volume = 0.8;
     });
-
     function playQuizSound(name){
       if(!soundOn || !quizSounds[name]) return;
-
       const audio = quizSounds[name];
-
-      try{
+      try {
         audio.pause();
         audio.currentTime = 0;
         const promise = audio.play();
-        if(promise && typeof promise.catch === "function"){
-          promise.catch(() => {});
-        }
+        if(promise && typeof promise.catch === "function") promise.catch(() => {});
+      } catch(error) {
+        console.warn("Không phát được âm thanh quiz:", name, error);
+      }
+    }
+    function beep(type="click"){
+      if(!soundOn) return;
+      try{
+        const C=window.AudioContext||window.webkitAudioContext; if(!C) return;
+        const c=new C(),o=c.createOscillator(),g=c.createGain();
+        const f=type==="correct"?660:type==="wrong"?190:type==="finish"?880:420;
+        o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.08,c.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.16);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.18);setTimeout(()=>c.close(),250);
       }catch{}
     }
     function renderQuizHome(){
-      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-hero"><div class="big-emoji">🎮</div><h2>Quiz khám phá ngành nghề</h2><p>Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.</p></div><div class="industry-grid">${Object.entries(INDUSTRIES).map(([key,v])=>`<button class="industry-card" data-industry="${key}" type="button"><div class="industry-art">${v.art}</div><h3>${v.emoji} ${v.title}</h3><p>${v.desc}</p></button>`).join("")}</div><div class="quiz-note">🔊 Âm thanh: ding khi đúng • buzzer khi sai • 🏆 winner từ 15/20 • fail dưới 15/20.</div>`;
+      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-hero"><div class="big-emoji">🎮</div><h2>Quiz khám phá ngành nghề</h2><p>Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.</p></div><div class="industry-grid">${Object.entries(INDUSTRIES).map(([key,v])=>`<button class="industry-card" data-industry="${key}" type="button"><div class="industry-art">${v.art}</div><h3>${v.emoji} ${v.title}</h3><p>${v.desc}</p></button>`).join("")}</div><div class="quiz-note">🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz.</div>`;
       quizPanel.querySelectorAll(".industry-card").forEach(b=>b.addEventListener("click",()=>startQuiz(b.dataset.industry)));
     }
-    function startQuiz(industry){ quizState={industry,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:""}; renderQuestion(); }
+    function startQuiz(industry){ quizState={industry,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:"",resultSoundPlayed:false}; beep(); renderQuestion(); }
     function getQuestions(){ return quizState.personal ? quizState.personalQuestions : QUIZ[quizState.industry]; }
     function renderQuestion(){
       const list=getQuestions(), item=list[quizState.index], meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯",art:"🧠"}:INDUSTRIES[quizState.industry];
       const pct=Math.round((quizState.index/list.length)*100);
       quizPanel.querySelector("#quizApp").innerHTML=`<button class="quiz-back" type="button" id="quizBack">← Chọn lại ngành</button><div class="quiz-top"><div class="quiz-title">${meta.emoji} ${meta.title}</div><button class="sound-btn" id="soundBtn" type="button">${soundOn?"🔊 Âm thanh":"🔇 Âm thanh"}</button></div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><div class="question-card"><div class="question-illustration">${item.art||meta.art}</div><div style="color:#64748b;font-size:13px;margin-bottom:7px">Câu ${quizState.index+1}/${list.length}</div><h3>${item.q}</h3><div class="option-list">${item.opts.map((o,i)=>`<button class="option-btn" data-i="${i}" type="button"><strong>${String.fromCharCode(65+i)}.</strong> ${o}</button>`).join("")}</div><div class="quiz-explain" id="quizExplain"></div><button class="quiz-next" id="quizNext" type="button">${quizState.index===list.length-1?"🏆 Xem kết quả":"Câu tiếp theo →"}</button></div>`;
       quizPanel.querySelector("#quizBack").addEventListener("click",renderQuizHome);
-      quizPanel.querySelector("#soundBtn").addEventListener("click",()=>{
-        soundOn=!soundOn;
-        // Chỉ đổi trạng thái âm thanh, không render lại câu hỏi.
-        // Render lại ở đây sẽ reset quizState.answered và làm mất feedback/đáp án đúng.
-        const btn=quizPanel.querySelector("#soundBtn");
-        if(btn) btn.textContent=soundOn?"🔊 Âm thanh":"🔇 Âm thanh";
-      });
+      quizPanel.querySelector("#soundBtn").addEventListener("click",()=>{soundOn=!soundOn;renderQuestion();});
       quizPanel.querySelectorAll(".option-btn").forEach(btn=>btn.addEventListener("click",()=>answerQuestion(Number(btn.dataset.i))));
       quizPanel.querySelector("#quizNext").addEventListener("click",nextQuestion);
     }
     function answerQuestion(choice){
       if(quizState.answered) return; quizState.answered=true; const list=getQuestions(),item=list[quizState.index];
       const buttons=[...quizPanel.querySelectorAll(".option-btn")]; buttons.forEach(b=>b.disabled=true); buttons[item.a].classList.add("correct");
-      if(choice===item.a){quizState.score++;playQuizSound("ding");}else{buttons[choice].classList.add("wrong");playQuizSound("wrong");}
+      if(choice===item.a){quizState.score++;playQuizSound("ding");}else{buttons[choice].classList.add("wrong");beep("wrong");}
       const ex=quizPanel.querySelector("#quizExplain"); ex.style.display="block"; ex.innerHTML=`<strong>${choice===item.a?"✅ Chính xác!":"💡 Đáp án đúng là "+String.fromCharCode(65+item.a)+"."}</strong> ${item.e}`;
       quizPanel.querySelector("#quizNext").style.display="block";
     }
     function nextQuestion(){ if(!quizState.answered)return; if(quizState.index>=getQuestions().length-1){renderResult();return;} quizState.index++;quizState.answered=false;renderQuestion(); }
     function renderResult(){
-      const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry];
-
-      /*
-       * 15/20 trở lên = Winner.
-       * Dưới 15/20 = Fail.
-       */
-      if(quizState.score >= 15){
-        playQuizSound("winner");
-      }else{
-        playQuizSound("fail");
+      if(!quizState.resultSoundPlayed){
+        quizState.resultSoundPlayed=true;
+        if(quizState.score>=15) playQuizSound("winner");
+        else playQuizSound("fail");
       }
+      beep("finish"); const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry];
       quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>Hoàn thành!</h2><p style="color:#64748b">${meta.emoji} ${meta.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${pct>=80?"Bạn có nhiều điểm mạnh đáng khám phá!":pct>=60?"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!":"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"}</h3><p style="color:#64748b;line-height:1.6">Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp.</p><div class="result-actions"><button class="primary-action" id="againBtn">🔄 Làm lại</button><button class="secondary-action" id="otherBtn">🎮 Chọn ngành khác</button><button class="secondary-action" id="chatBtn">💬 Trò chuyện với AI về lĩnh vực này</button></div></div>`;
-      quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;renderQuestion();};
+      quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;quizState.resultSoundPlayed=false;renderQuestion();};
       quizPanel.querySelector("#otherBtn").onclick=renderQuizHome;
       quizPanel.querySelector("#chatBtn").onclick=()=>switchMode("chat");
     }
 
     async function startPersonalizedQuiz(industryKey,label){
       if(!sessionId){switchMode("chat");return;}
-      quizState={industry:industryKey,index:0,score:0,answered:false,personal:true,personalQuestions:null,personalTitle:`Quiz riêng: ${label.replace(/^\S+\s/,"")}`};
+      quizState={industry:industryKey,index:0,score:0,answered:false,personal:true,personalQuestions:null,personalTitle:`Quiz riêng: ${label.replace(/^\S+\s/,"")}`,resultSoundPlayed:false};
       switchMode("quiz");
       const app=quizPanel.querySelector("#quizApp"); app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>🧠 Đang tạo quiz riêng cho bạn...</strong><p>AI đang dùng ngữ cảnh cuộc trò chuyện và nghề bạn vừa được gợi ý để tạo 20 câu phù hợp.</p></div>`;
       try{
