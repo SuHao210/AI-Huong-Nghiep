@@ -1162,6 +1162,22 @@ body.dark-theme .theme-toggle{
 }
 </style>
 
+
+<style id="additional-career-features">
+.industry-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.industry-card:nth-child(6) .industry-art{background:linear-gradient(135deg,#ede9fe,#f5f3ff)}
+.industry-card:nth-child(7) .industry-art{background:linear-gradient(135deg,#dbeafe,#f0fdf4)}
+.industry-card:nth-child(8) .industry-art{background:linear-gradient(135deg,#fef3c7,#fce7f3)}
+.industry-card:nth-child(9) .industry-art{background:linear-gradient(135deg,#dcfce7,#ecfccb)}
+.industry-card:nth-child(10) .industry-art{background:linear-gradient(135deg,#dbeafe,#e0e7ff)}
+.lang-toggle{position:absolute;right:74px;top:22px;z-index:4;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.13);color:#fff;border-radius:14px;padding:9px 11px;cursor:pointer;backdrop-filter:blur(10px);font-weight:800;font-size:13px;transition:.2s}
+.lang-toggle:hover{background:rgba(255,255,255,.22);transform:translateY(-1px)}
+body:not(.dark-theme) .lang-toggle{color:#fff}
+.lang-badge{font-size:11px;opacity:.82;margin-left:4px}
+@media(max-width:900px){.industry-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:600px){.industry-grid{grid-template-columns:1fr!important}.lang-toggle{right:60px;top:14px;padding:8px 9px;font-size:12px}.theme-toggle{right:14px!important;top:14px!important}}
+</style>
+
 </head>
 
 
@@ -1362,11 +1378,17 @@ body.dark-theme .theme-toggle{
 
     /* ===================== QUIZ DATA ===================== */
     const INDUSTRIES = {
+
       it:{title:"Công nghệ thông tin",emoji:"💻",art:"🖥️",desc:"Logic, công nghệ, dữ liệu và xây dựng sản phẩm số."},
       business:{title:"Kinh doanh & Tài chính",emoji:"📊",art:"📈",desc:"Thị trường, con người, tiền bạc và quyết định kinh doanh."},
       health:{title:"Y tế & Chăm sóc sức khỏe",emoji:"🩺",art:"🧬",desc:"Sức khỏe, khoa học, chăm sóc và phục vụ cộng đồng."},
       engineering:{title:"Kỹ thuật & Công nghệ",emoji:"⚙️",art:"🤖",desc:"Máy móc, hệ thống, thiết kế và giải quyết vấn đề thực tế."},
-      marketing:{title:"Marketing & Truyền thông",emoji:"🎨",art:"📣",desc:"Ý tưởng, nội dung, thương hiệu và kết nối với khán giả."}
+      marketing:{title:"Marketing & Truyền thông",emoji:"🎨",art:"📣",desc:"Ý tưởng, nội dung, thương hiệu và kết nối với khán giả."},
+      law:{title:"Luật & Pháp lý",emoji:"⚖️",art:"⚖️",desc:"Lập luận, quy định, phân tích tình huống và bảo vệ quyền lợi."},
+      education:{title:"Giáo dục & Tâm lý",emoji:"🧠",art:"📚",desc:"Học tập, con người, hành vi và phát triển năng lực."},
+      architecture:{title:"Kiến trúc & Thiết kế",emoji:"🏛️",art:"📐",desc:"Không gian, thẩm mỹ, công năng và giải quyết vấn đề bằng thiết kế."},
+      environment:{title:"Môi trường & Nông nghiệp",emoji:"🌱",art:"🌿",desc:"Hệ sinh thái, tài nguyên, sản xuất bền vững và dữ liệu môi trường."},
+      tourism:{title:"Du lịch & Nhà hàng - Khách sạn",emoji:"✈️",art:"🏨",desc:"Trải nghiệm khách hàng, vận hành dịch vụ, điểm đến và sự kiện."},
     };
     const Q = (q,opts,a,e,art) => ({q,opts,a,e,art});
     const QUIZ = {
@@ -2581,6 +2603,1122 @@ body.dark-theme .theme-toggle{
     }
   ]
 };
+
+    /* ===================== ADDITIONAL INDUSTRIES ===================== */
+    const ADDITIONAL_QUIZ = {
+  "law": [
+    {
+      "q": "Một hợp đồng có điều khoản dùng từ 'hợp lý' nhưng không định nghĩa rõ. Khi tranh chấp xảy ra, vấn đề nào cần được làm rõ trước?",
+      "opts": [
+        "Màu logo của doanh nghiệp",
+        "Bối cảnh, ý chí các bên và cách điều khoản được hiểu trong toàn bộ hợp đồng",
+        "Số lượng nhân viên",
+        "Thời gian đăng bài trên mạng xã hội"
+      ],
+      "a": 1,
+      "e": "Điều khoản mơ hồ cần được đọc trong bối cảnh toàn bộ hợp đồng và mục đích giao kết, thay vì tách một từ khỏi ngữ cảnh."
+    },
+    {
+      "q": "Một khách hàng muốn kiện nhưng chưa có tài liệu chứng minh giao dịch. Việc nào nên làm trước khi đánh giá cơ hội tranh chấp?",
+      "opts": [
+        "Đăng bài tố cáo ngay",
+        "Đổi luật sư liên tục",
+        "Thu thập và kiểm tra chứng cứ, thời hạn và các dữ kiện liên quan",
+        "Chỉ dựa vào lời kể của một người"
+      ],
+      "a": 2,
+      "e": "Đánh giá pháp lý cần dựa trên chứng cứ, thời hạn và sự kiện có thể kiểm chứng."
+    },
+    {
+      "q": "Một doanh nghiệp thu thập số điện thoại khách hàng để giao hàng nhưng sau đó muốn dùng cho mục đích khác. Vấn đề pháp lý nào cần xem xét?",
+      "opts": [
+        "Màu của biểu mẫu",
+        "Mục đích sử dụng dữ liệu và căn cứ/quyền cho việc sử dụng đó",
+        "Tên miền website",
+        "Số lượng nhân viên giao hàng"
+      ],
+      "a": 1,
+      "e": "Dữ liệu cá nhân cần được xử lý phù hợp với mục đích, căn cứ và nghĩa vụ bảo vệ dữ liệu áp dụng."
+    },
+    {
+      "q": "Hai bên ký hợp đồng nhưng một bên cho rằng người ký không có thẩm quyền. Câu hỏi nào quan trọng?",
+      "opts": [
+        "Người ký có được ủy quyền hoặc có chức danh/thẩm quyền phù hợp không",
+        "Người ký có dùng email đẹp không",
+        "Hợp đồng có nhiều trang không",
+        "Logo hai bên có giống nhau không"
+      ],
+      "a": 0,
+      "e": "Thẩm quyền đại diện có thể ảnh hưởng trực tiếp đến hiệu lực và khả năng ràng buộc của giao dịch."
+    },
+    {
+      "q": "Một công ty sao chép gần như nguyên vẹn bộ nhận diện của đối thủ. Phân tích pháp lý nên bắt đầu từ đâu?",
+      "opts": [
+        "Xác định quyền sở hữu trí tuệ liên quan và hành vi sử dụng cụ thể",
+        "Đếm số lượt theo dõi của hai công ty",
+        "So màu văn phòng",
+        "Xem đối thủ có nổi tiếng không rồi kết luận"
+      ],
+      "a": 0,
+      "e": "Cần xác định đối tượng quyền, chủ thể quyền và hành vi sử dụng để đánh giá vấn đề sở hữu trí tuệ."
+    },
+    {
+      "q": "Một người bị yêu cầu ký văn bản mà họ chưa hiểu rõ. Cách tiếp cận thận trọng nhất là gì?",
+      "opts": [
+        "Ký ngay vì bên kia thúc giục",
+        "Đọc, hỏi rõ điều khoản và tìm tư vấn phù hợp nếu cần",
+        "Chỉ nhìn trang cuối",
+        "Ký rồi mới hỏi"
+      ],
+      "a": 1,
+      "e": "Hiểu nội dung và hệ quả của văn bản trước khi ký giúp giảm rủi ro pháp lý."
+    },
+    {
+      "q": "Một công ty muốn chấm dứt hợp đồng trước hạn. Yếu tố nào cần kiểm tra đầu tiên?",
+      "opts": [
+        "Điều khoản chấm dứt, điều kiện vi phạm, thời hạn thông báo và hậu quả liên quan",
+        "Số lượt thích fanpage",
+        "Màu chữ trong hợp đồng",
+        "Tuổi của logo"
+      ],
+      "a": 0,
+      "e": "Quyền chấm dứt và hậu quả thường được xác định bởi chính hợp đồng cùng quy định pháp luật áp dụng."
+    },
+    {
+      "q": "Một người nhận thông báo pháp lý nhưng không chắc thời hạn phản hồi. Vì sao không nên chờ đến khi hiểu hết mới kiểm tra?",
+      "opts": [
+        "Vì mọi thời hạn đều giống nhau",
+        "Vì có thể tồn tại thời hạn tố tụng hoặc thời hạn phản hồi làm mất quyền nếu bỏ lỡ",
+        "Vì thư pháp lý luôn sai",
+        "Vì thời hạn không bao giờ quan trọng"
+      ],
+      "a": 1,
+      "e": "Thời hạn pháp lý có thể ảnh hưởng trực tiếp đến quyền và phương án xử lý."
+    },
+    {
+      "q": "Trong đàm phán hợp đồng, bên kia đề xuất điều khoản có lợi ngắn hạn nhưng tạo nghĩa vụ lớn về sau. Kỹ năng nào quan trọng?",
+      "opts": [
+        "Chỉ nhìn giá ban đầu",
+        "Phân tích rủi ro, nghĩa vụ và kịch bản phát sinh theo thời gian",
+        "Chọn điều khoản dài nhất",
+        "Tránh đọc phụ lục"
+      ],
+      "a": 1,
+      "e": "Đọc hợp đồng cần nhìn cả nghĩa vụ hiện tại, nghĩa vụ tương lai và các tình huống kích hoạt."
+    },
+    {
+      "q": "Một nhân viên phát hiện công ty lưu hồ sơ khách hàng lâu hơn mức cần thiết mà không có lý do rõ ràng. Góc nhìn pháp lý nào đáng xem xét?",
+      "opts": [
+        "Nguyên tắc giới hạn lưu trữ và nghĩa vụ bảo vệ dữ liệu",
+        "Thiết kế logo",
+        "Tốc độ Wi-Fi",
+        "Số lượng máy in"
+      ],
+      "a": 0,
+      "e": "Bảo vệ dữ liệu thường bao gồm yêu cầu về mục đích và thời gian lưu trữ phù hợp."
+    },
+    {
+      "q": "Một tranh chấp có thể giải quyết bằng thương lượng hoặc đưa ra tòa. Khi tư vấn, yếu tố nào nên được cân nhắc?",
+      "opts": [
+        "Chỉ cảm xúc của người tư vấn",
+        "Chi phí, thời gian, chứng cứ, mục tiêu và khả năng thi hành kết quả",
+        "Màu hồ sơ",
+        "Số tầng tòa nhà"
+      ],
+      "a": 1,
+      "e": "Phương án tranh chấp cần được đánh giá trên cả pháp lý và thực tiễn."
+    },
+    {
+      "q": "Một bài đăng trên mạng xã hội cáo buộc cá nhân khác vi phạm pháp luật nhưng không có nguồn kiểm chứng. Rủi ro nào đáng chú ý?",
+      "opts": [
+        "Có thể phát sinh vấn đề về danh dự, thông tin sai lệch hoặc trách nhiệm pháp lý tùy trường hợp",
+        "Bài đăng chắc chắn vô hại",
+        "Chỉ ảnh hưởng tốc độ mạng",
+        "Không liên quan đến pháp luật"
+      ],
+      "a": 0,
+      "e": "Nội dung công khai có thể tạo rủi ro pháp lý nếu xâm phạm quyền hoặc lan truyền thông tin không đúng sự thật."
+    },
+    {
+      "q": "Một doanh nghiệp muốn dùng ảnh lấy từ Internet cho quảng cáo. Việc nào cần kiểm tra?",
+      "opts": [
+        "Quyền sử dụng, giấy phép và điều kiện của nguồn ảnh",
+        "Chỉ độ phân giải",
+        "Số lượt xem ảnh",
+        "Màu nền website"
+      ],
+      "a": 0,
+      "e": "Ảnh trên Internet không mặc nhiên là ảnh được tự do sử dụng cho mọi mục đích."
+    },
+    {
+      "q": "Một người bị yêu cầu cung cấp thông tin cá nhân của người khác cho một bên thứ ba. Câu hỏi nào cần đặt ra?",
+      "opts": [
+        "Có căn cứ/quyền hợp pháp để chia sẻ và mục đích sử dụng là gì?",
+        "Người nhận có thích dữ liệu đó không",
+        "File có tên ngắn không",
+        "Có thể gửi qua ứng dụng nào đẹp hơn"
+      ],
+      "a": 0,
+      "e": "Việc chia sẻ dữ liệu cá nhân cần xem căn cứ, mục đích và phạm vi được phép."
+    },
+    {
+      "q": "Một công ty có quy trình nội bộ khác với quy định pháp luật bắt buộc. Khi có xung đột, cách tiếp cận nào phù hợp?",
+      "opts": [
+        "Luôn ưu tiên quy trình nội bộ",
+        "Xác định quy định pháp luật áp dụng và điều chỉnh quy trình để tuân thủ",
+        "Bỏ cả hai",
+        "Chọn quy định dễ làm hơn"
+      ],
+      "a": 1,
+      "e": "Quy trình nội bộ không thể tự loại bỏ nghĩa vụ pháp lý bắt buộc."
+    },
+    {
+      "q": "Một hợp đồng có phụ lục nhưng hai tài liệu quy định khác nhau về giá. Việc nào cần kiểm tra?",
+      "opts": [
+        "Điều khoản về thứ tự ưu tiên và phiên bản có hiệu lực",
+        "Chỉ xem tài liệu có nhiều trang hơn",
+        "Chọn giá thấp hơn",
+        "Bỏ qua phụ lục"
+      ],
+      "a": 0,
+      "e": "Hợp đồng thường có cơ chế xác định tài liệu/điều khoản nào được ưu tiên khi có mâu thuẫn."
+    },
+    {
+      "q": "Một sinh viên thích đọc, tranh luận và phân tích tình huống nhưng không thích công việc lặp lại. Điều gì nên làm trước khi chọn ngành luật?",
+      "opts": [
+        "Tìm hiểu các nhánh nghề và thử hoạt động phân tích hồ sơ, tranh biện hoặc nghiên cứu",
+        "Chọn ngay vì thích tranh luận",
+        "Chỉ xem mức lương",
+        "Hỏi một người rồi quyết định"
+      ],
+      "a": 0,
+      "e": "Ngành luật có nhiều vai trò và môi trường khác nhau; trải nghiệm nhỏ giúp kiểm chứng sự phù hợp."
+    },
+    {
+      "q": "Trong phân tích một vụ việc, vì sao cần tách 'sự kiện' khỏi 'nhận định'?",
+      "opts": [
+        "Để tránh dùng giả định như thể là dữ kiện đã được chứng minh",
+        "Để bài viết dài hơn",
+        "Vì nhận định luôn sai",
+        "Vì sự kiện không quan trọng"
+      ],
+      "a": 0,
+      "e": "Tách dữ kiện khỏi nhận định giúp lập luận rõ và kiểm soát giả định."
+    },
+    {
+      "q": "Một luật sư nhận hồ sơ có nhiều tài liệu mâu thuẫn. Kỹ năng nào quan trọng nhất ở giai đoạn đầu?",
+      "opts": [
+        "Đọc có hệ thống, xác định nguồn chứng cứ, mốc thời gian và điểm mâu thuẫn",
+        "Chọn tài liệu dài nhất",
+        "Bỏ qua tài liệu bất lợi",
+        "Viết kết luận trước"
+      ],
+      "a": 0,
+      "e": "Tổ chức hồ sơ và kiểm tra nguồn chứng cứ giúp tạo nền tảng cho lập luận đáng tin cậy."
+    },
+    {
+      "q": "Một bạn muốn kiểm chứng mình có hợp nghề pháp lý. Hoạt động nào sát công việc hơn?",
+      "opts": [
+        "Thử phân tích một tình huống, xác định vấn đề, quy tắc liên quan và lập luận hai phía",
+        "Chỉ xem phim luật",
+        "Chỉ đọc bảng lương",
+        "Chỉ tranh luận với bạn bè"
+      ],
+      "a": 0,
+      "e": "Phân tích tình huống có cấu trúc gần với kỹ năng cốt lõi của nhiều công việc pháp lý hơn."
+    }
+  ],
+  "education": [
+    {
+      "q": "Một học sinh làm đúng bài khi có hướng dẫn nhưng không làm được khi gặp bài tương tự mới. Điều gì cần xem xét?",
+      "opts": [
+        "Em chắc chắn không có năng lực",
+        "Cần kiểm tra mức độ hiểu nguyên tắc và khả năng chuyển giao kiến thức sang bối cảnh mới",
+        "Chỉ cần cho thêm bài giống hệt",
+        "Đổi môn học ngay"
+      ],
+      "a": 1,
+      "e": "Làm đúng mẫu chưa đồng nghĩa hiểu sâu; khả năng vận dụng sang tình huống mới là tín hiệu quan trọng."
+    },
+    {
+      "q": "Một giáo viên thấy lớp đạt điểm cao sau khi học thuộc nhưng khó giải thích vì sao đáp án đúng. Điều gì nên bổ sung?",
+      "opts": [
+        "Chỉ tăng số câu nhớ",
+        "Hoạt động yêu cầu giải thích, áp dụng và tạo lập câu trả lời",
+        "Giảm mọi câu hỏi mở",
+        "Bỏ phản hồi"
+      ],
+      "a": 1,
+      "e": "Đánh giá hiểu biết cần có nhiệm vụ kiểm tra giải thích và vận dụng, không chỉ ghi nhớ."
+    },
+    {
+      "q": "Một học sinh liên tục trì hoãn bài tập dù hiểu nội dung. Cách tiếp cận đầu tiên nên là gì?",
+      "opts": [
+        "Gán nhãn lười ngay",
+        "Tìm nguyên nhân như độ khó, môi trường, mục tiêu, kỹ năng quản lý thời gian và cảm xúc",
+        "Phạt nặng ngay",
+        "Cho bài nhiều gấp đôi"
+      ],
+      "a": 1,
+      "e": "Hành vi trì hoãn có nhiều nguyên nhân; xác định nguyên nhân giúp chọn can thiệp phù hợp."
+    },
+    {
+      "q": "Một bài kiểm tra có điểm trung bình thấp. Kết luận nào thận trọng nhất?",
+      "opts": [
+        "Học sinh chắc chắn yếu",
+        "Cần xem thêm độ khó, cách ra đề, nội dung đã dạy và phân bố kết quả",
+        "Giáo viên chắc chắn dạy kém",
+        "Đề chắc chắn sai"
+      ],
+      "a": 1,
+      "e": "Một điểm trung bình đơn lẻ không đủ để xác định nguyên nhân."
+    },
+    {
+      "q": "Trong tư vấn tâm lý, vì sao người tư vấn cần đặt câu hỏi mở thay vì chỉ hỏi có/không?",
+      "opts": [
+        "Để cuộc trò chuyện dài hơn",
+        "Để người được tư vấn có không gian mô tả trải nghiệm và bối cảnh bằng lời của họ",
+        "Để tránh lắng nghe",
+        "Vì câu hỏi đóng luôn sai"
+      ],
+      "a": 1,
+      "e": "Câu hỏi mở có thể giúp thu thập thông tin phong phú hơn về trải nghiệm và bối cảnh."
+    },
+    {
+      "q": "Một sinh viên rất lo trước kỳ thi nhưng vẫn học hiệu quả. Kết luận nào phù hợp hơn?",
+      "opts": [
+        "Có lo lắng thì chắc chắn có rối loạn",
+        "Cần xem mức độ, thời gian, ảnh hưởng chức năng và bối cảnh thay vì gán nhãn từ một biểu hiện",
+        "Không cần quan tâm cảm xúc",
+        "Lo lắng luôn tốt"
+      ],
+      "a": 1,
+      "e": "Đánh giá tâm lý cần xem mức độ và ảnh hưởng, không suy luận chẩn đoán từ một biểu hiện đơn lẻ."
+    },
+    {
+      "q": "Một lớp học có học sinh tiếp thu khác tốc độ. Giáo viên có thể làm gì để hỗ trợ mà vẫn giữ mục tiêu chung?",
+      "opts": [
+        "Thiết kế nhiệm vụ và hỗ trợ theo mức độ, đồng thời giữ chuẩn đầu ra rõ ràng",
+        "Chỉ dạy theo học sinh nhanh nhất",
+        "Bỏ mục tiêu",
+        "Cho mọi người cùng một lượng hỗ trợ bất kể nhu cầu"
+      ],
+      "a": 0,
+      "e": "Phân hóa hỗ trợ có thể đáp ứng khác biệt mà không nhất thiết bỏ mục tiêu học tập chung."
+    },
+    {
+      "q": "Một nghiên cứu giáo dục cho thấy nhóm A tăng điểm, nhưng nhóm A cũng có thêm một chương trình hỗ trợ ngoài lớp. Vì sao khó kết luận chương trình trong lớp là nguyên nhân duy nhất?",
+      "opts": [
+        "Vì điểm số không bao giờ có ý nghĩa",
+        "Có yếu tố khác cùng thay đổi nên khó tách riêng tác động của chương trình",
+        "Vì nghiên cứu luôn sai",
+        "Vì nhóm A không phải học sinh"
+      ],
+      "a": 1,
+      "e": "Yếu tố đồng thời thay đổi có thể tạo nhiễu khi suy luận nguyên nhân."
+    },
+    {
+      "q": "Một học sinh chỉ chọn câu trả lời dựa trên gợi ý của bạn. Muốn đánh giá hiểu biết cá nhân, nên thay đổi gì?",
+      "opts": [
+        "Thiết kế nhiệm vụ yêu cầu giải thích hoặc áp dụng độc lập",
+        "Cho thêm gợi ý",
+        "Tăng số bạn cùng nhóm",
+        "Chấm điểm theo tốc độ"
+      ],
+      "a": 0,
+      "e": "Yêu cầu giải thích và vận dụng độc lập giúp quan sát hiểu biết của cá nhân tốt hơn."
+    },
+    {
+      "q": "Một phụ huynh yêu cầu giáo viên tiết lộ toàn bộ nội dung trao đổi riêng tư của học sinh. Yếu tố nào cần cân nhắc?",
+      "opts": [
+        "Chỉ cần đáp ứng ngay",
+        "Quy định, quyền riêng tư, lợi ích và an toàn của học sinh",
+        "Chỉ xem phụ huynh có bận không",
+        "Không có vấn đề gì"
+      ],
+      "a": 1,
+      "e": "Thông tin học sinh cần được xử lý theo quy định và cân bằng quyền riêng tư với nghĩa vụ bảo vệ."
+    },
+    {
+      "q": "Một người muốn làm nghiên cứu tâm lý. Vì sao cần phân biệt tương quan và quan hệ nhân quả?",
+      "opts": [
+        "Vì hai biến cùng thay đổi không tự chứng minh một biến gây ra biến kia",
+        "Vì tương quan luôn vô nghĩa",
+        "Vì nhân quả luôn dễ đo",
+        "Vì thống kê không liên quan"
+      ],
+      "a": 0,
+      "e": "Thiết kế nghiên cứu và kiểm soát yếu tố khác mới giúp hỗ trợ suy luận nhân quả mạnh hơn."
+    },
+    {
+      "q": "Một ứng dụng học tập tăng thời gian dùng nhưng điểm học không đổi. Kết luận nào hợp lý?",
+      "opts": [
+        "Thời gian dùng tăng nên chắc chắn học tốt hơn",
+        "Cần xem thêm hành vi học, chất lượng tương tác và kết quả đầu ra",
+        "Ứng dụng chắc chắn thất bại",
+        "Điểm số không bao giờ cần đo"
+      ],
+      "a": 1,
+      "e": "Engagement không tự động đồng nghĩa với learning outcomes."
+    },
+    {
+      "q": "Một giáo viên muốn học sinh nhớ lâu hơn. Cách nào có cơ sở hơn việc chỉ đọc lại tài liệu nhiều lần?",
+      "opts": [
+        "Retrieval practice và ôn cách quãng",
+        "Đọc cùng một đoạn liên tục",
+        "Chỉ tô màu toàn bộ sách",
+        "Học một lần thật lâu rồi bỏ"
+      ],
+      "a": 0,
+      "e": "Gợi nhớ chủ động và ôn cách quãng thường hỗ trợ củng cố kiến thức tốt hơn việc đọc lại thụ động."
+    },
+    {
+      "q": "Một học sinh nhận phản hồi 'sai' nhưng không biết sửa thế nào. Phản hồi hiệu quả hơn nên có gì?",
+      "opts": [
+        "Chỉ nhắc lại điểm số",
+        "Thông tin cụ thể về điểm cần cải thiện và hướng bước tiếp theo",
+        "So sánh với bạn khác",
+        "Không cần giải thích"
+      ],
+      "a": 1,
+      "e": "Phản hồi hữu ích cần giúp người học hiểu khoảng cách và hành động tiếp theo."
+    },
+    {
+      "q": "Một người muốn theo nghề tâm lý vì thích nghe bạn bè tâm sự. Điều gì cần kiểm chứng thêm?",
+      "opts": [
+        "Đào tạo chuyên môn, đạo đức nghề nghiệp, kỹ năng đánh giá và giới hạn vai trò",
+        "Chỉ cần biết lắng nghe",
+        "Không cần học thống kê",
+        "Chỉ cần nói chuyện tốt"
+      ],
+      "a": 0,
+      "e": "Nghề tâm lý đòi hỏi đào tạo, đạo đức và kỹ năng chuyên môn chứ không chỉ khả năng lắng nghe."
+    },
+    {
+      "q": "Một lớp có nhiều học sinh sợ trả lời vì sợ sai. Giáo viên có thể thay đổi điều gì?",
+      "opts": [
+        "Tạo môi trường cho phép thử, giải thích sai lầm và phản hồi không làm nhục người học",
+        "Chỉ gọi học sinh giỏi",
+        "Phạt câu trả lời sai",
+        "Không cho thảo luận"
+      ],
+      "a": 0,
+      "e": "An toàn tâm lý trong lớp có thể khuyến khích thử nghiệm và học từ sai sót."
+    },
+    {
+      "q": "Một bài kiểm tra có câu hỏi rất khó nhưng mục tiêu bài học không đề cập kỹ năng đó. Vấn đề nào có thể xảy ra?",
+      "opts": [
+        "Độ phù hợp giữa đánh giá và mục tiêu học tập bị lệch",
+        "Học sinh chắc chắn thích hơn",
+        "Điểm số tự động chính xác hơn",
+        "Không có ảnh hưởng"
+      ],
+      "a": 0,
+      "e": "Đánh giá cần phù hợp với mục tiêu và nội dung được kỳ vọng học."
+    },
+    {
+      "q": "Một nhà giáo dục muốn biết một phương pháp mới có hiệu quả. Chỉ số nào đáng xem ngoài cảm nhận của học sinh?",
+      "opts": [
+        "Kết quả học tập được đo bằng công cụ phù hợp và dữ liệu trước/sau nếu có thể",
+        "Số ảnh đăng lên lớp",
+        "Màu slide",
+        "Số lần giáo viên nói"
+      ],
+      "a": 0,
+      "e": "Kết quả học tập và thiết kế đo lường giúp đánh giá hiệu quả đáng tin cậy hơn cảm nhận đơn lẻ."
+    },
+    {
+      "q": "Một người thích giải thích kiến thức, tổ chức hoạt động và quan sát cách người khác học. Vai trò nào có thể phù hợp?",
+      "opts": [
+        "Chỉ có thể làm kế toán",
+        "Giáo viên, instructional designer hoặc trainer có thể là các hướng cần tìm hiểu",
+        "Chỉ làm kỹ sư",
+        "Không có nghề nào"
+      ],
+      "a": 1,
+      "e": "Giáo dục có nhiều vai trò ngoài giảng dạy truyền thống."
+    },
+    {
+      "q": "Cách thử nghề giáo dục thực tế hơn việc chỉ xem video là gì?",
+      "opts": [
+        "Thử thiết kế và dạy một buổi nhỏ, nhận phản hồi rồi điều chỉnh",
+        "Chỉ đọc mô tả nghề",
+        "Chỉ xem lương",
+        "Chọn vì người thân làm nghề"
+      ],
+      "a": 0,
+      "e": "Một trải nghiệm dạy thử cho thấy mức độ phù hợp với chuẩn bị, truyền đạt, quản lý lớp và phản hồi."
+    }
+  ],
+  "architecture": [
+    {
+      "q": "Một khu đất đẹp nhưng có hướng nắng gắt buổi chiều và gió mạnh. Kiến trúc sư nên làm gì trước khi chốt mặt đứng?",
+      "opts": [
+        "Chọn màu sơn trước",
+        "Phân tích khí hậu, hướng nắng, gió và công năng khu đất",
+        "Chỉ xem ảnh công trình nổi tiếng",
+        "Tăng số cửa kính tối đa"
+      ],
+      "a": 1,
+      "e": "Thiết kế tốt bắt đầu từ điều kiện khu đất và yêu cầu sử dụng, không chỉ từ hình thức."
+    },
+    {
+      "q": "Một bản vẽ rất đẹp nhưng hành lang khiến người dùng phải đi vòng xa. Vấn đề chính thuộc về yếu tố nào?",
+      "opts": [
+        "Công năng và luồng di chuyển",
+        "Màu logo",
+        "Độ phân giải ảnh",
+        "Tên dự án"
+      ],
+      "a": 0,
+      "e": "Kiến trúc phải cân bằng thẩm mỹ với công năng và circulation."
+    },
+    {
+      "q": "Khi ngân sách xây dựng giảm 15%, cách tiếp cận nào phù hợp hơn?",
+      "opts": [
+        "Cắt ngẫu nhiên mọi hạng mục",
+        "Xác định ưu tiên công năng, xem xét vật liệu và giải pháp kết cấu để tối ưu chi phí",
+        "Chỉ giảm diện tích cửa",
+        "Bỏ qua yêu cầu người dùng"
+      ],
+      "a": 1,
+      "e": "Value engineering cần tìm phần tạo giá trị và tối ưu giải pháp thay vì cắt tùy tiện."
+    },
+    {
+      "q": "Một khách hàng muốn không gian tối giản nhưng danh sách đồ dùng rất nhiều. Kiến trúc sư cần giải quyết mâu thuẫn này thế nào?",
+      "opts": [
+        "Thiết kế lưu trữ tích hợp và tổ chức công năng để giảm cảm giác lộn xộn",
+        "Bỏ hết đồ của khách",
+        "Chỉ dùng màu trắng",
+        "Tăng đồ trang trí"
+      ],
+      "a": 0,
+      "e": "Tối giản về thị giác có thể đạt bằng tổ chức không gian và lưu trữ, không chỉ bằng màu sắc."
+    },
+    {
+      "q": "Trong thiết kế đô thị, một quảng trường đẹp nhưng gần như không có người ở lại. Câu hỏi nào đáng kiểm tra?",
+      "opts": [
+        "Việc bố trí tiện ích, bóng mát, tiếp cận, an toàn và hoạt động phù hợp với người dùng",
+        "Chỉ đổi tên quảng trường",
+        "Tăng tượng trang trí",
+        "Đổi logo thành phố"
+      ],
+      "a": 0,
+      "e": "Không gian công cộng cần hỗ trợ hành vi và nhu cầu thực tế của người sử dụng."
+    },
+    {
+      "q": "Một mô hình 3D đẹp nhưng kích thước thực tế không khớp bản vẽ kỹ thuật. Kỹ năng nào cần ưu tiên?",
+      "opts": [
+        "Phối hợp và kiểm tra tính nhất quán giữa mô hình, bản vẽ và thông số",
+        "Tăng hiệu ứng render",
+        "Đổi phần mềm ngay",
+        "Bỏ bản vẽ kỹ thuật"
+      ],
+      "a": 0,
+      "e": "Thiết kế cần đồng bộ giữa mô hình và hồ sơ kỹ thuật để giảm sai sót thi công."
+    },
+    {
+      "q": "Một không gian văn phòng có tiếng ồn từ khu giao thông chính. Giải pháp thiết kế nào có thể được cân nhắc?",
+      "opts": [
+        "Xử lý mặt bằng, vật liệu và lớp vỏ công trình để giảm truyền âm",
+        "Tăng độ sáng đèn",
+        "Đổi màu sàn",
+        "Thêm cây giả"
+      ],
+      "a": 0,
+      "e": "Âm học phụ thuộc vào bố trí không gian, vật liệu và cấu tạo bao che."
+    },
+    {
+      "q": "Một thiết kế dùng rất nhiều kính ở mặt tây. Rủi ro môi trường nào cần xem xét?",
+      "opts": [
+        "Tăng bức xạ nhiệt và tải làm mát nếu không có giải pháp che nắng phù hợp",
+        "Giảm chắc chắn độ ẩm",
+        "Làm móng nhẹ hơn",
+        "Không có rủi ro"
+      ],
+      "a": 0,
+      "e": "Mặt đứng kính hướng tây có thể tăng solar heat gain, cần tính đến che nắng và hiệu suất năng lượng."
+    },
+    {
+      "q": "Một nhà thiết kế nhận brief 'phải đẹp và khác biệt'. Câu hỏi nào giúp biến brief thành yêu cầu thiết kế?",
+      "opts": [
+        "Khác biệt với ai, phục vụ ai, mục tiêu trải nghiệm nào và tiêu chí đánh giá là gì?",
+        "Màu gì đang hot?",
+        "Có thể thêm càng nhiều hình càng tốt?",
+        "Chỉ cần làm khác mọi người"
+      ],
+      "a": 0,
+      "e": "Brief tốt cần xác định đối tượng, mục tiêu và tiêu chí thay vì chỉ dùng tính từ chung chung."
+    },
+    {
+      "q": "Một sản phẩm nội thất có nhiều chi tiết nhưng người dùng khó lắp ráp. Vấn đề thiết kế nào nổi bật?",
+      "opts": [
+        "Khả năng sản xuất/lắp ráp và trải nghiệm sử dụng chưa được giải quyết tốt",
+        "Màu sắc chưa đủ nổi",
+        "Logo quá nhỏ",
+        "Ảnh quảng cáo chưa đẹp"
+      ],
+      "a": 0,
+      "e": "Design for assembly và usability là các yếu tố quan trọng bên cạnh hình thức."
+    },
+    {
+      "q": "Một công trình cải tạo có kết cấu cũ chưa rõ tình trạng. Việc nào nên làm trước khi phá dỡ lớn?",
+      "opts": [
+        "Khảo sát hiện trạng và đánh giá kết cấu cần thiết",
+        "Chọn nội thất trước",
+        "Đặt đèn trang trí",
+        "Đăng ảnh lên mạng"
+      ],
+      "a": 0,
+      "e": "Khảo sát hiện trạng giúp giảm rủi ro khi can thiệp vào công trình cũ."
+    },
+    {
+      "q": "Trong thiết kế sản phẩm, prototype dùng để làm gì?",
+      "opts": [
+        "Kiểm chứng hình thức, chức năng và trải nghiệm trước khi sản xuất hoàn chỉnh",
+        "Thay thế mọi nghiên cứu người dùng",
+        "Chỉ để chụp ảnh",
+        "Để không cần bản vẽ"
+      ],
+      "a": 0,
+      "e": "Prototype là công cụ học và kiểm chứng giả định thiết kế."
+    },
+    {
+      "q": "Một người thích vẽ nhưng không thích làm việc theo brief hoặc sửa thiết kế nhiều lần. Điều gì nên cân nhắc trước khi chọn nghề thiết kế?",
+      "opts": [
+        "Thiết kế chuyên nghiệp thường phải làm theo mục tiêu, nhận phản hồi và lặp lại nhiều vòng",
+        "Chỉ cần vẽ đẹp",
+        "Không cần khách hàng",
+        "Designer luôn được tự do hoàn toàn"
+      ],
+      "a": 0,
+      "e": "Thiết kế nghề nghiệp khác với vẽ tự do; brief, feedback và iteration là phần phổ biến của công việc."
+    },
+    {
+      "q": "Một bản thiết kế đẹp trên màn hình nhưng người dùng gặp khó khăn khi thao tác. Điều này cho thấy yếu tố nào bị xem nhẹ?",
+      "opts": [
+        "Usability và trải nghiệm thực tế",
+        "Độ phân giải màn hình",
+        "Số lượng màu",
+        "Tên file"
+      ],
+      "a": 0,
+      "e": "Thiết kế phải được kiểm chứng trong bối cảnh sử dụng thực tế."
+    },
+    {
+      "q": "Một nhóm kiến trúc tranh luận giữa phương án A đẹp hơn và B rẻ hơn. Cách ra quyết định tốt hơn là gì?",
+      "opts": [
+        "Đưa tiêu chí ưu tiên rõ ràng và so sánh phương án theo công năng, chi phí, trải nghiệm, kỹ thuật và mục tiêu dự án",
+        "Chọn theo người nói to nhất",
+        "Chọn A vì đẹp",
+        "Chọn B vì rẻ"
+      ],
+      "a": 0,
+      "e": "Quyết định thiết kế tốt cần dựa trên tiêu chí và trade-off đã xác định."
+    },
+    {
+      "q": "Một thiết kế xanh chỉ thêm nhiều cây nhưng vẫn tiêu thụ năng lượng lớn. Vì sao chưa đủ?",
+      "opts": [
+        "Bền vững còn liên quan đến năng lượng, nước, vật liệu, vận hành và vòng đời",
+        "Cây không có tác dụng",
+        "Thiết kế xanh chỉ cần màu xanh",
+        "Năng lượng không liên quan công trình"
+      ],
+      "a": 0,
+      "e": "Sustainability là hệ thống nhiều yếu tố chứ không chỉ là cây xanh."
+    },
+    {
+      "q": "Một UI designer thấy người dùng liên tục nhấn nhầm hai nút có chức năng khác nhau. Điều gì nên được thử?",
+      "opts": [
+        "Tăng phân biệt thị giác, nhãn, khoảng cách và kiểm thử lại với người dùng",
+        "Thêm animation thật nhiều",
+        "Đổi font ngẫu nhiên",
+        "Ẩn cả hai nút"
+      ],
+      "a": 0,
+      "e": "Hierachy, labeling, spacing và user testing có thể giúp giảm lỗi thao tác."
+    },
+    {
+      "q": "Một bạn muốn thử nghề kiến trúc nhưng chưa chắc thích công việc thực tế. Hoạt động nào sát hơn?",
+      "opts": [
+        "Thử một mini project từ brief đến concept, mặt bằng, mô hình và nhận phản hồi",
+        "Chỉ xem ảnh công trình",
+        "Chỉ học vẽ phối cảnh",
+        "Chỉ xem mức lương"
+      ],
+      "a": 0,
+      "e": "Mini project cho trải nghiệm về brief, iteration, kỹ thuật và trình bày."
+    },
+    {
+      "q": "Một designer nhận feedback 'chưa đẹp' nhưng không có tiêu chí. Phản hồi nào nên được hỏi lại?",
+      "opts": [
+        "Phần nào chưa đạt, với mục tiêu nào và người dùng nào; tiêu chí thành công cụ thể là gì?",
+        "Có muốn đổi hết không?",
+        "Màu nào thích nhất?",
+        "Có thể bỏ brief không?"
+      ],
+      "a": 0,
+      "e": "Feedback tốt nên được chuyển thành tiêu chí quan sát được và liên hệ với mục tiêu thiết kế."
+    },
+    {
+      "q": "Một không gian có diện tích nhỏ nhưng cần chứa nhiều chức năng. Chiến lược nào thường hữu ích?",
+      "opts": [
+        "Thiết kế đa năng, lưu trữ tích hợp và tổ chức luồng di chuyển hiệu quả",
+        "Thêm nhiều đồ nội thất cố định",
+        "Giảm mọi lối đi",
+        "Chỉ dùng đồ kích thước lớn"
+      ],
+      "a": 0,
+      "e": "Không gian nhỏ cần tối ưu diện tích và chuyển đổi công năng thay vì chỉ thêm đồ."
+    }
+  ],
+  "environment": [
+    {
+      "q": "Một con sông có nồng độ chất ô nhiễm tăng sau mưa lớn. Trước khi kết luận nguồn thải, cần xem gì?",
+      "opts": [
+        "Chỉ màu nước",
+        "Vị trí lấy mẫu, thời điểm, dòng chảy và các nguồn có thể đóng góp",
+        "Số người đi qua cầu",
+        "Màu logo nhà máy"
+      ],
+      "a": 1,
+      "e": "Nồng độ có thể thay đổi theo dòng chảy và thời điểm; cần thiết kế lấy mẫu và kiểm tra nguồn hợp lý."
+    },
+    {
+      "q": "Một trang trại tăng năng suất nhưng lượng nước tưới tăng mạnh. Đánh giá bền vững cần xem thêm gì?",
+      "opts": [
+        "Chỉ sản lượng",
+        "Hiệu quả sử dụng nước, chi phí và tác động tài nguyên cùng sản lượng",
+        "Màu bao bì",
+        "Số bài đăng"
+      ],
+      "a": 1,
+      "e": "Năng suất cần được nhìn cùng hiệu quả tài nguyên và tác động môi trường."
+    },
+    {
+      "q": "Một khu vực mất rừng để mở rộng sản xuất. Chỉ tiêu nào giúp đánh giá tác động rộng hơn diện tích mất rừng?",
+      "opts": [
+        "Chỉ số đa dạng sinh học, carbon, đất, nước và sinh kế liên quan",
+        "Số xe đi qua",
+        "Chiều cao hàng rào",
+        "Màu biển báo"
+      ],
+      "a": 0,
+      "e": "Tác động hệ sinh thái có nhiều chiều, không chỉ diện tích đất."
+    },
+    {
+      "q": "Một doanh nghiệp muốn giảm phát thải. Bước đầu tiên hữu ích là gì?",
+      "opts": [
+        "Đo và lập baseline nguồn phát thải chính trước khi chọn biện pháp",
+        "Mua cây ngay",
+        "Đổi logo xanh",
+        "Cam kết con số mà chưa đo"
+      ],
+      "a": 0,
+      "e": "Không có baseline thì khó biết nguồn nào quan trọng và biện pháp có tạo thay đổi hay không."
+    },
+    {
+      "q": "Một nông dân thấy thuốc trừ sâu kiểm soát sâu nhanh nhưng muốn giảm tác động. Hướng nào đáng tìm hiểu?",
+      "opts": [
+        "Quản lý dịch hại tổng hợp (IPM) kết hợp theo dõi, biện pháp sinh học và hóa học khi cần",
+        "Tăng liều mọi lần",
+        "Phun theo lịch bất kể mật độ sâu",
+        "Không theo dõi sâu nữa"
+      ],
+      "a": 0,
+      "e": "IPM phối hợp nhiều biện pháp dựa trên theo dõi để giảm phụ thuộc vào một phương pháp."
+    },
+    {
+      "q": "Một thành phố có ngập sau mưa lớn dù hệ thống cống đã mở rộng. Điều gì cần xem ngoài kích thước cống?",
+      "opts": [
+        "Khả năng thấm, bề mặt bê tông hóa, lưu vực, hồ điều hòa và quy hoạch thoát nước",
+        "Chỉ số cây trên logo",
+        "Số đèn đường",
+        "Màu vỉa hè"
+      ],
+      "a": 0,
+      "e": "Ngập đô thị phụ thuộc cả lưu vực, dòng chảy mặt, khả năng giữ/thấm nước và hạ tầng."
+    },
+    {
+      "q": "Một dự án trồng cây dùng loài ngoại lai vì lớn nhanh. Rủi ro nào cần đánh giá?",
+      "opts": [
+        "Khả năng xâm lấn và ảnh hưởng hệ sinh thái địa phương",
+        "Cây chắc chắn không sống",
+        "Màu lá không đẹp",
+        "Không có rủi ro nào"
+      ],
+      "a": 0,
+      "e": "Loài ngoại lai có thể gây tác động sinh thái nếu trở thành loài xâm lấn hoặc cạnh tranh với loài bản địa."
+    },
+    {
+      "q": "Một nhà máy có lượng nước thải đạt giới hạn tại điểm xả nhưng nguồn tiếp nhận vẫn suy giảm. Cách phân tích nào phù hợp?",
+      "opts": [
+        "Xem cả tải lượng, điều kiện nguồn tiếp nhận, nhiều nguồn thải và biến động theo thời gian",
+        "Kết luận chắc chắn nhà máy vô can",
+        "Chỉ xem một mẫu duy nhất",
+        "Bỏ qua nguồn tiếp nhận"
+      ],
+      "a": 0,
+      "e": "Chất lượng môi trường phụ thuộc cả tải lượng và sức chịu tải/điều kiện của nguồn tiếp nhận."
+    },
+    {
+      "q": "Một dự án năng lượng tái tạo có lợi ích carbon nhưng ảnh hưởng một khu vực sinh thái nhạy cảm. Quyết định nên dựa trên gì?",
+      "opts": [
+        "Đánh giá toàn diện lợi ích, tác động, phương án thay thế và biện pháp giảm thiểu",
+        "Chỉ nhìn lợi ích carbon",
+        "Chỉ nhìn tác động và bỏ lợi ích",
+        "Chọn phương án rẻ nhất bất kể tác động"
+      ],
+      "a": 0,
+      "e": "Các dự án môi trường cần cân bằng nhiều tác động và xem phương án giảm thiểu/ thay thế."
+    },
+    {
+      "q": "Một bạn thích sinh học nhưng cũng thích phân tích dữ liệu. Hướng nghề môi trường nào có thể phù hợp?",
+      "opts": [
+        "Phân tích dữ liệu môi trường, GIS hoặc đánh giá tác động là các hướng có thể tìm hiểu",
+        "Chỉ có thể làm chăm sóc cây",
+        "Không thể kết hợp hai sở thích",
+        "Chỉ làm phòng thí nghiệm"
+      ],
+      "a": 0,
+      "e": "Lĩnh vực môi trường có nhiều vai trò giao giữa khoa học, dữ liệu và không gian."
+    },
+    {
+      "q": "Một khảo sát đa dạng sinh học ghi nhận ít loài hơn năm trước. Vì sao chưa nên kết luận hệ sinh thái chắc chắn suy giảm?",
+      "opts": [
+        "Phương pháp, mùa, thời gian khảo sát và nỗ lực lấy mẫu có thể khác",
+        "Vì đa dạng sinh học không đo được",
+        "Vì năm trước luôn đúng",
+        "Vì số loài không quan trọng"
+      ],
+      "a": 0,
+      "e": "So sánh sinh thái cần xét khả năng phát hiện và tính nhất quán của phương pháp khảo sát."
+    },
+    {
+      "q": "Một vùng đất canh tác bị xói mòn mạnh sau mưa. Biện pháp nào có thể giảm rủi ro?",
+      "opts": [
+        "Che phủ đất, đường đồng mức, cây chắn và quản lý dòng chảy tùy điều kiện",
+        "Cày sâu hơn mọi lúc",
+        "Để đất trống lâu hơn",
+        "Tăng tốc độ nước chảy"
+      ],
+      "a": 0,
+      "e": "Bảo vệ đất cần giảm tác động trực tiếp của mưa và dòng chảy, phù hợp địa hình."
+    },
+    {
+      "q": "Một công ty công bố 'net zero' nhưng không nêu baseline hay phạm vi phát thải. Câu hỏi nào cần đặt ra?",
+      "opts": [
+        "Phạm vi phát thải, baseline, thời hạn, phương pháp tính và phần giảm trực tiếp so với bù trừ",
+        "Chỉ hỏi logo có màu xanh không",
+        "Chỉ hỏi số nhân viên",
+        "Không cần hỏi vì net zero là đủ"
+      ],
+      "a": 0,
+      "e": "Cam kết khí hậu cần minh bạch phạm vi, baseline, phương pháp và cách đạt mục tiêu."
+    },
+    {
+      "q": "Một hệ thống tưới tự động dùng cảm biến độ ẩm đất. Lợi ích chính cần kiểm chứng là gì?",
+      "opts": [
+        "Tưới theo nhu cầu có thể giảm lãng phí nước mà vẫn duy trì điều kiện cây cần",
+        "Cảm biến luôn làm cây lớn nhanh",
+        "Không cần bảo trì",
+        "Nước sẽ tự sạch hơn"
+      ],
+      "a": 0,
+      "e": "Giá trị của cảm biến nằm ở việc điều chỉnh tưới theo dữ liệu thay vì lịch cố định."
+    },
+    {
+      "q": "Một dự án du lịch xây gần vùng sinh thái nhạy cảm. Điều gì cần cân nhắc?",
+      "opts": [
+        "Sức chứa, tác động lên hệ sinh thái, nước/rác, đường đi và biện pháp giảm thiểu",
+        "Chỉ số khách tối đa để tăng doanh thu",
+        "Chỉ cảnh đẹp",
+        "Không cần đánh giá nếu diện tích nhỏ"
+      ],
+      "a": 0,
+      "e": "Du lịch bền vững cần quản lý sức chứa và tác động môi trường cùng lợi ích kinh tế."
+    },
+    {
+      "q": "Một nhóm muốn đánh giá chất lượng không khí nhưng chỉ đo một ngày. Hạn chế lớn nhất là gì?",
+      "opts": [
+        "Khó đại diện cho biến động theo thời gian và điều kiện thời tiết",
+        "Một ngày luôn đủ",
+        "Chỉ ảnh hưởng chi phí",
+        "Không thể dùng thiết bị đo"
+      ],
+      "a": 0,
+      "e": "Chất lượng không khí biến động theo thời tiết, nguồn phát thải và thời gian; thiết kế đo cần tính đến biến động đó."
+    },
+    {
+      "q": "Một sản phẩm nông nghiệp có năng suất cao nhưng cần rất nhiều phân bón. Chỉ tiêu nào nên xem thêm?",
+      "opts": [
+        "Hiệu quả sử dụng dinh dưỡng và tác động đến đất/nước",
+        "Chỉ kích thước bao bì",
+        "Số người theo dõi",
+        "Màu hạt"
+      ],
+      "a": 0,
+      "e": "Năng suất cần đi cùng hiệu quả đầu vào và nguy cơ thất thoát dinh dưỡng."
+    },
+    {
+      "q": "Một khu bảo tồn muốn tăng khách du lịch. Câu hỏi quản lý nào quan trọng?",
+      "opts": [
+        "Sức chứa và cách phân luồng khách để bảo vệ tài nguyên trong khi tạo trải nghiệm",
+        "Chỉ tăng quảng cáo",
+        "Chỉ tăng giá vé",
+        "Mở mọi khu vực cho khách"
+      ],
+      "a": 0,
+      "e": "Quản lý khách theo sức chứa và khu vực nhạy cảm giúp giảm áp lực lên hệ sinh thái."
+    },
+    {
+      "q": "Một sinh viên muốn thử nghề môi trường nhưng chưa chắc thích công việc thực địa. Hoạt động nào giúp kiểm chứng?",
+      "opts": [
+        "Thử một dự án nhỏ về dữ liệu môi trường/GIS hoặc khảo sát thực địa có hướng dẫn",
+        "Chỉ xem ảnh thiên nhiên",
+        "Chỉ đọc tên ngành",
+        "Chỉ xem lương"
+      ],
+      "a": 0,
+      "e": "Trải nghiệm thực tế cho thấy mức độ phù hợp với dữ liệu, hiện trường và quy trình phân tích."
+    },
+    {
+      "q": "Một báo cáo môi trường đưa ra kết luận mạnh dù dữ liệu có sai số lớn. Điều gì cần cải thiện?",
+      "opts": [
+        "Nêu bất định, giới hạn phương pháp và mức độ chắc chắn của kết luận",
+        "Xóa phần sai số",
+        "Tăng cỡ chữ kết luận",
+        "Chọn con số có lợi nhất"
+      ],
+      "a": 0,
+      "e": "Báo cáo khoa học cần phản ánh độ bất định để người đọc hiểu mức độ chắc chắn."
+    }
+  ],
+  "tourism": [
+    {
+      "q": "Một khách sạn có tỷ lệ đặt phòng cao nhưng đánh giá khách giảm. Điều gì nên được kiểm tra trước?",
+      "opts": [
+        "Chỉ tăng giá phòng",
+        "Phân tích điểm đau trong hành trình khách và các yếu tố vận hành tạo trải nghiệm kém",
+        "Đổi logo",
+        "Tăng quảng cáo"
+      ],
+      "a": 1,
+      "e": "Occupancy cao không đảm bảo trải nghiệm tốt; cần xem phản hồi và các điểm chạm dịch vụ."
+    },
+    {
+      "q": "Một nhà hàng đông khách nhưng lợi nhuận thấp. Chỉ tiêu nào cần xem cùng doanh thu?",
+      "opts": [
+        "Food cost, labor cost, giá bán và năng suất bàn",
+        "Màu khăn trải bàn",
+        "Số người theo dõi đầu bếp",
+        "Tên món dài hay ngắn"
+      ],
+      "a": 0,
+      "e": "Doanh thu cần được đặt cạnh các chi phí và năng suất để hiểu lợi nhuận."
+    },
+    {
+      "q": "Một khách phàn nàn vì phải chờ nhận phòng lâu dù phòng đã sẵn sàng. Nút thắt có thể nằm ở đâu?",
+      "opts": [
+        "Quy trình check-in, phân bổ phòng, xác minh thông tin hoặc phối hợp giữa các bộ phận",
+        "Chỉ ở quảng cáo",
+        "Màu thẻ phòng",
+        "Số cây trong sảnh"
+      ],
+      "a": 0,
+      "e": "Dịch vụ là chuỗi quy trình; cần tìm bottleneck thay vì chỉ nhìn kết quả cuối."
+    },
+    {
+      "q": "Một tour có lịch trình quá dày khiến khách mệt. Điều chỉnh nào hợp lý hơn?",
+      "opts": [
+        "Cân bằng số điểm tham quan với thời gian di chuyển, nghỉ và trải nghiệm thực tế",
+        "Thêm điểm tham quan để tăng giá trị",
+        "Giảm toàn bộ thời gian nghỉ",
+        "Tăng tốc mọi hoạt động"
+      ],
+      "a": 0,
+      "e": "Thiết kế tour cần cân bằng trải nghiệm, thời gian và khả năng di chuyển của khách."
+    },
+    {
+      "q": "Một khách sạn muốn tăng doanh thu nhưng không muốn giảm giá đại trà. Hướng nào có thể nghiên cứu?",
+      "opts": [
+        "Revenue management theo nhu cầu, phân khúc và thời điểm; kết hợp upsell/cross-sell phù hợp",
+        "Giảm giá mọi ngày",
+        "Đóng phòng vào cuối tuần",
+        "Chỉ tăng chi phí quảng cáo"
+      ],
+      "a": 0,
+      "e": "Revenue management tối ưu giá và tồn phòng theo nhu cầu và phân khúc thay vì một mức giá cố định."
+    },
+    {
+      "q": "Một nhà hàng nhận nhiều review tốt về món ăn nhưng review xấu về tốc độ phục vụ. Vấn đề có vẻ tập trung ở đâu?",
+      "opts": [
+        "Quy trình vận hành, năng lực phục vụ hoặc phân bổ nhân sự trong giờ cao điểm",
+        "Chất lượng món chắc chắn kém",
+        "Thiết kế logo",
+        "Màu menu"
+      ],
+      "a": 0,
+      "e": "Khi phản hồi tập trung vào tốc độ, nên kiểm tra quy trình và năng lực vận hành."
+    },
+    {
+      "q": "Một điểm đến nổi tiếng bị quá tải vào mùa cao điểm. Giải pháp bền vững nào đáng cân nhắc?",
+      "opts": [
+        "Quản lý sức chứa, phân luồng, đặt lịch và phát triển sản phẩm ở khu vực khác",
+        "Chỉ tăng quảng cáo",
+        "Mở miễn phí toàn bộ",
+        "Tăng số khách tối đa"
+      ],
+      "a": 0,
+      "e": "Quản lý demand và sức chứa giúp giảm áp lực lên điểm đến."
+    },
+    {
+      "q": "Một khách quốc tế không hiểu hướng dẫn vì thông tin chỉ có tiếng Việt. Điều gì nên cải thiện?",
+      "opts": [
+        "Thiết kế thông tin đa ngôn ngữ, rõ ràng và phù hợp với hành trình khách",
+        "Nói nhanh hơn",
+        "Chỉ thêm logo",
+        "Bỏ hướng dẫn"
+      ],
+      "a": 0,
+      "e": "Thông tin du lịch cần phù hợp ngôn ngữ và bối cảnh người dùng."
+    },
+    {
+      "q": "Một sự kiện có 1.000 khách nhưng lối thoát chưa được kiểm tra đầy đủ. Ưu tiên nào?",
+      "opts": [
+        "An toàn và kế hoạch ứng phó khẩn cấp phải được kiểm tra trước khi tối ưu phần trang trí",
+        "Chụp ảnh trước",
+        "Tăng âm lượng nhạc",
+        "Bán thêm vé"
+      ],
+      "a": 0,
+      "e": "An toàn là điều kiện nền tảng của vận hành sự kiện."
+    },
+    {
+      "q": "Một khách sạn có nhiều phòng trống vào giữa tuần. Dữ liệu nào hữu ích để tìm cơ hội?",
+      "opts": [
+        "Nguồn đặt phòng, phân khúc khách, thời gian lưu trú và nhu cầu theo ngày",
+        "Màu rèm",
+        "Số cây trong sảnh",
+        "Tên nhân viên"
+      ],
+      "a": 0,
+      "e": "Phân tích demand theo phân khúc và thời điểm giúp tìm nguyên nhân và cơ hội tối ưu."
+    },
+    {
+      "q": "Một tour guide nhận câu hỏi ngoài chuyên môn và không chắc câu trả lời. Cách xử lý nào tốt hơn?",
+      "opts": [
+        "Thừa nhận giới hạn, kiểm tra nguồn đáng tin hoặc chuyển câu hỏi cho người phù hợp",
+        "Bịa câu trả lời để giữ hình ảnh",
+        "Đổi chủ đề ngay",
+        "Nói khách tự tìm"
+      ],
+      "a": 0,
+      "e": "Dịch vụ chuyên nghiệp cần trung thực về thông tin và biết khi nào cần xác minh."
+    },
+    {
+      "q": "Một nhà hàng muốn giảm lãng phí thực phẩm. Dữ liệu nào nên theo dõi?",
+      "opts": [
+        "Lượng mua, tồn, món bị trả lại, phần thừa và thời điểm phát sinh",
+        "Chỉ số lượt thích",
+        "Màu bếp",
+        "Số bài đăng"
+      ],
+      "a": 0,
+      "e": "Theo dõi dòng thực phẩm từ mua đến tiêu thụ giúp xác định điểm lãng phí."
+    },
+    {
+      "q": "Một khách sạn có nhiều đánh giá khác nhau giữa khách công tác và khách nghỉ dưỡng. Điều gì có thể rút ra?",
+      "opts": [
+        "Nhu cầu và tiêu chí trải nghiệm khác nhau theo phân khúc, nên phân tích riêng",
+        "Một nhóm chắc chắn sai",
+        "Chỉ cần lấy trung bình chung",
+        "Không thể dùng review"
+      ],
+      "a": 0,
+      "e": "Phân khúc giúp hiểu vì sao cùng dịch vụ có thể được đánh giá khác nhau."
+    },
+    {
+      "q": "Một công ty du lịch muốn xây sản phẩm mới cho khách trẻ. Bước đầu tiên tốt hơn là gì?",
+      "opts": [
+        "Nghiên cứu nhu cầu, hành vi, ngân sách và động cơ của nhóm khách mục tiêu",
+        "Chọn điểm đến đang hot nhất",
+        "Sao chép tour cũ",
+        "Chỉ hỏi nhân viên"
+      ],
+      "a": 0,
+      "e": "Sản phẩm nên bắt đầu từ hiểu khách hàng và nhu cầu, không chỉ từ trend."
+    },
+    {
+      "q": "Một khách phàn nàn công khai về dịch vụ. Phản hồi đầu tiên nào phù hợp?",
+      "opts": [
+        "Xác nhận trải nghiệm, thể hiện sẵn sàng hỗ trợ và chuyển sang xử lý cụ thể thay vì tranh cãi công khai",
+        "Đổ lỗi cho khách",
+        "Xóa bình luận ngay",
+        "Tranh luận để thắng"
+      ],
+      "a": 0,
+      "e": "Phản hồi chuyên nghiệp nên giảm căng thẳng và mở đường cho xử lý vấn đề."
+    },
+    {
+      "q": "Một resort muốn tăng doanh thu từ khách hiện tại. Hướng nào hợp lý nếu vẫn giữ trải nghiệm?",
+      "opts": [
+        "Cá nhân hóa upsell/cross-sell phù hợp nhu cầu như spa, ăn uống hoặc hoạt động",
+        "Ép mua mọi dịch vụ",
+        "Tăng phí ẩn",
+        "Giảm chất lượng phòng"
+      ],
+      "a": 0,
+      "e": "Upsell tốt dựa trên nhu cầu thực và minh bạch, không làm xấu trải nghiệm."
+    },
+    {
+      "q": "Một người thích giao tiếp, xử lý tình huống nhanh nhưng cũng thích lập kế hoạch và dữ liệu. Vai trò nào trong hospitality có thể đáng tìm hiểu?",
+      "opts": [
+        "Operations, revenue management, guest experience hoặc event management tùy sở thích cụ thể",
+        "Chỉ có lễ tân",
+        "Chỉ có đầu bếp",
+        "Không có vai trò phù hợp"
+      ],
+      "a": 0,
+      "e": "Ngành dịch vụ có nhiều vai trò kết hợp con người, vận hành và phân tích."
+    },
+    {
+      "q": "Một điểm đến muốn quảng bá mạnh nhưng hạ tầng chưa đủ cho lượng khách tăng. Rủi ro nào cần cân nhắc?",
+      "opts": [
+        "Tăng demand quá nhanh có thể gây quá tải, giảm trải nghiệm và tăng tác động môi trường",
+        "Quảng bá luôn có lợi",
+        "Khách tăng không ảnh hưởng vận hành",
+        "Chỉ cần thêm poster"
+      ],
+      "a": 0,
+      "e": "Marketing điểm đến cần đi cùng năng lực tiếp nhận và quản lý tác động."
+    },
+    {
+      "q": "Một bạn muốn thử nghề khách sạn nhưng chưa chắc thích ca kíp. Cách kiểm chứng thực tế hơn là gì?",
+      "opts": [
+        "Tìm hiểu lịch làm việc thực tế và thử trải nghiệm công việc/part-time phù hợp để đánh giá nhịp độ và tương tác khách",
+        "Chỉ xem video khách sạn",
+        "Chỉ xem mức lương",
+        "Chọn vì khách sạn đẹp"
+      ],
+      "a": 0,
+      "e": "Lịch ca và nhịp độ vận hành là phần quan trọng của trải nghiệm nghề."
+    },
+    {
+      "q": "Một sự kiện có ngân sách hạn chế. Cách ưu tiên nào hợp lý?",
+      "opts": [
+        "Xác định mục tiêu và các hạng mục ảnh hưởng trực tiếp đến an toàn, trải nghiệm và kết quả rồi phân bổ ngân sách",
+        "Cắt ngẫu nhiên 20% mỗi hạng mục",
+        "Dồn hết cho trang trí",
+        "Dồn hết cho quảng cáo"
+      ],
+      "a": 0,
+      "e": "Ưu tiên ngân sách theo mục tiêu và tác động giúp tránh cắt những phần thiết yếu."
+    }
+  ]
+} ;
+    Object.assign(QUIZ, ADDITIONAL_QUIZ);
+
     let quizState = {industry:null,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:"",resultSoundPlayed:false};
     let soundOn = true;
 
@@ -2644,16 +3782,32 @@ body.dark-theme .theme-toggle{
         o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.08,c.currentTime+.01);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.16);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.18);setTimeout(()=>c.close(),250);
       }catch{}
     }
+    const INDUSTRY_EN = {
+      it:{title:"Information Technology",desc:"Logic, technology, data and digital product building."},
+      business:{title:"Business & Finance",desc:"Markets, people, money and business decisions."},
+      health:{title:"Healthcare & Health Services",desc:"Health, science, care and serving communities."},
+      engineering:{title:"Engineering & Technology",desc:"Machines, systems, design and practical problem-solving."},
+      marketing:{title:"Marketing & Communications",desc:"Ideas, content, brands and connecting with audiences."},
+      law:{title:"Law & Legal",desc:"Reasoning, regulations, case analysis and protecting rights."},
+      education:{title:"Education & Psychology",desc:"Learning, people, behavior and human development."},
+      architecture:{title:"Architecture & Design",desc:"Space, aesthetics, function and design problem-solving."},
+      environment:{title:"Environment & Agriculture",desc:"Ecosystems, resources, sustainable production and environmental data."},
+      tourism:{title:"Tourism & Hospitality",desc:"Guest experience, service operations, destinations and events."}
+    };
+    function industryView(key,v){
+      const english=window.careerLanguage?.get?.()==='en';
+      return {title:english?(INDUSTRY_EN[key]?.title||v.title):v.title,desc:english?(INDUSTRY_EN[key]?.desc||v.desc):v.desc};
+    }
     function renderQuizHome(){
-      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-hero"><div class="big-emoji">🎮</div><h2>Quiz khám phá ngành nghề</h2><p>Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.</p></div><div class="industry-grid">${Object.entries(INDUSTRIES).map(([key,v])=>`<button class="industry-card" data-industry="${key}" type="button"><div class="industry-art">${v.art}</div><h3>${v.emoji} ${v.title}</h3><p>${v.desc}</p></button>`).join("")}</div><div class="quiz-note">🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz.</div>`;
+      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-hero"><div class="big-emoji">🎮</div><h2>${window.careerLanguage?.t().quizHome||"Quiz khám phá ngành nghề"}</h2><p>${window.careerLanguage?.t().quizDesc||"Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp."}</p></div><div class="industry-grid">${Object.entries(INDUSTRIES).map(([key,v])=>{const d=industryView(key,v);return `<button class="industry-card" data-industry="${key}" type="button"><div class="industry-art">${v.art}</div><h3>${v.emoji} ${d.title}</h3><p>${d.desc}</p></button>`}).join("")}</div><div class="quiz-note">${window.careerLanguage?.t().note||"🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz."}</div>`;
       quizPanel.querySelectorAll(".industry-card").forEach(b=>b.addEventListener("click",()=>startQuiz(b.dataset.industry)));
     }
     function startQuiz(industry){ quizState={industry,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:"",resultSoundPlayed:false}; beep(); renderQuestion(); }
     function getQuestions(){ return quizState.personal ? quizState.personalQuestions : QUIZ[quizState.industry]; }
     function renderQuestion(){
-      const list=getQuestions(), item=list[quizState.index], meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯",art:"🧠"}:INDUSTRIES[quizState.industry];
+      const list=getQuestions(), item=list[quizState.index], meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯",art:"🧠"}:INDUSTRIES[quizState.industry]; const metaView=quizState.personal?meta:({...meta,...industryView(quizState.industry,meta)});
       const pct=Math.round((quizState.index/list.length)*100);
-      quizPanel.querySelector("#quizApp").innerHTML=`<button class="quiz-back" type="button" id="quizBack">← Chọn lại ngành</button><div class="quiz-top"><div class="quiz-title">${meta.emoji} ${meta.title}</div><button class="sound-btn" id="soundBtn" type="button">${soundOn?"🔊 Âm thanh":"🔇 Âm thanh"}</button></div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><div class="question-card"><div class="question-illustration">${item.art||meta.art}</div><div style="color:#64748b;font-size:13px;margin-bottom:7px">Câu ${quizState.index+1}/${list.length}</div><h3>${item.q}</h3><div class="option-list">${item.opts.map((o,i)=>`<button class="option-btn" data-i="${i}" type="button"><strong>${String.fromCharCode(65+i)}.</strong> ${o}</button>`).join("")}</div><div class="quiz-explain" id="quizExplain"></div><button class="quiz-next" id="quizNext" type="button">${quizState.index===list.length-1?"🏆 Xem kết quả":"Câu tiếp theo →"}</button></div>`;
+      quizPanel.querySelector("#quizApp").innerHTML=`<button class="quiz-back" type="button" id="quizBack">${window.careerLanguage?.t().back||"← Chọn lại ngành"}</button><div class="quiz-top"><div class="quiz-title">${metaView.emoji} ${metaView.title}</div><button class="sound-btn" id="soundBtn" type="button">${soundOn?(window.careerLanguage?.t().sound||"🔊 Âm thanh"):(window.careerLanguage?.t().mute||"🔇 Âm thanh")}</button></div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><div class="question-card"><div class="question-illustration">${item.art||meta.art}</div><div style="color:#64748b;font-size:13px;margin-bottom:7px">Câu ${quizState.index+1}/${list.length}</div><h3>${item.q}</h3><div class="option-list">${item.opts.map((o,i)=>`<button class="option-btn" data-i="${i}" type="button"><strong>${String.fromCharCode(65+i)}.</strong> ${o}</button>`).join("")}</div><div class="quiz-explain" id="quizExplain"></div><button class="quiz-next" id="quizNext" type="button">${quizState.index===list.length-1?(window.careerLanguage?.t().finish||"🏆 Xem kết quả"):(window.careerLanguage?.t().next||"Câu tiếp theo →")}</button></div>`;
       quizPanel.querySelector("#quizBack").addEventListener("click",renderQuizHome);
       quizPanel.querySelector("#soundBtn").addEventListener("click",()=>{soundOn=!soundOn;renderQuestion();});
       quizPanel.querySelectorAll(".option-btn").forEach(btn=>btn.addEventListener("click",()=>answerQuestion(Number(btn.dataset.i))));
@@ -2673,8 +3827,8 @@ body.dark-theme .theme-toggle{
         if(quizState.score>=15) playQuizSound("winner");
         else playQuizSound("fail");
       }
-      const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry];
-      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>Hoàn thành!</h2><p style="color:#64748b">${meta.emoji} ${meta.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${pct>=80?"Bạn có nhiều điểm mạnh đáng khám phá!":pct>=60?"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!":"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"}</h3><p style="color:#64748b;line-height:1.6">Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp.</p><div class="result-actions"><button class="primary-action" id="againBtn">🔄 Làm lại</button><button class="secondary-action" id="otherBtn">🎮 Chọn ngành khác</button><button class="secondary-action" id="chatBtn">💬 Trò chuyện với AI về lĩnh vực này</button></div></div>`;
+      const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry]; const metaView=quizState.personal?meta:({...meta,...industryView(quizState.industry,meta)});
+      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>${window.careerLanguage?.t().done||"Hoàn thành!"}</h2><p style="color:#64748b">${metaView.emoji} ${metaView.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${pct>=80?"Bạn có nhiều điểm mạnh đáng khám phá!":pct>=60?"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!":"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"}</h3><p style="color:#64748b;line-height:1.6">Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp.</p><div class="result-actions"><button class="primary-action" id="againBtn">${window.careerLanguage?.t().again||"🔄 Làm lại"}</button><button class="secondary-action" id="otherBtn">${window.careerLanguage?.t().other||"🎮 Chọn ngành khác"}</button><button class="secondary-action" id="chatBtn">${window.careerLanguage?.t().talk||"💬 Trò chuyện với AI về lĩnh vực này"}</button></div></div>`;
       quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;quizState.resultSoundPlayed=false;renderQuestion();};
       quizPanel.querySelector("#otherBtn").onclick=renderQuizHome;
       quizPanel.querySelector("#chatBtn").onclick=()=>switchMode("chat");
@@ -2703,6 +3857,39 @@ body.dark-theme .theme-toggle{
 </script>
 
 
+\n<script id="language-switcher">
+(function(){
+  const translations={
+    vi:{chat:"💬 AI Chat",quiz:"🎮 Quiz ngành nghề",title:"Chuyên Gia Hướng Nghiệp AI",subtitle:"Khám phá bản thân bằng trò chuyện AI và quiz ngành nghề.",send:"Gửi",reset:"🔄 Bắt đầu cuộc trò chuyện mới",ready:"🟢 AI đang sẵn sàng",thinking:"🟡 AI đang suy nghĩ...",placeholder:"Ví dụ: Em thích chơi game, bóng đá và làm video...",quizHome:"Quiz khám phá ngành nghề",quizDesc:"Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.",sound:"🔊 Âm thanh",mute:"🔇 Âm thanh",back:"← Chọn lại ngành",next:"Câu tiếp theo →",finish:"🏆 Xem kết quả",done:"Hoàn thành!",again:"🔄 Làm lại",other:"🎮 Chọn ngành khác",talk:"💬 Trò chuyện với AI về lĩnh vực này",note:"🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz.",lang:"EN"},
+    en:{chat:"💬 AI Chat",quiz:"🎮 Career Quiz",title:"AI Career Guide",subtitle:"Explore yourself through AI conversation and career quizzes.",send:"Send",reset:"🔄 Start a new conversation",ready:"🟢 AI is ready",thinking:"🟡 AI is thinking...",placeholder:"Example: I enjoy gaming, football and making videos...",quizHome:"Career Discovery Quiz",quizDesc:"Choose a field and try 20 questions. Results are for exploration, not a definitive career conclusion.",sound:"🔊 Sound",mute:"🔇 Sound off",back:"← Choose another field",next:"Next question →",finish:"🏆 See results",done:"Completed!",again:"🔄 Try again",other:"🎮 Choose another field",talk:"💬 Chat with AI about this field",note:"🔊 Quiz sounds can be turned on/off while playing.",lang:"VI"}
+  };
+  let lang=localStorage.getItem('career-language')||'vi';
+  const t=()=>translations[lang];
+  function addButton(){
+    if(document.getElementById('languageToggle')) return;
+    const b=document.createElement('button'); b.id='languageToggle'; b.className='lang-toggle'; b.type='button';
+    b.onclick=()=>{lang=lang==='vi'?'en':'vi';localStorage.setItem('career-language',lang);applyLanguage();};
+    document.querySelector('.header')?.appendChild(b);
+    applyLanguage();
+  }
+  function applyLanguage(){
+    const x=t();
+    const b=document.getElementById('languageToggle'); if(b) b.innerHTML='🌐 '+x.lang+'<span class="lang-badge">Language</span>';
+    const title=document.querySelector('.header h1'); if(title) title.textContent=x.title;
+    const sub=document.querySelector('.header .subtitle'); if(sub) sub.textContent=x.subtitle;
+    const cb=document.getElementById('chatModeBtn'); if(cb) cb.textContent=x.chat;
+    const qb=document.getElementById('quizModeBtn'); if(qb) qb.textContent=x.quiz;
+    const send=document.getElementById('sendBtn'); if(send&&!send.disabled) send.textContent=x.send;
+    const reset=document.getElementById('resetBtn'); if(reset) reset.textContent=x.reset;
+    const inp=document.getElementById('userInput'); if(inp) inp.placeholder=x.placeholder;
+    const st=document.getElementById('status'); if(st && !st.textContent.includes('Mất kết nối') && !st.textContent.includes('🔴')) st.textContent=x.ready;
+    document.documentElement.lang=lang==='vi'?'vi':'en';
+    if(typeof renderQuizHome==='function') renderQuizHome();
+  }
+  window.careerLanguage={get:()=>lang,t,apply:applyLanguage};
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',addButton); else addButton();
+})();
+</script>\n
 </body>
 
 </html>
