@@ -641,6 +641,527 @@ h1{color:#fff!important;font-size:clamp(27px,4vw,42px)!important;letter-spacing:
 })();
 </script>
 
+
+<style id="galaxy-career-design">
+/* =========================================================
+   GALAXY CAREER — DESIGN LAYER ONLY
+   This layer changes visuals/layout only. Existing app logic,
+   quiz data, prompts, API calls and interaction handlers stay intact.
+   ========================================================= */
+
+:root{
+  --celestial-black:#0b0d12;
+  --celestial-ink:#151923;
+  --paper:#fbfaf7;
+  --paper-soft:rgba(255,255,255,.86);
+  --violet:#6956d9;
+  --violet-2:#8b78ff;
+  --gold:#c8a85b;
+  --silver:#d7d9df;
+}
+
+body{
+  min-height:100vh!important;
+  position:relative!important;
+  overflow-x:hidden!important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(105,86,217,.13), transparent 30%),
+    linear-gradient(rgba(255,255,255,.74),rgba(255,255,255,.82)),
+    url("assets/light-starry-night.webp") center/cover fixed no-repeat!important;
+  color:var(--celestial-ink)!important;
+  transition:background .55s ease,color .35s ease!important;
+}
+
+body::before{
+  content:""!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  opacity:.24!important;
+  background:
+    radial-gradient(circle at 14% 22%, rgba(255,255,255,.95) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 16%, rgba(105,86,217,.55) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 68%, rgba(200,168,91,.45) 0 1px, transparent 2px);
+  background-size:190px 170px,250px 210px,310px 260px!important;
+  mask-image:linear-gradient(to bottom,#000,transparent 90%)!important;
+}
+
+body::after{
+  content:""!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(115deg,rgba(255,255,255,.25),transparent 32%,rgba(105,86,217,.07) 75%,rgba(255,255,255,.18)),
+    radial-gradient(circle at 50% 110%,rgba(200,168,91,.10),transparent 38%);
+}
+
+body.dark-theme{
+  background:
+    radial-gradient(circle at 18% 0%, rgba(139,124,255,.16), transparent 32%),
+    linear-gradient(rgba(4,7,14,.60),rgba(5,7,13,.70)),
+    url("assets/dark-galaxy.webp") center/cover fixed no-repeat!important;
+  color:#eef2ff!important;
+}
+
+body.dark-theme::before{
+  opacity:.58!important;
+  background:
+    radial-gradient(circle at 8% 12%,rgba(255,255,255,.92) 0 1px,transparent 2px),
+    radial-gradient(circle at 28% 68%,rgba(139,124,255,.9) 0 1px,transparent 2px),
+    radial-gradient(circle at 82% 26%,rgba(255,155,92,.8) 0 1px,transparent 2px),
+    radial-gradient(circle at 92% 82%,rgba(255,255,255,.82) 0 1px,transparent 2px);
+  background-size:160px 150px,220px 210px,280px 240px,330px 300px!important;
+}
+
+body.dark-theme::after{
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(120,93,255,.16),transparent 42%),
+    linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.38));
+}
+
+.app{
+  max-width:1160px!important;
+  position:relative!important;
+  z-index:1!important;
+}
+
+.header{
+  min-height:190px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:2px solid rgba(12,14,20,.86)!important;
+  border-radius:32px!important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.78),rgba(247,244,236,.70))!important;
+  box-shadow:
+    0 24px 70px rgba(16,18,25,.20),
+    0 0 0 1px rgba(255,255,255,.8) inset!important;
+  color:var(--celestial-ink)!important;
+  backdrop-filter:blur(18px) saturate(115%)!important;
+}
+
+body.dark-theme .header{
+  border-color:rgba(0,0,0,.92)!important;
+  background:
+    linear-gradient(135deg,rgba(10,14,25,.78),rgba(19,24,40,.68))!important;
+  box-shadow:
+    0 28px 90px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,255,255,.07) inset!important;
+}
+
+.header::before{
+  content:"✦   ·   ✧   ·   ✦   ·   ✧   ·   ✦";
+  position:absolute;
+  top:14px;
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  color:rgba(105,86,217,.45);
+  font-size:11px;
+  letter-spacing:8px;
+  pointer-events:none;
+}
+
+body.dark-theme .header::before{
+  color:rgba(220,215,255,.42);
+}
+
+.header::after{
+  width:330px!important;
+  height:330px!important;
+  right:-100px!important;
+  top:-170px!important;
+  border:1px solid rgba(105,86,217,.25)!important;
+  box-shadow:
+    0 0 0 36px rgba(105,86,217,.06),
+    0 0 0 72px rgba(105,86,217,.035)!important;
+}
+
+.logo{
+  position:relative!important;
+  width:82px!important;
+  height:82px!important;
+  border-radius:50%!important;
+  font-size:42px!important;
+  background:
+    radial-gradient(circle at 35% 30%,#fff,rgba(255,255,255,.72) 24%,rgba(105,86,217,.18) 25%,rgba(105,86,217,.06) 68%,transparent 69%)!important;
+  border:2px solid rgba(11,13,18,.82)!important;
+  box-shadow:
+    0 0 0 7px rgba(255,255,255,.34),
+    0 14px 36px rgba(105,86,217,.24)!important;
+  color:#171a25!important;
+  animation:celestialFloat 5s ease-in-out infinite!important;
+}
+
+body.dark-theme .logo{
+  background:
+    radial-gradient(circle at 35% 30%,#fff,rgba(255,255,255,.55) 22%,rgba(139,124,255,.24) 23%,rgba(139,124,255,.08) 68%,transparent 69%)!important;
+  border-color:rgba(0,0,0,.92)!important;
+  color:#fff!important;
+  box-shadow:
+    0 0 0 7px rgba(255,255,255,.06),
+    0 0 40px rgba(139,124,255,.32)!important;
+}
+
+.logo::after{
+  content:"";
+  position:absolute;
+  inset:-11px;
+  border:1px dashed rgba(105,86,217,.38);
+  border-radius:50%;
+  transform:rotate(-18deg);
+  pointer-events:none;
+}
+
+h1{
+  color:#171923!important;
+  text-shadow:0 1px 0 rgba(255,255,255,.8)!important;
+}
+
+body.dark-theme h1{
+  color:#f5f3ff!important;
+  text-shadow:0 0 24px rgba(139,124,255,.28)!important;
+}
+
+.subtitle{
+  color:#5d6473!important;
+  max-width:700px;
+}
+
+body.dark-theme .subtitle{color:#aab3c7!important}
+
+.mode-switch{
+  border:2px solid rgba(12,14,20,.82)!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.74)!important;
+  backdrop-filter:blur(14px)!important;
+  box-shadow:0 14px 38px rgba(16,18,25,.15)!important;
+}
+
+body.dark-theme .mode-switch{
+  background:rgba(13,18,31,.78)!important;
+  border-color:rgba(0,0,0,.92)!important;
+}
+
+.mode-btn{
+  color:#5e6470!important;
+  border-radius:12px!important;
+}
+
+body.dark-theme .mode-btn{color:#aab3c7!important}
+
+.mode-btn.active{
+  background:
+    linear-gradient(135deg,#171923,#302c46)!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  box-shadow:
+    0 8px 24px rgba(15,17,24,.24),
+    0 0 0 1px rgba(200,168,91,.16) inset!important;
+}
+
+/* ======= CHAT: framed, editorial, celestial ======= */
+.chat{
+  border:2px solid #0a0c10!important;
+  border-radius:30px!important;
+  background:rgba(255,255,255,.78)!important;
+  box-shadow:
+    0 28px 90px rgba(10,12,18,.24),
+    0 0 0 5px rgba(255,255,255,.48),
+    0 0 0 7px rgba(10,12,18,.10)!important;
+  backdrop-filter:blur(18px) saturate(120%)!important;
+}
+
+body.dark-theme .chat{
+  border-color:#030407!important;
+  background:rgba(10,14,23,.78)!important;
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.62),
+    0 0 0 5px rgba(255,255,255,.035),
+    0 0 0 7px rgba(0,0,0,.58)!important;
+}
+
+.chat::before{
+  height:10px!important;
+  background:
+    radial-gradient(circle at 14px 50%,#fff 0 1px,transparent 2px),
+    radial-gradient(circle at 72px 50%,#c8a85b 0 1px,transparent 2px),
+    radial-gradient(circle at 132px 50%,#fff 0 1px,transparent 2px),
+    linear-gradient(90deg,#11131a,#40365f,#8b78ff,#c8a85b,#40365f,#11131a)!important;
+  background-size:190px 100%,260px 100%,310px 100%,100% 100%!important;
+  border-bottom:1px solid rgba(0,0,0,.75);
+}
+
+#chatBox{
+  height:620px!important;
+  padding:34px!important;
+  background:
+    radial-gradient(circle at 8% 10%,rgba(105,86,217,.10),transparent 24%),
+    radial-gradient(circle at 90% 90%,rgba(200,168,91,.07),transparent 22%),
+    rgba(249,248,244,.86)!important;
+  scrollbar-width:thin;
+  scrollbar-color:#20232d transparent;
+}
+
+body.dark-theme #chatBox{
+  background:
+    radial-gradient(circle at 10% 8%,rgba(139,124,255,.12),transparent 25%),
+    radial-gradient(circle at 88% 85%,rgba(255,126,66,.08),transparent 25%),
+    rgba(8,12,21,.82)!important;
+  scrollbar-color:#5c6380 transparent;
+}
+
+.message{
+  margin-bottom:25px!important;
+  animation:celestialMessage .32s ease both!important;
+}
+
+.message.user{
+  padding-left:15%!important;
+}
+
+.message.ai{
+  padding-right:7%!important;
+}
+
+.bubble{
+  position:relative!important;
+  max-width:min(760px,100%)!important;
+  padding:18px 20px!important;
+  border-radius:21px!important;
+  line-height:1.78!important;
+  font-size:14.5px!important;
+  box-shadow:
+    0 12px 30px rgba(15,17,24,.10),
+    0 0 0 1px rgba(255,255,255,.5) inset!important;
+}
+
+.user .bubble{
+  background:
+    linear-gradient(135deg,#171923,#37324e)!important;
+  color:#fff!important;
+  border:2px solid #080a0e!important;
+  border-bottom-right-radius:6px!important;
+  box-shadow:
+    0 15px 34px rgba(15,17,24,.24),
+    0 0 0 1px rgba(200,168,91,.18) inset!important;
+}
+
+.ai .bubble{
+  background:rgba(255,255,255,.90)!important;
+  color:#191c25!important;
+  border:2px solid #171923!important;
+  border-bottom-left-radius:6px!important;
+  box-shadow:
+    0 13px 32px rgba(15,17,24,.11),
+    0 0 0 1px rgba(200,168,91,.20) inset!important;
+}
+
+body.dark-theme .ai .bubble{
+  background:rgba(18,24,38,.92)!important;
+  color:#eef2ff!important;
+  border-color:#05070b!important;
+  box-shadow:
+    0 16px 36px rgba(0,0,0,.38),
+    0 0 0 1px rgba(139,124,255,.18) inset!important;
+}
+
+.bubble::after{
+  content:"✦";
+  position:absolute;
+  right:12px;
+  top:8px;
+  font-size:9px;
+  color:rgba(200,168,91,.55);
+  pointer-events:none;
+}
+
+.user .bubble::after{
+  color:rgba(255,255,255,.28);
+}
+
+.sender{
+  font-weight:800!important;
+  letter-spacing:.25px!important;
+}
+
+.ai .sender{color:#5d48c8!important}
+body.dark-theme .ai .sender{color:#a99cff!important}
+.user .sender{color:rgba(255,255,255,.76)!important}
+
+.input-area{
+  padding:20px!important;
+  background:rgba(255,255,255,.82)!important;
+  border-top:2px solid #11131a!important;
+  backdrop-filter:blur(16px)!important;
+}
+
+body.dark-theme .input-area{
+  background:rgba(10,14,23,.88)!important;
+  border-top-color:#030407!important;
+}
+
+.input-row{
+  padding:7px!important;
+  border:2px solid #11131a!important;
+  border-radius:18px!important;
+  background:rgba(248,247,243,.96)!important;
+  box-shadow:
+    0 8px 22px rgba(15,17,24,.08),
+    0 0 0 3px rgba(200,168,91,.08)!important;
+}
+
+body.dark-theme .input-row{
+  background:rgba(18,24,38,.96)!important;
+  border-color:#05070b!important;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.38),
+    0 0 0 3px rgba(139,124,255,.08)!important;
+}
+
+#userInput{
+  color:#171923!important;
+}
+
+body.dark-theme #userInput{color:#f1f4ff!important}
+
+#sendBtn{
+  min-height:50px!important;
+  border:2px solid #07090d!important;
+  border-radius:14px!important;
+  background:linear-gradient(135deg,#1a1c25,#453b67)!important;
+  box-shadow:
+    0 8px 20px rgba(15,17,24,.22),
+    0 0 0 1px rgba(200,168,91,.18) inset!important;
+}
+
+#sendBtn:hover{
+  background:linear-gradient(135deg,#2a2d39,#5d4e8c)!important;
+}
+
+.reset{
+  color:#555c6b!important;
+  border:1px solid rgba(17,19,26,.22)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.45)!important;
+}
+
+body.dark-theme .reset{
+  color:#aeb7cb!important;
+  background:rgba(255,255,255,.03)!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+
+.status{color:#737987!important}
+body.dark-theme .status{color:#9ca8bf!important}
+
+/* ======= QUIZ: same celestial language ======= */
+.quiz-shell{
+  border:2px solid #0a0c10!important;
+  background:rgba(255,255,255,.80)!important;
+  box-shadow:
+    0 28px 90px rgba(10,12,18,.20),
+    0 0 0 5px rgba(255,255,255,.38)!important;
+  backdrop-filter:blur(18px)!important;
+}
+
+body.dark-theme .quiz-shell{
+  border-color:#030407!important;
+  background:rgba(10,14,23,.80)!important;
+  box-shadow:0 30px 100px rgba(0,0,0,.58),0 0 0 5px rgba(255,255,255,.03)!important;
+}
+
+.industry-card,.question-card{
+  border:2px solid #181a22!important;
+  background:rgba(255,255,255,.88)!important;
+}
+
+body.dark-theme .industry-card,
+body.dark-theme .question-card{
+  background:rgba(18,24,38,.88)!important;
+  border-color:#05070b!important;
+}
+
+.industry-card:hover{
+  border-color:#6d5dfc!important;
+  box-shadow:0 18px 42px rgba(105,86,217,.20)!important;
+}
+
+.question-illustration,.industry-art{
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
+.option-btn{
+  border:1.5px solid #1a1c24!important;
+  background:rgba(255,255,255,.72)!important;
+  color:#171923!important;
+}
+
+body.dark-theme .option-btn{
+  border-color:#05070b!important;
+  background:rgba(18,24,38,.78)!important;
+  color:#eef2ff!important;
+}
+
+.option-btn:hover{
+  border-color:#6d5dfc!important;
+  transform:translateX(3px)!important;
+}
+
+.quiz-next,.primary-action{
+  border:2px solid #07090d!important;
+}
+
+.personal-quiz-box{
+  border:1.5px solid #6d5dfc!important;
+}
+
+body.dark-theme .personal-quiz-box{
+  background:rgba(139,124,255,.08)!important;
+}
+
+.theme-toggle{
+  border:2px solid rgba(0,0,0,.78)!important;
+  background:rgba(255,255,255,.55)!important;
+  color:#11131a!important;
+  box-shadow:0 8px 24px rgba(15,17,24,.14)!important;
+}
+
+body.dark-theme .theme-toggle{
+  border-color:rgba(0,0,0,.92)!important;
+  background:rgba(255,255,255,.09)!important;
+  color:#fff!important;
+}
+
+/* Little constellation markers without adding content to the app. */
+@keyframes celestialFloat{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  50%{transform:translateY(-4px) rotate(1deg)}
+}
+@keyframes celestialMessage{
+  from{opacity:0;transform:translateY(8px) scale(.99)}
+  to{opacity:1;transform:none}
+}
+
+@media(max-width:700px){
+  .header{min-height:165px!important}
+  #chatBox{height:540px!important;padding:20px!important}
+  .message.user{padding-left:3%!important}
+  .message.ai{padding-right:2%!important}
+  .bubble{font-size:14px!important}
+  .chat,.quiz-shell{border-radius:22px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .logo,.message{animation:none!important}
+}
+</style>
+
 </head>
 
 
