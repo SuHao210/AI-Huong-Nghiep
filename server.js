@@ -665,6 +665,11 @@ app.post(
                 ? req.body.message.trim()
                 : "";
 
+        const language =
+            req.body?.language === "en"
+                ? "en"
+                : "vi";
+
 
         /* -------------------------
            KIỂM TRA INPUT
@@ -772,7 +777,7 @@ app.post(
                     message,
 
                 system_instruction:
-                    SYSTEM_INSTRUCTION,
+                    `${SYSTEM_INSTRUCTION}\n\nLANGUAGE REQUIREMENT (CURRENT REQUEST):\n- The user interface language is ${language === "en" ? "English" : "Vietnamese"}.\n- Reply entirely in ${language === "en" ? "English" : "Vietnamese"}.\n- Do not switch languages just because the user uses a different language in a quoted example.\n- When English is selected, use the heading "💼 CAREERS WORTH TRYING" instead of the Vietnamese recommendation heading.\n- When Vietnamese is selected, use "💼 NGHỀ NGHIỆP ĐÁNG THỬ".`,
 
                 generation_config: {
 
@@ -941,7 +946,7 @@ app.post(
                     newInteractionId;
                 session.lastAssistantText =
                     fullText;
-                if (/NGHỀ NGHIỆP ĐÁNG THỬ/i.test(fullText)) {
+                if (/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(fullText)) {
                     session.lastRecommendation = {
                         interactionId: newInteractionId,
                         text: fullText,
@@ -1055,6 +1060,64 @@ const INDUSTRY_RULES = {
     }
 };
 
+const NEW_INDUSTRY_RULES = {
+    law: {
+        title: "Luật & Pháp lý",
+        terms: ["law", "legal", "luật", "pháp lý", "luật sư", "lawyer", "legal counsel", "paralegal"]
+    },
+    education: {
+        title: "Giáo dục & Tâm lý",
+        terms: ["education", "psychology", "giáo dục", "tâm lý", "teacher", "giáo viên", "psychologist", "counselor"]
+    },
+    architecture: {
+        title: "Kiến trúc & Thiết kế",
+        terms: ["architecture", "design", "kiến trúc", "thiết kế", "architect", "kiến trúc sư", "designer", "interior designer"]
+    },
+    environment: {
+        title: "Môi trường & Nông nghiệp",
+        terms: ["environment", "agriculture", "môi trường", "nông nghiệp", "environmental analyst", "agronomy", "sustainability", "gis"]
+    },
+    tourism: {
+        title: "Du lịch & Nhà hàng - Khách sạn",
+        terms: ["tourism", "hospitality", "du lịch", "nhà hàng", "khách sạn", "hotel", "tour guide", "event", "revenue management"]
+    }
+};
+Object.assign(INDUSTRY_RULES, NEW_INDUSTRY_RULES);
+
+const QUIZ_TRANSLATION_SCHEMA = {
+    type: "object",
+    properties: {
+        questions: {
+            type: "array",
+            minItems: 20,
+            maxItems: 20,
+            items: {
+                type: "object",
+                properties: {
+                    q: { type: "string" },
+                    opts: { type: "array", minItems: 4, maxItems: 4, items: { type: "string" } },
+                    a: { type: "integer", minimum: 0, maximum: 3 },
+                    e: { type: "string" }
+                },
+                required: ["q", "opts", "a", "e"],
+                additionalProperties: false
+            }
+        }
+    },
+    required: ["questions"],
+    additionalProperties: false
+};
+
+const quizTranslationCache = new Map();
+const quizTranslateLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    limit: 12,
+    keyGenerator: sessionOrIpKey,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Bạn đã yêu cầu dịch quiz khá nhiều trong thời gian ngắn. Vui lòng thử lại sau." }
+});
+
 const PERSONAL_QUIZ_SCHEMA = {
     type: "object",
     properties: {
@@ -1103,12 +1166,98 @@ function getInteractionOutputText(interaction) {
 }
 
 app.post(
+    "/api/quiz-translate",
+    quizTranslateLimiter,
+    async (req, res) => {
+        const language = req.body?.language === "en" ? "en" : "vi";
+        const sourceLanguage = req.body?.sourceLanguage === "en" ? "en" : "vi";
+        const industry = typeof req.body?.industry === "string" ? req.body.industry : "quiz";
+        const questions = Array.isArray(req.body?.questions) ? req.body.questions : [];
+
+        if (language === sourceLanguage) {
+            return res.json({ questions });
+        }
+        if (questions.length !== 20 || questions.some(q =>
+            !q || typeof q.q !== "string" || !Array.isArray(q.opts) || q.opts.length !== 4 ||
+            q.opts.some(x => typeof x !== "string") || !Number.isInteger(q.a) || q.a < 0 || q.a > 3 || typeof q.e !== "string"
+        )) {
+            return res.status(400).json({ error: "Quiz translation payload is invalid." });
+        }
+
+        const payload = JSON.stringify(questions);
+        const cacheKey = `${industry}:${crypto.createHash("sha256").update(payload).digest("hex")}`;
+        if (quizTranslationCache.has(cacheKey)) {
+            return res.json({ questions: quizTranslationCache.get(cacheKey) });
+        }
+
+        let releaseGeminiSlot;
+        try {
+            releaseGeminiSlot = await acquireGeminiSlot();
+        } catch (error) {
+            return res.status(503).json({ error: getFriendlyError(error) });
+        }
+
+        try {
+            const prompt = `
+Translate this career quiz from ${sourceLanguage === "en" ? "English" : "Vietnamese"} to natural, concise ${language === "en" ? "English" : "Vietnamese"}.
+Industry: ${industry}
+Rules:
+- Translate ONLY the text; preserve the exact meaning and difficulty.
+- Return exactly 20 questions.
+- Preserve the answer index "a" exactly.
+- Preserve four options per question.
+- Do not add, remove, reorder, simplify, or solve questions.
+- Explanations must also be English.
+- Avoid awkward literal translation; use natural English suitable for a career-orientation quiz.
+- Return JSON only.
+
+Vietnamese quiz JSON:
+${payload}
+`;
+
+            const interaction = await createInteractionWithRetry({
+                model: MODEL,
+                input: prompt,
+                response_format: {
+                    type: "text",
+                    mime_type: "application/json",
+                    schema: QUIZ_TRANSLATION_SCHEMA
+                },
+                generation_config: { thinking_level: "low" },
+                store: true
+            }, 2);
+
+            const raw = getInteractionOutputText(interaction);
+            let parsed;
+            try { parsed = JSON.parse(raw); } catch {
+                throw new Error("Gemini returned invalid quiz translation JSON.");
+            }
+            const translated = parsed?.questions;
+            if (!Array.isArray(translated) || translated.length !== 20 || translated.some(q =>
+                !q || typeof q.q !== "string" || !Array.isArray(q.opts) || q.opts.length !== 4 ||
+                q.opts.some(x => typeof x !== "string") || !Number.isInteger(q.a) || q.a < 0 || q.a > 3 || typeof q.e !== "string"
+            )) {
+                throw new Error("Gemini returned an invalid quiz translation.");
+            }
+            quizTranslationCache.set(cacheKey, translated);
+            return res.json({ questions: translated });
+        } catch (error) {
+            console.error("Quiz translation error:", error);
+            return res.status(503).json({ error: "Không thể tải bản tiếng Anh của quiz lúc này. Vui lòng thử lại." });
+        } finally {
+            releaseGeminiSlot?.();
+        }
+    }
+);
+
+app.post(
     "/api/personalized-quiz",
     personalizedQuizLimiter,
     async (req, res) => {
         const sessionId = req.headers["x-session-id"];
         const industry = typeof req.body?.industry === "string" ? req.body.industry : "";
         const careerLabel = typeof req.body?.careerLabel === "string" ? req.body.careerLabel : "";
+        const language = req.body?.language === "en" ? "en" : "vi";
 
         if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
             return res.status(400).json({ error: "Không tìm thấy cuộc trò chuyện hiện tại." });
@@ -1125,7 +1274,7 @@ app.post(
         // Server-side enforcement: the button can only work when the latest AI
         // response actually reached its career recommendation section and
         // mentioned a profession supported by the selected quiz family.
-        if (!/NGHỀ NGHIỆP ĐÁNG THỬ/i.test(recommendationText)) {
+        if (!/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(recommendationText)) {
             return res.status(403).json({ error: "Quiz riêng chỉ mở sau khi AI đưa ra gợi ý nghề nghiệp." });
         }
 
@@ -1152,6 +1301,7 @@ YÊU CẦU QUAN TRỌNG:
 - Các đáp án nên có độ phân biệt, không để đáp án đúng luôn ở cùng một vị trí.
 - Không thêm markdown, không thêm văn bản ngoài JSON.
 - Quiz chỉ mang tính khám phá và tham khảo.
+- Ngôn ngữ đầu ra: ${language === "en" ? "English" : "Vietnamese"}. Cả câu hỏi, 4 lựa chọn và explanation phải dùng đúng ngôn ngữ này.
 `;
 
             const interaction = await withGeminiSlot(() =>
