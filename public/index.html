@@ -3169,7 +3169,7 @@ function galaxy(){view.innerHTML=`<div class="cu-section-title"><div><h3>🌌 Ca
 function showGalaxyInfo(k){const v=industries[k];const e=$("cuGalaxyInfo");e.innerHTML=`<strong>${v.emoji} ${v.title}</strong><span>${v.desc}</span><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="cu-btn primary" id="gQuiz">🎮 Thử quiz</button><button class="cu-btn" id="gAI">🤖 Hỏi AI</button></div>`;$("gQuiz").onclick=()=>{close();switchMode('quiz');setTimeout(()=>{if(typeof startQuiz==='function')startQuiz(k)},60)};$("gAI").onclick=()=>{close();switchMode('chat');setTimeout(()=>{if(typeof userInput!=='undefined'){userInput.value=`Mình muốn khám phá lĩnh vực ${v.title}. Hãy cho mình một tình huống thực tế để thử xem mình có hợp với cách tư duy của lĩnh vực này không.`;userInput.focus()}},80)}}
 function lab(){if(!cases.length)return;const c=cases[labIndex%cases.length];view.innerHTML=`<div class="cu-section-title"><div><h3>🧩 Decision Lab</h3><p>Không hỏi “bạn thích nghề gì?”. Hãy xem bạn xử lý một vấn đề như thế nào.</p></div><span class="cu-muted">Case ${labIndex+1}/${cases.length}</span></div><div class="cu-lab"><section class="cu-stage"><div class="cu-eyebrow">${industries[c.k]?.emoji||'🧠'} ${industries[c.k]?.title||c.k}</div><h3>${c.title}</h3><p class="cu-muted">${c.q}</p><div id="cuChoices">${c.o.map((o,i)=>`<button class="cu-choice" data-i="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div><div id="cuFeedback" class="cu-feedback"></div><button class="cu-btn primary" id="cuNext" style="display:none;margin-top:14px">Case tiếp theo →</button></section><aside class="cu-side"><h3>Signal</h3><div class="cu-score" id="cuLabScore">${labScore}</div><p class="cu-muted">điểm quyết định trong phiên này</p><div class="cu-progress"><i style="width:${Math.min(100,labScore*20)}%"></i></div><p class="cu-muted" style="margin-top:16px">Mẹo: đừng tìm đáp án nghe “ngầu” nhất. Hãy tìm bước giúp giảm bất định, nhìn trade-off và tránh quyết định vội.</p></aside></div>`;labDone=false;view.querySelectorAll('.cu-choice').forEach(b=>b.onclick=()=>answerLab(Number(b.dataset.i)));$("cuNext").onclick=()=>{labIndex=(labIndex+1)%cases.length;render('lab')}}
 function answerLab(i){if(labDone)return;labDone=true;const c=cases[labIndex%cases.length];view.querySelectorAll('.cu-choice').forEach((b,n)=>{b.disabled=true;if(n===c.a)b.classList.add('correct');if(n===i&&n!==c.a)b.classList.add('wrong')});if(i===c.a){labScore++;xp(20,'Decision Lab');state.daily.lab=true;badge('lab')}else toast('💡 Không sao — xem feedback để hiểu góc nhìn khác');$("cuFeedback").innerHTML=`<strong>${i===c.a?'✅ Good call.':'🔎 Một góc nhìn khác.'}</strong> ${c.w}`;$("cuNext").style.display='inline-block';save()}
-function day(){const data=dayData[currentDayKey]||dayData.it;const meta=industries[currentDayKey]||{};view.innerHTML=`<div class="cu-section-title"><div><div class="cu-day-kicker">DAY IN THE LIFE</div><h3>🕘 Một ngày làm nghề</h3><p>Đi qua từng mốc thời gian để hình dung một ngày làm việc có thể diễn ra như thế nào. Đây là mô phỏng tham khảo — lịch thật thay đổi theo vị trí, nơi làm việc và ca.</p></div><select id="cuDaySelect" class="cu-btn" style="background:#0b1020;color:#fff">${keys.map(k=>`<option value="${k}" ${k===currentDayKey?'selected':''}>${industries[k].emoji} ${industries[k].title}</option>`).join('')}</select></div><div class="cu-day-shell"><div class="cu-day-header"><div><strong style="font-size:18px">${meta.emoji||'💼'} ${meta.title||''}</strong><div class="cu-muted" style="margin-top:4px">${meta.desc||''}</div></div><div class="cu-muted" style="text-align:right;font-size:12px">Mốc <b id="cuDayCount">1/${data.length}</b></div></div><div class="cu-day-progress"><i id="cuDayProgress" style="width:${100/data.length}%"></i></div><div class="cu-day-main-grid"><div class="cu-time-list">${data.map((x,i)=>`<button class="cu-time-btn ${i===dayIndex?'active':''}" data-i="${i}"><b>${x[0]}</b> · ${x[1].replace(/^\S+\s/,'')}<small>${x[4]}</small></button>`).join('')}</div><section class="cu-time-main" id="cuTimeMain"></section></div></div>`;$('cuDaySelect').onchange=e=>{currentDayKey=e.target.value;dayIndex=0;explore(currentDayKey);render('day')};view.querySelectorAll('.cu-time-btn').forEach(b=>b.onclick=()=>{dayIndex=Number(b.dataset.i);renderDayMain(data)});renderDayMain(data);if(!state.completed.includes('day')){state.completed.push('day');state.daily.explore=true;xp(10,'Day in Life');badge('day')}}
+function day(){const data=dayData[currentDayKey]||dayData.it;const meta=industries[currentDayKey]||{};view.innerHTML=`<div class="cu-section-title"><div><div class="cu-day-kicker">DAY IN THE LIFE</div><h3>🕘 Một ngày làm nghề</h3><p>Đi qua từng mốc thời gian để hình dung một ngày làm việc có thể diễn ra như thế nào. Đây là mô phỏng tham khảo — lịch thật thay đổi theo vị trí, nơi làm việc và ca.</p></div><select id="cuDaySelect" class="cu-btn" style="background:#0b1020;color:#fff">${keys.map(k=>`<option value="${k}" ${k===currentDayKey?'selected':''}>${industries[k].emoji} ${industries[k].title}</option>`).join('')}</select></div><div class="cu-day-shell"><div class="cu-day-header"><div><strong style="font-size:18px">${meta.emoji||'💼'} ${meta.title||''}</strong><div class="cu-muted" style="margin-top:4px">${meta.desc||''}</div></div><div class="cu-muted" style="text-align:right;font-size:12px">Mốc <b id="cuDayCount">1/${data.length}</b></div></div><div class="cu-day-progress"><i id="cuDayProgress" style="width:${100/data.length}%"></i></div><div class="cu-day-main-grid"><div class="cu-time-list">${data.map((x,i)=>`<button class="cu-time-btn ${i===dayIndex?'active':''}" data-i="${i}"><b>${x[0]}</b> · ${x[1].replace(/^\S+\s/,'')}<small>${x[4]}</small></button>`).join('')}</div><section class="cu-time-main" id="cuTimeMain"></section></div></div>`;$('cuDaySelect').onchange=e=>{currentDayKey=e.target.value;dayIndex=0;explore(currentDayKey);render('day')};view.querySelectorAll('.cu-time-btn').forEach(b=>b.onclick=()=>{dayIndex=Number(b.dataset.i);view.querySelectorAll('.cu-time-btn').forEach((x,i)=>x.classList.toggle('active',i===dayIndex));renderDayMain(data)});renderDayMain(data);if(!state.completed.includes('day')){state.completed.push('day');state.daily.explore=true;xp(10,'Day in Life');badge('day')}}
 function renderDayMain(data){const x=data[dayIndex]||data[0],pct=((dayIndex+1)/data.length)*100;$('cuTimeMain').innerHTML=`<div class="day-time-row"><div class="day-clock">${x[0]}</div><span class="day-mode">${x[4]}</span></div><h3>${x[1]}</h3><p class="cu-day-desc">${x[2]}</p><div class="cu-day-meta"><div class="cu-day-meta-card"><b>🎯 Điều cần hình dung</b>${x[3]}</div><div class="cu-day-meta-card"><b>🧰 Công cụ / môi trường</b>${x[4]}</div></div><div class="cu-day-tip"><strong>👀 Hãy thử tưởng tượng:</strong> Nếu đây là công việc của bạn, bạn sẽ dành phần lớn thời gian cho kiểu hoạt động nào — tập trung một mình, giao tiếp, xử lý sự cố, sáng tạo hay làm việc với dữ liệu?</div><div class="cu-day-steps">${data.map((_,i)=>`<span class="cu-day-dot ${i===dayIndex?'active':''}" data-i="${i}" title="${data[i][0]}"></span>`).join('')}</div><input class="cu-range" type="range" min="0" max="${data.length-1}" value="${dayIndex}" aria-label="Thời điểm trong ngày" style="margin-top:14px"><div class="cu-day-note">Mốc ${dayIndex+1}/${data.length} · ${Math.round(pct)}% hành trình trong ngày. Dùng thanh trượt hoặc chọn mốc bên trái để “đi xuyên” một ngày làm nghề.</div>`;$('cuDayCount').textContent=`${dayIndex+1}/${data.length}`;$('cuDayProgress').style.width=`${pct}%`;const range=$('cuTimeMain').querySelector('input');range.oninput=e=>{dayIndex=Number(e.target.value);renderDayMain(data);view.querySelectorAll('.cu-time-btn').forEach((b,i)=>b.classList.toggle('active',i===dayIndex))};view.querySelectorAll('.cu-day-dot').forEach(b=>b.onclick=()=>{dayIndex=Number(b.dataset.i);renderDayMain(data);view.querySelectorAll('.cu-time-btn').forEach((x,i)=>x.classList.toggle('active',i===dayIndex))})}
 function roulette(){
   view.innerHTML=`
@@ -3216,6 +3216,7 @@ function roulette(){
   });
 
   let rouletteTurn=Number(wheel.dataset.turn||0);
+  let rouletteAnimation=null;
 
   spin.onclick=()=>{
     if(spin.disabled) return;
@@ -3227,21 +3228,32 @@ function roulette(){
     const current=((rouletteTurn%360)+360)%360;
     const correction=((target-current)+360)%360;
     const fullSpins=6+Math.floor(Math.random()*2);
-    rouletteTurn += fullSpins*360 + correction;
+    const startTurn=rouletteTurn;
+    const endTurn=rouletteTurn + fullSpins*360 + correction;
+    rouletteTurn=endTurn;
 
     spin.disabled=true;
-    wheel.classList.remove('wow-spinning-v2');
-    void wheel.offsetWidth;
-    wheel.classList.add('wow-spinning-v2');
     result.innerHTML=`<span class="wow-spinning-text">🌀 Vũ trụ đang chọn...</span>`;
     quizCta.hidden=true;
-    wheel.style.transform=`rotate(${rouletteTurn}deg)`;
+    wheel.classList.add('wow-spinning-v2');
+
+    // Dùng Web Animations API để Roulette luôn có chuyển động rõ ràng,
+    // không phụ thuộc vào CSS transition của trình duyệt.
+    if(rouletteAnimation) rouletteAnimation.cancel();
+    rouletteAnimation=wheel.animate(
+      [
+        {transform:`rotate(${startTurn}deg)`},
+        {transform:`rotate(${startTurn + fullSpins*360 + correction*0.82}deg)`,offset:.78},
+        {transform:`rotate(${endTurn}deg)`}
+      ],
+      {duration:4700,easing:'cubic-bezier(.08,.78,.12,1)',fill:'forwards'}
+    );
     wheel.dataset.turn=String(rouletteTurn);
 
-    setTimeout(()=>{
+    rouletteAnimation.onfinish=()=>{
+      wheel.style.transform=`rotate(${endTurn}deg)`;
       wheel.classList.remove('wow-spinning-v2');
       result.innerHTML=`<span class="wow-winner-v2">${v.emoji||'✨'} ${v.title||key}</span><small>${v.desc||'Một hướng đáng để khám phá.'}</small>`;
-      // Giữ nguyên màn hình Roulette để người dùng thấy kết quả và nút Quiz.
       state.daily.roulette=true;
       badge('roulette');
       xp(12,'Career Roulette');
@@ -3259,7 +3271,7 @@ function roulette(){
       const qb=$("cuRouletteQuiz");
       if(qb) qb.onclick=()=>{ close(); switchMode('quiz'); setTimeout(()=>startQuiz(key),80); };
       spin.disabled=false;
-    },4350);
+    };
   };
 }
 function profile(){const pct=Math.min(100,state.xp%100);view.innerHTML=`<div class="cu-profile"><section class="cu-profile-card"><div class="cu-avatar">🧭</div><div class="cu-eyebrow">EXPLORER PROFILE</div><h3 style="font-size:30px;margin:6px 0">Career Pathfinder</h3><p class="cu-muted">${state.explored.length} / ${keys.length} lĩnh vực đã chạm · ${state.quiz} quiz · streak ${state.streak}.</p><div class="cu-progress"><i style="width:${pct||100}%"></i></div><p class="cu-muted">${state.xp} XP · ${Math.max(1,Math.floor(state.xp/100)+1)} level</p><button class="cu-btn primary" id="cuProfileQuiz">🎮 Đi vào Quiz</button></section><section class="cu-profile-card"><h3>🏆 Hall of Signals</h3><p class="cu-muted">Huy hiệu là dấu mốc, không phải điểm xếp hạng.</p><div class="cu-badges">${badges.map(b=>`<div class="cu-badge ${state.badges.includes(b[3])?'':'lock'}"><b>${b[0]}</b><span><strong>${b[1]}</strong><br>${b[2]}</span></div>`).join('')}</div></section></div>`;$("cuProfileQuiz").onclick=()=>{close();switchMode('quiz')}}
@@ -3280,6 +3292,17 @@ window.careerUniverse={open,close,render};
 .wow-wheel-emoji{line-height:1!important;}
 .wow-roulette-v2 .wow-spin-btn{position:relative;z-index:40;cursor:pointer;}
 .wow-roulette-v2 .wow-spin-btn:disabled{opacity:.7;cursor:wait;}
+</style>
+
+<style id="wow-v24-fix">
+/* v2.4: timeline active state follows the selected time marker */
+.cu-time-btn.active{border-color:#60a5fa!important;background:linear-gradient(135deg,rgba(59,130,246,.22),rgba(139,92,246,.16))!important;box-shadow:0 0 0 2px rgba(96,165,250,.16),0 8px 24px rgba(37,99,235,.14)!important;color:#fff!important;transform:translateX(3px)!important}
+.cu-time-btn.active:before{background:linear-gradient(180deg,#60a5fa,#8b5cf6)!important;box-shadow:0 0 12px rgba(96,165,250,.7)}
+.cu-time-btn{transition:transform .22s ease,background .22s ease,border-color .22s ease,box-shadow .22s ease}
+.wow-wheel-v2{transform-origin:50% 50%!important}
+.wow-spinning-v2{filter:saturate(1.2) brightness(1.08) drop-shadow(0 0 26px rgba(139,92,246,.42))!important}
+.wow-spinning-v2 .wow-wheel-label-v2{animation:wheelLabelPulse .34s ease-in-out infinite alternate}
+@keyframes wheelLabelPulse{from{filter:brightness(.95);transform:translate(-50%,-50%) scale(.98)}to{filter:brightness(1.28);transform:translate(-50%,-50%) scale(1.03)}}
 </style>
 </body>
 
