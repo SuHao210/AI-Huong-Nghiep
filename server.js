@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import helmet from "helmet";
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import crypto from "crypto";
 
 import { GoogleGenAI } from "@google/genai";
@@ -104,9 +104,8 @@ function sessionOrIpKey(req) {
         return `session:${sessionId}`;
     }
 
-    return `ip:${req.ip}`;
+    return `ip:${ipKeyGenerator(req.ip)}`;
 }
-
 const chatLimiter =
     rateLimit({
 
