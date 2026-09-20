@@ -2962,330 +2962,110 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
 })();
 </script>\n
 
-<style id="career-wow-layer">
-/* ================= CAREER WOW LAYER ================= */
-:root{
-  --wow-violet:#7c3aed;
-  --wow-blue:#2563eb;
-  --wow-cyan:#06b6d4;
-  --wow-pink:#ec4899;
-  --wow-gold:#f59e0b;
-}
-.wow-launcher{
-  position:fixed;right:22px;bottom:22px;z-index:9998;
-  border:1px solid rgba(255,255,255,.42);border-radius:18px;
-  padding:12px 15px;color:#fff;font-weight:900;cursor:pointer;
-  background:linear-gradient(135deg,#5b5cf0,#8b5cf6 55%,#ec4899);
-  box-shadow:0 16px 45px rgba(91,92,240,.34),0 0 0 1px rgba(255,255,255,.12) inset;
-  backdrop-filter:blur(14px);transition:transform .22s ease,box-shadow .22s ease;
-}
-.wow-launcher:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 22px 55px rgba(91,92,240,.42)}
-.wow-launcher .wow-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#fde68a;margin-right:7px;box-shadow:0 0 12px #fde68a}
-.wow-backdrop{position:fixed;inset:0;z-index:9999;background:rgba(8,12,28,.64);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:18px}
-.wow-backdrop.open{display:flex;animation:wowFade .2s ease}
-.wow-modal{
-  width:min(1080px,100%);max-height:min(90vh,900px);overflow:auto;
-  border:1px solid rgba(255,255,255,.18);border-radius:30px;
-  background:linear-gradient(145deg,rgba(20,27,55,.98),rgba(37,24,71,.98));
-  color:#fff;box-shadow:0 35px 100px rgba(0,0,0,.45);position:relative;
-}
-.wow-close{position:absolute;right:18px;top:16px;width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:22px;cursor:pointer;z-index:3}
-.wow-hero{padding:32px 32px 20px;position:relative;overflow:hidden}
-.wow-hero:before,.wow-hero:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);opacity:.4;pointer-events:none}
-.wow-hero:before{width:240px;height:240px;background:#7c3aed;right:-80px;top:-100px}
-.wow-hero:after{width:180px;height:180px;background:#06b6d4;left:-100px;bottom:-100px}
-.wow-kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#c4b5fd;font-weight:900}
-.wow-title{font-size:clamp(30px,5vw,54px);line-height:1;margin:8px 0 10px;font-weight:1000;letter-spacing:-.04em}
-.wow-subtitle{color:#cbd5e1;max-width:720px;line-height:1.6;margin:0}
-.wow-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}
-.wow-stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:12px}
-.wow-stat b{display:block;font-size:22px}.wow-stat span{font-size:11px;color:#cbd5e1}
-.wow-body{padding:8px 32px 32px}
-.wow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.wow-card{
-  position:relative;overflow:hidden;text-align:left;border:1px solid rgba(255,255,255,.12);
-  border-radius:22px;padding:20px;color:#fff;background:rgba(255,255,255,.065);
-  cursor:pointer;transition:.22s ease;min-height:150px;
-}
-.wow-card:hover{transform:translateY(-4px);border-color:rgba(196,181,253,.55);background:rgba(255,255,255,.10);box-shadow:0 18px 40px rgba(0,0,0,.18)}
-.wow-card .icon{font-size:34px}.wow-card h3{margin:9px 0 6px;font-size:19px}.wow-card p{margin:0;color:#cbd5e1;font-size:13px;line-height:1.55}
-.wow-card .tag{position:absolute;right:14px;top:14px;font-size:10px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.1);color:#ddd6fe}
-.wow-panel{display:none;padding:24px 32px 34px}.wow-panel.active{display:block;animation:wowSlide .25s ease}
-.wow-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
-.wow-panel-head h2{margin:0;font-size:27px}.wow-back{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#fff;border-radius:12px;padding:9px 12px;cursor:pointer}
-.wow-roulette{min-height:320px;display:grid;place-items:center;position:relative}
-.wow-wheel{width:min(310px,70vw);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;
-  background:conic-gradient(#7c3aed 0 36deg,#2563eb 36deg 72deg,#06b6d4 72deg 108deg,#ec4899 108deg 144deg,#f59e0b 144deg 180deg,#10b981 180deg 216deg,#8b5cf6 216deg 252deg,#0ea5e9 252deg 288deg,#db2777 288deg 324deg,#14b8a6 324deg 360deg);
-  box-shadow:0 0 0 10px rgba(255,255,255,.07),0 25px 70px rgba(0,0,0,.35);transition:transform 2.3s cubic-bezier(.12,.78,.17,1)}
-.wow-wheel:after{content:"🎯";display:grid;place-items:center;width:86px;height:86px;border-radius:50%;background:#11182f;border:2px solid rgba(255,255,255,.25);font-size:30px}
-.wow-pointer{position:absolute;top:7px;z-index:2;font-size:30px;filter:drop-shadow(0 5px 8px rgba(0,0,0,.35))}
-.wow-center{text-align:center}.wow-result{font-size:24px;font-weight:900;margin:16px 0 6px}.wow-hint{color:#cbd5e1;font-size:13px}
-.wow-primary{border:0;border-radius:14px;padding:12px 18px;background:linear-gradient(135deg,#8b5cf6,#ec4899);color:#fff;font-weight:900;cursor:pointer;box-shadow:0 12px 30px rgba(139,92,246,.25)}
-.wow-timeline{display:grid;gap:10px}.wow-time{display:grid;grid-template-columns:90px 1fr;gap:14px;align-items:start}
-.wow-time b{color:#c4b5fd;font-size:13px;padding-top:14px}.wow-time div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:15px;padding:13px 15px}.wow-time strong{display:block}.wow-time span{color:#cbd5e1;font-size:13px}
-.wow-challenge{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:20px}
-.wow-choice{display:block;width:100%;margin-top:10px;text-align:left;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;border-radius:13px;padding:13px;cursor:pointer;transition:.18s}
-.wow-choice:hover{background:rgba(255,255,255,.11);transform:translateX(3px)}
-.wow-choice.correct{border-color:#34d399;background:rgba(16,185,129,.16)}.wow-choice.wrong{border-color:#fb7185;background:rgba(244,63,94,.13)}
-.wow-feedback{margin-top:14px;color:#cbd5e1;line-height:1.55}.wow-next{margin-top:14px}
-.wow-clue{font-size:19px;line-height:1.6;background:rgba(255,255,255,.06);border-radius:18px;padding:20px}
-.wow-answer{margin-top:14px;font-size:24px;font-weight:1000;color:#fde68a}
-.wow-badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.wow-badge{padding:15px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);text-align:center}.wow-badge.locked{opacity:.38;filter:grayscale(1)}.wow-badge b{display:block;font-size:26px}.wow-badge span{font-size:12px;color:#cbd5e1}
-.wow-galaxy{position:relative;min-height:440px;border-radius:24px;overflow:hidden;background:radial-gradient(circle at center,#33206b 0,#171631 34%,#090d1f 72%);border:1px solid rgba(255,255,255,.1)}
-.wow-galaxy:before{content:"";position:absolute;inset:0;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:34px 34px;opacity:.18}
-.wow-orbit{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px solid rgba(196,181,253,.18);border-radius:50%}
-.wow-orbit.o1{width:210px;height:210px}.wow-orbit.o2{width:340px;height:340px}.wow-orbit.o3{width:470px;height:470px}
-.wow-star{position:absolute;left:50%;top:50%;width:78px;height:78px;margin:-39px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f59e0b,#ec4899);box-shadow:0 0 45px rgba(236,72,153,.45);font-size:28px;z-index:2}
-.wow-node{position:absolute;width:54px;height:54px;margin:-27px;border-radius:50%;display:grid;place-items:center;background:rgba(15,23,42,.94);border:1px solid rgba(255,255,255,.25);font-size:24px;cursor:pointer;z-index:3;transition:.2s}
-.wow-node:hover{transform:scale(1.16);box-shadow:0 0 25px rgba(139,92,246,.65)}
-.wow-galaxy-caption{text-align:center;color:#cbd5e1;margin-top:14px;font-size:13px}
-.wow-toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:10001;background:#111827;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px 16px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 16px 40px rgba(0,0,0,.3)}
-.wow-toast.show{opacity:1;transform:translate(-50%,0)}
-@keyframes wowFade{from{opacity:0}to{opacity:1}}@keyframes wowSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media(max-width:700px){
-  .wow-launcher{right:12px;bottom:12px}.wow-hero,.wow-body,.wow-panel{padding-left:18px;padding-right:18px}
-  .wow-stats{grid-template-columns:repeat(2,1fr)}.wow-grid{grid-template-columns:1fr}.wow-badges{grid-template-columns:repeat(2,1fr)}
-  .wow-modal{max-height:94vh;border-radius:24px}.wow-galaxy{min-height:360px}.wow-orbit.o3{width:330px;height:330px}.wow-orbit.o2{width:245px;height:245px}.wow-orbit.o1{width:155px;height:155px}
-}
-@media(prefers-reduced-motion:reduce){
-  .wow-launcher,.wow-card,.wow-choice,.wow-node,.wow-wheel{transition:none!important}.wow-backdrop,.wow-panel{animation:none!important}
-}
-body.dark-theme .wow-launcher{box-shadow:0 16px 45px rgba(0,0,0,.4)}
+<style id="career-universe-wow">
+:root{--cu-bg:#070a14;--cu-panel:rgba(13,18,35,.78);--cu-panel2:rgba(255,255,255,.055);--cu-line:rgba(255,255,255,.12);--cu-text:#f8fafc;--cu-muted:#aab4ca;--cu-violet:#8b5cf6;--cu-cyan:#22d3ee;--cu-pink:#f472b6;--cu-gold:#fbbf24;--cu-green:#34d399}
+.cu-launch{position:fixed;right:22px;bottom:22px;z-index:9000;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:13px 18px;background:linear-gradient(135deg,#7c3aed,#2563eb 55%,#06b6d4);color:#fff;font-weight:900;letter-spacing:.1px;cursor:pointer;box-shadow:0 16px 45px rgba(37,99,235,.34);transition:.25s;display:flex;align-items:center;gap:8px}.cu-launch:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 22px 60px rgba(124,58,237,.42)}.cu-launch i{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 14px #fff;animation:cuPulse 1.6s infinite}
+.cu-overlay{position:fixed;inset:0;z-index:8999;background:radial-gradient(circle at 50% 15%,rgba(80,55,180,.22),transparent 35%),rgba(2,5,15,.88);backdrop-filter:blur(18px);display:none;overflow:auto}.cu-overlay.open{display:block;animation:cuIn .24s ease}.cu-shell{position:relative;min-height:100%;max-width:1280px;margin:auto;padding:18px 22px 50px;color:var(--cu-text)}
+.cu-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}.cu-stars canvas{width:100%;height:100%;opacity:.8}.cu-top{position:sticky;top:12px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--cu-line);background:rgba(7,10,20,.72);backdrop-filter:blur(20px);border-radius:20px;box-shadow:0 18px 60px rgba(0,0,0,.28)}.cu-brand{display:flex;align-items:center;gap:10px}.cu-brand-orb{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff,#a78bfa 30%,#7c3aed 60%,#111827 75%);box-shadow:0 0 25px rgba(139,92,246,.55)}.cu-brand strong{font-size:14px}.cu-brand span{display:block;color:var(--cu-muted);font-size:11px}.cu-top-actions{display:flex;align-items:center;gap:8px}.cu-xp{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:12px;background:var(--cu-panel2);border:1px solid var(--cu-line);font-size:12px}.cu-xp b{color:#fde68a}.cu-close{width:38px;height:38px;border:1px solid var(--cu-line);border-radius:12px;background:rgba(255,255,255,.06);color:#fff;font-size:20px;cursor:pointer}
+.cu-hero{position:relative;z-index:1;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center;padding:62px 20px 34px}.cu-eyebrow{font-size:11px;letter-spacing:.18em;color:#c4b5fd;font-weight:900}.cu-hero h2{font-size:clamp(42px,6vw,82px);line-height:.94;letter-spacing:-.06em;margin:10px 0 16px;max-width:800px}.cu-hero h2 em{font-style:normal;background:linear-gradient(90deg,#fff,#c4b5fd,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent}.cu-hero p{color:var(--cu-muted);max-width:700px;line-height:1.7;margin:0 0 20px}.cu-hero-cta{display:flex;flex-wrap:wrap;gap:10px}.cu-btn{border:1px solid var(--cu-line);background:rgba(255,255,255,.06);color:#fff;border-radius:13px;padding:11px 15px;font-weight:800;cursor:pointer;transition:.2s}.cu-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.1)}.cu-btn.primary{border:0;background:linear-gradient(135deg,#8b5cf6,#2563eb);box-shadow:0 12px 32px rgba(99,102,241,.25)}
+.cu-orb{min-height:310px;position:relative;display:grid;place-items:center}.cu-orb .ring{position:absolute;border:1px solid rgba(196,181,253,.22);border-radius:50%;animation:cuSpin 24s linear infinite}.cu-orb .r1{width:180px;height:180px}.cu-orb .r2{width:275px;height:275px;animation-duration:38s;animation-direction:reverse}.cu-orb .r3{width:370px;height:370px;animation-duration:55s}.cu-core{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font-size:34px;background:radial-gradient(circle at 35% 25%,#fff,#f0abfc 15%,#8b5cf6 48%,#312e81 70%,#0b1020 100%);box-shadow:0 0 80px rgba(139,92,246,.58),0 0 160px rgba(34,211,238,.18);z-index:2}.cu-node{position:absolute;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#0b1020;border:1px solid rgba(255,255,255,.25);box-shadow:0 0 18px rgba(139,92,246,.22);font-size:19px;z-index:3}
+.cu-nav{position:relative;z-index:2;display:flex;gap:7px;overflow:auto;padding:4px;margin:0 0 18px;border-bottom:1px solid var(--cu-line)}.cu-tab{white-space:nowrap;border:0;background:transparent;color:#9aa6bd;padding:12px 14px;border-bottom:2px solid transparent;cursor:pointer;font-weight:800}.cu-tab.active{color:#fff;border-bottom-color:#a78bfa}.cu-view{position:relative;z-index:1;min-height:420px}.cu-section-title{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:22px 0 14px}.cu-section-title h3{margin:0;font-size:24px;letter-spacing:-.02em}.cu-section-title p{margin:4px 0 0;color:var(--cu-muted);font-size:12px}.cu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.cu-card{position:relative;overflow:hidden;border:1px solid var(--cu-line);border-radius:19px;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.035));padding:18px;color:#fff;text-align:left;cursor:pointer;transition:.22s;min-height:160px}.cu-card:hover{transform:translateY(-5px);border-color:rgba(196,181,253,.5);box-shadow:0 20px 50px rgba(0,0,0,.22)}.cu-card .cu-icon{font-size:30px}.cu-card h4{margin:10px 0 5px;font-size:16px}.cu-card p{margin:0;color:#aab4ca;font-size:12px;line-height:1.55}.cu-pill{position:absolute;right:12px;top:12px;font-size:9px;padding:5px 8px;border-radius:999px;background:rgba(167,139,250,.13);color:#ddd6fe;border:1px solid rgba(167,139,250,.18)}
+.cu-mission{border:1px solid rgba(251,191,36,.22);background:linear-gradient(120deg,rgba(251,191,36,.10),rgba(139,92,246,.08));border-radius:22px;padding:18px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.cu-mission small{color:#fde68a;font-weight:900;letter-spacing:.12em}.cu-mission h3{margin:5px 0;font-size:22px}.cu-mission p{margin:0;color:var(--cu-muted);font-size:12px;line-height:1.55}.cu-progress{height:7px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-top:12px}.cu-progress i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#a78bfa,#22d3ee);border-radius:99px;width:0;transition:width .5s}
+.cu-galaxy{height:570px;border-radius:26px;position:relative;overflow:hidden;border:1px solid var(--cu-line);background:radial-gradient(circle at 50% 50%,rgba(124,58,237,.26),transparent 23%),radial-gradient(circle at 30% 30%,rgba(34,211,238,.12),transparent 25%),#050817}.cu-galaxy:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.85) .8px,transparent .9px);background-size:43px 43px;opacity:.17}.cu-orbit{position:absolute;left:50%;top:50%;border:1px solid rgba(196,181,253,.13);border-radius:50%;transform:translate(-50%,-50%)}.cu-orbit.o1{width:180px;height:180px}.cu-orbit.o2{width:330px;height:330px}.cu-orbit.o3{width:500px;height:500px}.cu-galaxy-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#fff,#f0abfc 18%,#8b5cf6 48%,#312e81 72%,#111827);box-shadow:0 0 80px rgba(139,92,246,.6);font-size:32px;z-index:3}.cu-planet{position:absolute;width:58px;height:58px;margin:-29px;border-radius:50%;border:1px solid rgba(255,255,255,.26);background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.26),rgba(15,23,42,.96) 60%);display:grid;place-items:center;font-size:25px;color:#fff;cursor:pointer;z-index:4;transition:.22s}.cu-planet:hover,.cu-planet.active{transform:scale(1.18);box-shadow:0 0 30px rgba(34,211,238,.45);border-color:#67e8f9}.cu-galaxy-info{position:absolute;left:16px;right:16px;bottom:16px;padding:14px 16px;border:1px solid var(--cu-line);border-radius:17px;background:rgba(5,8,23,.78);backdrop-filter:blur(14px);z-index:5}.cu-galaxy-info strong{font-size:16px}.cu-galaxy-info span{display:block;color:var(--cu-muted);font-size:12px;margin-top:4px}
+.cu-lab{display:grid;grid-template-columns:.9fr 1.1fr;gap:14px}.cu-stage,.cu-side{border:1px solid var(--cu-line);background:rgba(255,255,255,.045);border-radius:22px;padding:20px}.cu-stage h3,.cu-side h3{margin:0 0 8px;font-size:23px}.cu-muted{color:var(--cu-muted);font-size:12px;line-height:1.6}.cu-choice{width:100%;text-align:left;border:1px solid var(--cu-line);background:rgba(255,255,255,.045);color:#fff;border-radius:14px;padding:13px;margin-top:9px;cursor:pointer;transition:.18s}.cu-choice:hover{background:rgba(255,255,255,.09);transform:translateX(3px)}.cu-choice.correct{border-color:#34d399;background:rgba(52,211,153,.12)}.cu-choice.wrong{border-color:#fb7185;background:rgba(251,113,133,.10)}.cu-feedback{margin-top:14px;color:#cbd5e1;font-size:13px;line-height:1.6}.cu-score{font-size:48px;font-weight:1000;letter-spacing:-.05em;background:linear-gradient(90deg,#fbbf24,#f0abfc,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cu-day{display:grid;grid-template-columns:250px 1fr;gap:14px}.cu-time-list{display:grid;gap:7px}.cu-time-btn{text-align:left;border:1px solid var(--cu-line);background:rgba(255,255,255,.04);color:#cbd5e1;border-radius:12px;padding:10px;cursor:pointer}.cu-time-btn.active{border-color:#a78bfa;background:rgba(139,92,246,.12);color:#fff}.cu-time-main{min-height:360px;border:1px solid var(--cu-line);border-radius:22px;padding:26px;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(circle at 80% 15%,rgba(34,211,238,.12),transparent 30%),rgba(255,255,255,.035)}.cu-time-main .clock{font-size:13px;color:#c4b5fd;font-weight:900;letter-spacing:.12em}.cu-time-main h3{font-size:34px;margin:8px 0}.cu-time-main p{color:var(--cu-muted);line-height:1.7;max-width:650px}.cu-range{width:100%;accent-color:#8b5cf6}
+.cu-roulette{display:grid;grid-template-columns:1fr .8fr;gap:20px;align-items:center}.cu-wheel-wrap{position:relative;display:grid;place-items:center;min-height:430px}.cu-wheel{width:min(360px,72vw);aspect-ratio:1;border-radius:50%;background:conic-gradient(#8b5cf6 0 36deg,#2563eb 36deg 72deg,#06b6d4 72deg 108deg,#ec4899 108deg 144deg,#f59e0b 144deg 180deg,#10b981 180deg 216deg,#6366f1 216deg 252deg,#0ea5e9 252deg 288deg,#db2777 288deg 324deg,#14b8a6 324deg 360deg);box-shadow:0 0 0 9px rgba(255,255,255,.05),0 30px 90px rgba(0,0,0,.4);transition:transform 2.8s cubic-bezier(.11,.78,.17,1);display:grid;place-items:center}.cu-wheel:after{content:"✦";width:100px;height:100px;border-radius:50%;display:grid;place-items:center;background:#090d1c;border:1px solid rgba(255,255,255,.2);font-size:34px}.cu-pointer{position:absolute;top:22px;font-size:30px;z-index:2;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}.cu-result{font-size:28px;font-weight:1000;line-height:1.15}.cu-result small{display:block;color:var(--cu-muted);font-size:12px;font-weight:500;margin-top:8px;line-height:1.5}.cu-big-number{font-size:52px;font-weight:1000}
+.cu-profile{display:grid;grid-template-columns:.7fr 1.3fr;gap:14px}.cu-profile-card{border:1px solid var(--cu-line);background:rgba(255,255,255,.045);border-radius:22px;padding:24px}.cu-avatar{width:90px;height:90px;border-radius:50%;display:grid;place-items:center;font-size:38px;background:radial-gradient(circle at 30% 20%,#fff,#c4b5fd 18%,#7c3aed 52%,#111827 80%);box-shadow:0 0 40px rgba(124,58,237,.4);margin-bottom:15px}.cu-badges{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.cu-badge{padding:14px 9px;border:1px solid var(--cu-line);border-radius:15px;text-align:center;background:rgba(255,255,255,.035)}.cu-badge.lock{opacity:.3;filter:grayscale(1)}.cu-badge b{display:block;font-size:25px}.cu-badge span{font-size:10px;color:#cbd5e1;line-height:1.35}
+.cu-drawer{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center}.cu-drawer.open{display:flex}.cu-drawer-box{width:min(760px,100%);max-height:86vh;overflow:auto;border:1px solid var(--cu-line);border-bottom:0;border-radius:26px 26px 0 0;background:#0a0f20;color:#fff;padding:24px;box-shadow:0 -30px 100px rgba(0,0,0,.45);animation:cuRise .25s ease}.cu-drawer-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.cu-drawer h3{font-size:28px;margin:0}.cu-list{display:grid;gap:9px;margin-top:15px}.cu-list div{padding:12px 14px;border:1px solid var(--cu-line);border-radius:14px;background:rgba(255,255,255,.04);color:#cbd5e1;line-height:1.5;font-size:13px}
+.cu-toast{position:fixed;z-index:11000;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#0b1020;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:11px 15px;box-shadow:0 18px 50px rgba(0,0,0,.4);transition:.25s}.cu-toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes cuIn{from{opacity:0}to{opacity:1}}@keyframes cuRise{from{transform:translateY(35px);opacity:0}to{transform:none;opacity:1}}@keyframes cuSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}@keyframes cuPulse{50%{opacity:.35;transform:scale(.7)}}
+@media(max-width:900px){.cu-hero{grid-template-columns:1fr}.cu-orb{display:none}.cu-grid{grid-template-columns:repeat(2,1fr)}.cu-lab,.cu-roulette,.cu-profile{grid-template-columns:1fr}.cu-day{grid-template-columns:1fr}.cu-badges{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.cu-shell{padding:10px 12px 40px}.cu-hero{padding:48px 6px 24px}.cu-hero h2{font-size:46px}.cu-grid{grid-template-columns:1fr}.cu-mission{grid-template-columns:1fr}.cu-top{top:6px}.cu-xp{display:none}.cu-galaxy{height:450px}.cu-orbit.o3{width:390px;height:390px}.cu-orbit.o2{width:260px;height:260px}.cu-orbit.o1{width:145px;height:145px}.cu-launch{right:12px;bottom:12px}.cu-launch span:last-child{display:none}.cu-launch{width:52px;height:52px;padding:0;justify-content:center}.cu-planet{width:50px;height:50px;margin:-25px}}
+@media(prefers-reduced-motion:reduce){.cu-overlay,.cu-launch,.cu-card,.cu-choice,.cu-planet,.cu-wheel{animation:none!important;transition:none!important}}
 </style>
 
-<button class="wow-launcher" id="careerWowLauncher" type="button" aria-label="Mở Career Lab">
-  <span class="wow-dot"></span>✨ Career Lab
-</button>
-
-<div class="wow-backdrop" id="careerWowBackdrop" role="dialog" aria-modal="true" aria-label="Career Lab">
-  <div class="wow-modal">
-    <button class="wow-close" id="careerWowClose" type="button" aria-label="Đóng">×</button>
-
-    <section class="wow-hero" id="wowHome">
-      <div class="wow-kicker">AI HƯỚNG NGHIỆP • CAREER LAB</div>
-      <div class="wow-title">Không chỉ chọn nghề.<br>Hãy <span style="color:#c4b5fd">chạm thử</span> vào nó. ✨</div>
-      <p class="wow-subtitle">Một khu trải nghiệm nhỏ trong website: quay nghề ngẫu nhiên, bước vào một ngày làm nghề, xử lý tình huống thật, đoán nghề qua manh mối và mở khóa huy hiệu.</p>
-      <div class="wow-stats">
-        <div class="wow-stat"><b id="wowXP">0</b><span>XP khám phá</span></div>
-        <div class="wow-stat"><b id="wowLevel">Lv.1</b><span>Cấp độ</span></div>
-        <div class="wow-stat"><b id="wowBadgeCount">0/6</b><span>Huy hiệu</span></div>
-        <div class="wow-stat"><b id="wowQuizCount">0</b><span>Quiz đã hoàn thành</span></div>
-      </div>
+<button class="cu-launch" id="cuLaunch" type="button"><i></i><span>✨ Career Universe</span></button>
+<div class="cu-overlay" id="cuOverlay" aria-hidden="true">
+  <div class="cu-stars"><canvas id="cuCanvas"></canvas></div>
+  <div class="cu-shell">
+    <header class="cu-top">
+      <div class="cu-brand"><div class="cu-brand-orb">✦</div><div><strong>CAREER UNIVERSE</strong><span>Khám phá nghề như một cuộc phiêu lưu</span></div></div>
+      <div class="cu-top-actions"><div class="cu-xp">⚡ <b id="cuXP">0</b> XP · <b id="cuLevel">Lv.1</b></div><button class="cu-close" id="cuClose" type="button">×</button></div>
+    </header>
+    <section class="cu-hero">
+      <div><div class="cu-eyebrow">AI HƯỚNG NGHIỆP / CAREER UNIVERSE</div><h2>Đừng chỉ <em>chọn một nghề.</em><br>Hãy thử sống trong nó.</h2><p>10 lĩnh vực. Hàng trăm câu hỏi. Những tình huống thật. Một vũ trụ nhỏ để bạn tò mò, thử sai, tích XP và tìm ra điều khiến mình muốn khám phá tiếp.</p><div class="cu-hero-cta"><button class="cu-btn primary" id="cuStartMission">🚀 Bắt đầu nhiệm vụ hôm nay</button><button class="cu-btn" id="cuOpenQuiz">🎮 Vào Career Quiz</button><button class="cu-btn" id="cuTalkAI">🤖 Nói chuyện với AI</button></div></div>
+      <div class="cu-orb"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="cu-core">🌌</div><span class="cu-node" style="left:28%;top:27%">💻</span><span class="cu-node" style="left:72%;top:23%">⚖️</span><span class="cu-node" style="left:82%;top:63%">🎨</span><span class="cu-node" style="left:23%;top:68%">🩺</span></div>
     </section>
-
-    <section class="wow-body" id="wowHomeCards">
-      <div class="wow-grid">
-        <button class="wow-card" data-wow="roulette" type="button"><span class="tag">RANDOM</span><div class="icon">🎰</div><h3>Career Roulette</h3><p>Không biết bắt đầu từ đâu? Để vũ trụ nghề nghiệp chọn một hướng bất ngờ cho bạn.</p></button>
-        <button class="wow-card" data-wow="day" type="button"><span class="tag">STORY</span><div class="icon">👨‍💼</div><h3>Một ngày làm nghề</h3><p>Đi qua timeline của một ngày làm việc và xem nghề đó thực sự “sống” như thế nào.</p></button>
-        <button class="wow-card" data-wow="challenge" type="button"><span class="tag">BATTLE</span><div class="icon">🧩</div><h3>Mini Career Challenge</h3><p>Một tình huống khó, vài lựa chọn, không có đáp án “màu hồng”. Bạn sẽ xử lý thế nào?</p></button>
-        <button class="wow-card" data-wow="guess" type="button"><span class="tag">DETECTIVE</span><div class="icon">🕵️</div><h3>Guess the Career</h3><p>Đọc manh mối, suy luận và đoán nghề trước khi đáp án xuất hiện.</p></button>
-        <button class="wow-card" data-wow="galaxy" type="button"><span class="tag">EXPLORE</span><div class="icon">🌌</div><h3>Career Galaxy</h3><p>Mười lĩnh vực trở thành mười hành tinh. Chạm một hành tinh để khám phá nhanh.</p></button>
-        <button class="wow-card" data-wow="badges" type="button"><span class="tag">COLLECT</span><div class="icon">🏆</div><h3>Hall of Achievements</h3><p>Những dấu mốc nhỏ để biến việc khám phá nghề thành một hành trình có tiến trình.</p></button>
-      </div>
-    </section>
-
-    <section class="wow-panel" id="wowPanel">
-      <div class="wow-panel-head"><h2 id="wowPanelTitle"></h2><button class="wow-back" id="wowBack" type="button">← Về Career Lab</button></div>
-      <div id="wowPanelContent"></div>
-    </section>
+    <nav class="cu-nav" id="cuNav"><button class="cu-tab active" data-view="explore">🌠 Explore</button><button class="cu-tab" data-view="missions">🎯 Missions</button><button class="cu-tab" data-view="galaxy">🌌 Galaxy</button><button class="cu-tab" data-view="lab">🧩 Decision Lab</button><button class="cu-tab" data-view="day">🕘 Một ngày</button><button class="cu-tab" data-view="roulette">🎰 Roulette</button><button class="cu-tab" data-view="profile">🏆 Profile</button></nav>
+    <main class="cu-view" id="cuView"></main>
   </div>
 </div>
-<div class="wow-toast" id="wowToast"></div>
+<div class="cu-drawer" id="cuDrawer"><div class="cu-drawer-box"><div class="cu-drawer-head"><h3 id="cuDrawerTitle"></h3><button class="cu-close" id="cuDrawerClose" type="button">×</button></div><div id="cuDrawerBody"></div></div></div>
+<div class="cu-toast" id="cuToast"></div>
 
-<script id="career-wow-engine">
+<script id="career-universe-engine">
 (function(){
-  "use strict";
-
-  const industries = (typeof INDUSTRIES !== "undefined") ? INDUSTRIES : {};
-  const storeKey = "career-wow-progress-v1";
-  const defaultProgress = {xp:0,quizCount:0,explored:[],badges:[]};
-  let progress;
-  try{ progress = JSON.parse(localStorage.getItem(storeKey)) || defaultProgress; }catch(e){ progress={...defaultProgress}; }
-  progress.explored = Array.isArray(progress.explored)?progress.explored:[];
-  progress.badges = Array.isArray(progress.badges)?progress.badges:[];
-
-  const scenarios = [
-    {industry:"it",icon:"💻",title:"Bug lúc 2 giờ sáng",q:"Một tính năng vừa được deploy. 1% người dùng gặp lỗi nhưng không thể tái hiện trên máy bạn. Bạn làm gì trước?",opts:["Tắt ngay toàn bộ hệ thống để chắc chắn không ai bị lỗi.","Thu thập log, điều kiện tái hiện và phạm vi ảnh hưởng trước khi chọn cách xử lý.","Sửa đại vài dòng code rồi deploy liên tục cho tới khi hết lỗi.","Bỏ qua vì tỷ lệ 1% quá nhỏ."],a:1,why:"Kỹ năng quan trọng là khoanh vùng vấn đề, đánh giá tác động và thu thập bằng chứng trước khi thay đổi hệ thống."},
-    {industry:"business",icon:"📊",title:"Doanh thu tăng nhưng lợi nhuận giảm",q:"Một cửa hàng báo doanh thu tăng 20% nhưng lợi nhuận lại giảm. Bạn muốn kiểm tra gì trước?",opts:["Tăng ngân sách quảng cáo ngay.","Chỉ nhìn số lượng đơn hàng.","Phân rã doanh thu, giá vốn, chi phí và cơ cấu sản phẩm để tìm nguyên nhân.","Kết luận rằng nhân viên bán hàng làm việc kém."],a:2,why:"Tư duy phân tích tài chính bắt đầu từ việc tách các thành phần tạo ra kết quả thay vì nhìn một chỉ số đơn lẻ."},
-    {industry:"health",icon:"🩺",title:"Ca bệnh không điển hình",q:"Một bệnh nhân có triệu chứng không khớp hoàn toàn với chẩn đoán ban đầu. Điều gì thể hiện cách tiếp cận chuyên nghiệp?",opts:["Giữ nguyên chẩn đoán vì đã ghi vào hồ sơ.","Bỏ qua triệu chứng lạ.","Xem lại dữ kiện, chẩn đoán phân biệt và thông tin cần kiểm chứng.","Chọn bệnh hiếm nhất để tránh bỏ sót."],a:2,why:"Trong môi trường y tế, dữ kiện mới cần được xem xét có hệ thống và quyết định phải dựa trên thông tin phù hợp, không phải phỏng đoán."},
-    {industry:"engineering",icon:"⚙️",title:"Cầu rung bất thường",q:"Một kết cấu hoạt động bình thường nhiều tháng nhưng gần đây xuất hiện rung. Bước đầu nào hợp lý?",opts:["Thay toàn bộ vật liệu ngay.","Đo rung theo điều kiện vận hành và xác định tần số/nguồn gây rung.","Sơn lại kết cấu để giảm rung.","Tăng tải thử nghiệm thật lớn để xem có hỏng không."],a:1,why:"Kỹ sư cần đo và xác định nguyên nhân trước khi chọn phương án can thiệp, đặc biệt với hệ thống có rủi ro."},
-    {industry:"marketing",icon:"📣",title:"Video viral nhưng không bán được",q:"Một video có lượt xem gấp 10 lần bình thường nhưng doanh số gần như không đổi. Bạn nên hỏi gì?",opts:["Video chắc chắn thất bại.","Tăng ngân sách cho đúng video đó.","Kiểm tra mục tiêu chiến dịch, chất lượng traffic, hành trình chuyển đổi và nhóm khán giả.","Xóa video để tránh làm xấu thương hiệu."],a:2,why:"Marketing không chỉ tối ưu lượt xem; cần nối dữ liệu chú ý với mục tiêu kinh doanh và hành vi sau khi người dùng xem."},
-    {industry:"law",icon:"⚖️",title:"Hợp đồng có một câu mơ hồ",q:"Hai bên đọc cùng một điều khoản hợp đồng nhưng hiểu khác nhau. Điều gì cần làm trước?",opts:["Chọn cách hiểu có lợi cho bên mình.","Xem ngữ cảnh, định nghĩa, các điều khoản liên quan và bằng chứng về ý chí giao kết.","Đăng câu hỏi lên mạng xã hội.","Bỏ qua vì hợp đồng đã ký."],a:1,why:"Phân tích pháp lý cần đặt điều khoản trong toàn bộ văn bản và bối cảnh liên quan, thay vì tách một câu khỏi hệ thống."},
-    {industry:"education",icon:"📚",title:"Học sinh không chịu phát biểu",q:"Một học sinh hiểu bài nhưng gần như không bao giờ phát biểu. Giáo viên muốn cải thiện tình hình. Cách tiếp cận nào đáng thử?",opts:["Ép học sinh phát biểu mỗi tiết.","Cho điểm thấp để tạo áp lực.","Tìm nguyên nhân, thay đổi cách tham gia và tạo môi trường an toàn để thử.","Bỏ qua vì em vẫn làm bài đúng."],a:2,why:"Giáo dục hiệu quả cần quan sát hành vi, tìm nguyên nhân và thiết kế môi trường hỗ trợ thay vì chỉ dùng áp lực."},
-    {industry:"architecture",icon:"📐",title:"Đẹp nhưng bất tiện",q:"Một thiết kế nhà rất đẹp nhưng người sử dụng phải đi vòng xa và thiếu ánh sáng tự nhiên. Bạn ưu tiên điều gì?",opts:["Giữ nguyên vì hình ảnh đẹp.","Tối ưu lại luồng sử dụng, ánh sáng và công năng rồi cân bằng với thẩm mỹ.","Thêm thật nhiều đồ trang trí.","Đổi màu tường."],a:1,why:"Thiết kế tốt phải giải quyết trải nghiệm và công năng cùng với thẩm mỹ; một yếu tố không nên nuốt chửng toàn bộ bài toán."},
-    {industry:"environment",icon:"🌱",title:"Dữ liệu chất lượng nước",q:"Một con sông có chỉ số ô nhiễm tăng đột biến ở một ngày duy nhất. Bạn làm gì trước khi kết luận?",opts:["Công bố ngay nguồn gây ô nhiễm.","Xóa điểm dữ liệu vì nó quá khác biệt.","Kiểm tra chất lượng mẫu, quy trình đo, dữ liệu lân cận và khả năng có sự kiện bất thường.","Lấy trung bình với mọi ngày khác."],a:2,why:"Dữ liệu môi trường cần kiểm tra tính hợp lệ và bối cảnh trước khi suy ra nguyên nhân."},
-    {industry:"tourism",icon:"✈️",title:"Khách phàn nàn lúc cao điểm",q:"Khách phải chờ lâu tại quầy check-in trong lúc khách sạn kín phòng. Quản lý nên ưu tiên gì?",opts:["Đổ lỗi cho khách đến quá sớm.","Xác định bottleneck trong quy trình và phân bổ nhân sự/luồng khách hợp lý.","Đóng quầy để giảm áp lực.","Chỉ tặng quà cho khách đã phàn nàn."],a:1,why:"Vận hành dịch vụ cần nhìn cả trải nghiệm khách và quy trình phía sau, đặc biệt khi nhu cầu tăng đột biến."}
-  ];
-
-  const dayTemplates = {
-    it:["08:30 • Stand-up","09:00 • Đọc ticket, log và ưu tiên lỗi","10:30 • Code / phân tích dữ liệu","13:30 • Review hoặc pair-work","15:00 • Debug một vấn đề khó","17:30 • Ghi chú, test và chuẩn bị ngày mai"],
-    business:["08:00 • Kiểm tra dashboard","09:00 • Phân tích số liệu","10:30 • Họp với team","13:30 • Mô hình hóa phương án","15:30 • Ra quyết định / trình bày","17:30 • Theo dõi chỉ số"],
-    health:["07:00 • Bàn giao ca","08:00 • Tiếp nhận và đánh giá","10:00 • Xử lý / theo dõi","13:30 • Ghi hồ sơ và phối hợp","15:30 • Tư vấn / chăm sóc","17:00 • Bàn giao & tổng kết"],
-    engineering:["08:00 • Kiểm tra hệ thống","09:00 • Phân tích yêu cầu","10:30 • Thiết kế / mô phỏng","13:30 • Test nguyên mẫu","15:30 • Xử lý lỗi / tối ưu","17:30 • Báo cáo và kế hoạch"],
-    marketing:["08:30 • Check campaign","09:30 • Nghiên cứu insight","11:00 • Viết / thiết kế nội dung","13:30 • Họp creative","15:00 • Đọc dữ liệu & tối ưu","17:30 • Lên ý tưởng ngày mai"],
-    law:["08:30 • Đọc hồ sơ","09:30 • Tra cứu và đối chiếu","11:00 • Phân tích vấn đề","13:30 • Soạn / review văn bản","15:30 • Trao đổi với khách hàng","17:30 • Kiểm tra rủi ro & deadline"],
-    education:["07:30 • Chuẩn bị lớp","08:00 • Dạy / quan sát","10:30 • Phản hồi học sinh","13:30 • Soạn hoạt động","15:00 • Họp chuyên môn","17:00 • Đánh giá & chuẩn bị"],
-    architecture:["08:30 • Review brief","09:30 • Sketch / concept","11:00 • Phối hợp kỹ thuật","13:30 • 3D / bản vẽ","15:30 • Chỉnh theo feedback","18:00 • Kiểm tra hồ sơ"],
-    environment:["07:30 • Kiểm tra dữ liệu / hiện trường","09:00 • Lấy mẫu / phân tích","11:00 • Xử lý dữ liệu","13:30 • Đánh giá tác động","15:30 • Viết báo cáo","17:00 • Đề xuất giải pháp"],
-    tourism:["06:30 • Briefing vận hành","08:00 • Kiểm tra trải nghiệm khách","10:00 • Xử lý yêu cầu","13:30 • Điều phối dịch vụ","15:30 • Giải quyết sự cố","18:00 • Tổng kết vận hành"]
-  };
-
-  const clues = [
-    {clue:"Tôi có thể dành hàng giờ để tìm một lỗi mà người khác chỉ thấy là “máy bị hỏng”. Tôi thích log, giả thuyết và thử nghiệm nhỏ.",answer:"Kỹ sư phần mềm / Developer",industry:"it"},
-    {clue:"Tôi đọc một bảng số và không chỉ hỏi “bao nhiêu?” mà hỏi “vì sao?”. Tôi thích tìm mối quan hệ giữa chi phí, doanh thu và quyết định.",answer:"Phân tích kinh doanh / Tài chính",industry:"business"},
-    {clue:"Tôi phải cân bằng công năng, ánh sáng, luồng di chuyển và thẩm mỹ trong cùng một bài toán.",answer:"Kiến trúc sư / Nhà thiết kế",industry:"architecture"},
-    {clue:"Tôi thường phải nghe một người kể chuyện rất dài rồi tìm ra vấn đề, bằng chứng và quy tắc liên quan.",answer:"Luật sư / Chuyên viên pháp lý",industry:"law"},
-    {clue:"Tôi quan tâm một hệ sinh thái thay đổi thế nào theo thời gian và muốn biến dữ liệu thành quyết định quản lý.",answer:"Chuyên gia môi trường",industry:"environment"},
-    {clue:"Tôi thích biến một trải nghiệm lộn xộn thành một quy trình trơn tru, ngay cả khi có hàng trăm người cùng lúc.",answer:"Vận hành du lịch – khách sạn",industry:"tourism"}
-  ];
-
-  const badges = [
-    ["🧭","First Explorer","Mở Career Lab lần đầu","first"],
-    ["🎮","Quiz Runner","Hoàn thành một quiz","quiz1"],
-    ["💯","Perfect Mind","Đạt 20/20 trong quiz","perfect"],
-    ["🌍","Field Hopper","Khám phá 5 lĩnh vực","five"],
-    ["🧩","Problem Solver","Hoàn thành một Mini Challenge","challenge"],
-    ["🌌","Galaxy Walker","Chạm vào 10 hành tinh","galaxy"]
-  ];
-
-  const $ = id => document.getElementById(id);
-  const launcher=$("careerWowLauncher"), backdrop=$("careerWowBackdrop"), close=$("careerWowClose");
-  const home=$("wowHome"), homeCards=$("wowHomeCards"), panel=$("wowPanel"), title=$("wowPanelTitle"), content=$("wowPanelContent");
-  let currentScenario=0, challengeScore=0, challengeAnswered=false, rouletteRotation=0, galaxyTouched=new Set();
-
-  function save(){ localStorage.setItem(storeKey,JSON.stringify(progress)); updateStats(); }
-  function awardXP(n,reason){
-    progress.xp += n; save();
-    toast(`+${n} XP · ${reason}`);
-  }
-  function unlock(id){
-    if(!progress.badges.includes(id)){progress.badges.push(id);save();const b=badges.find(x=>x[3]===id);if(b)toast(`🏆 Huy hiệu mở khóa: ${b[1]}`);}
-  }
-  function updateStats(){
-    $("wowXP").textContent=progress.xp;
-    $("wowLevel").textContent=`Lv.${Math.max(1,Math.floor(progress.xp/100)+1)}`;
-    $("wowBadgeCount").textContent=`${progress.badges.length}/${badges.length}`;
-    $("wowQuizCount").textContent=progress.quizCount;
-  }
-  function toast(msg){
-    const el=$("wowToast"); if(!el)return; el.textContent=msg; el.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("show"),2200);
-  }
-  function open(){backdrop.classList.add("open");home.style.display="block";homeCards.style.display="block";panel.classList.remove("active");updateStats();}
-  function closeLab(){backdrop.classList.remove("open");}
-  function showPanel(t,html){
-    title.textContent=t;content.innerHTML=html;home.style.display="none";homeCards.style.display="none";panel.classList.add("active");
-  }
-  function back(){panel.classList.remove("active");home.style.display="block";homeCards.style.display="block";}
-
-  function roulette(){
-    showPanel("🎰 Career Roulette",`
-      <div class="wow-roulette">
-        <div class="wow-pointer">▼</div>
-        <div class="wow-wheel" id="wowWheel"></div>
-      </div>
-      <div class="wow-center"><button class="wow-primary" id="spinCareer">SPIN — cho tôi một nghề!</button><div class="wow-result" id="rouletteResult">Bạn sẽ rơi vào đâu?</div><div class="wow-hint">Không phải lời kết luận — chỉ là một cú hích để khám phá.</div></div>`);
-    $("spinCareer").onclick=()=>{
-      const keys=Object.keys(industries); const key=keys[Math.floor(Math.random()*keys.length)];
-      const idx=keys.indexOf(key), extra=(keys.length-idx)*36;
-      rouletteRotation += 1440+extra+Math.floor(Math.random()*5)*36;
-      $("wowWheel").style.transform=`rotate(${rouletteRotation}deg)`;
-      $("spinCareer").disabled=true;
-      setTimeout(()=>{const v=industries[key];$("rouletteResult").innerHTML=`${v.emoji} ${v.title}`;progress.explored.includes(key)||progress.explored.push(key);save();awardXP(15,"Roulette");setTimeout(()=>{ $("spinCareer").disabled=false; },500);},2350);
-    };
-  }
-
-  function dayInLife(){
-    const keys=Object.keys(industries);const key=progress.explored.length?progress.explored[Math.floor(Math.random()*progress.explored.length)]:keys[Math.floor(Math.random()*keys.length)];
-    const v=industries[key], lines=dayTemplates[key]||dayTemplates.it;
-    progress.explored.includes(key)||progress.explored.push(key);save();
-    showPanel(`${v.emoji} Một ngày làm ${v.title}`,`
-      <p style="color:#cbd5e1;line-height:1.6">Đây là một bản mô phỏng trải nghiệm — thực tế có thể khác theo vị trí, tổ chức và môi trường làm việc.</p>
-      <div class="wow-timeline">${lines.map(x=>{const [a,...rest]=x.split(" • ");return `<div class="wow-time"><b>${a}</b><div><strong>${rest.join(" • ")}</strong><span>${v.desc}</span></div></div>`}).join("")}</div>
-      <div style="margin-top:18px"><button class="wow-primary" id="dayAnother">🎲 Đổi lĩnh vực</button></div>`);
-    $("dayAnother").onclick=dayInLife; awardXP(10,"Day in Life");
-  }
-
-  function challenge(){
-    currentScenario=Math.floor(Math.random()*scenarios.length);challengeScore=0;challengeAnswered=false;renderChallenge();
-  }
-  function renderChallenge(){
-    const s=scenarios[currentScenario];
-    showPanel(`🧩 Mini Career Challenge · ${s.icon}`,`
-      <div class="wow-challenge"><div style="color:#c4b5fd;font-size:12px;font-weight:900">CASE #${currentScenario+1}</div><h3 style="font-size:24px;margin:8px 0">${s.title}</h3><p style="line-height:1.65;color:#e2e8f0">${s.q}</p><div id="wowChoices">${s.opts.map((o,i)=>`<button class="wow-choice" data-i="${i}" type="button">${String.fromCharCode(65+i)}. ${o}</button>`).join("")}</div><div class="wow-feedback" id="wowFeedback"></div><button class="wow-primary wow-next" id="wowNext" style="display:none">Câu tiếp theo →</button></div>`);
-    content.querySelectorAll(".wow-choice").forEach(b=>b.onclick=()=>answerChallenge(Number(b.dataset.i)));
-  }
-  function answerChallenge(i){
-    if(challengeAnswered)return;challengeAnswered=true;const s=scenarios[currentScenario];
-    content.querySelectorAll(".wow-choice").forEach((b,n)=>{b.disabled=true;if(n===s.a)b.classList.add("correct");if(n===i&&i!==s.a)b.classList.add("wrong")});
-    if(i===s.a){challengeScore++;awardXP(20,"Đáp án đúng");}else toast("💡 Câu này có một góc nhìn khác");
-    $("wowFeedback").innerHTML=(i===s.a?"✅ Chính xác! ":"💡 Chưa phải lựa chọn tối ưu. ")+s.why;
-    $("wowNext").style.display="inline-block";
-  }
-  function nextChallenge(){
-    if(!challengeAnswered)return;
-    if(challengeScore>=1)unlock("challenge");
-    currentScenario=Math.floor(Math.random()*scenarios.length);challengeAnswered=false;renderChallenge();
-  }
-
-  function guess(){
-    const item=clues[Math.floor(Math.random()*clues.length)];
-    showPanel("🕵️ Guess the Career",`
-      <div class="wow-clue">“${item.clue}”</div>
-      <div style="margin-top:16px"><button class="wow-primary" id="revealCareer">🔍 Reveal</button></div>
-      <div class="wow-answer" id="careerAnswer" style="display:none">${item.answer}</div>
-      <p id="guessMeta" style="color:#cbd5e1"></p>
-      <div style="margin-top:18px"><button class="wow-back" id="nextGuess">↻ Một manh mối khác</button></div>`);
-    $("revealCareer").onclick=()=>{$("careerAnswer").style.display="block";$("guessMeta").textContent=`Lĩnh vực: ${industries[item.industry]?.title||item.industry}`;awardXP(10,"Guess the Career");};
-    $("nextGuess").onclick=guess;
-  }
-
-  function galaxy(){
-    const keys=Object.keys(industries);
-    showPanel("🌌 Career Galaxy",`
-      <div class="wow-galaxy" id="wowGalaxy">
-        <div class="wow-orbit o1"></div><div class="wow-orbit o2"></div><div class="wow-orbit o3"></div><div class="wow-star">✨</div>
-        ${keys.map((k,i)=>{const angle=(i/keys.length)*Math.PI*2-Math.PI/2;const radius=i%3===0?105:i%3===1?170:235;const x=50+Math.cos(angle)*radius/4.7;const y=50+Math.sin(angle)*radius/4.7;const v=industries[k];return `<button class="wow-node" style="left:${x}%;top:${y}%" data-key="${k}" title="${v.title}" type="button">${v.emoji}</button>`}).join("")}
-      </div>
-      <div class="wow-galaxy-caption">Chạm vào một hành tinh để xem nhanh lĩnh vực. Mỗi hành tinh đã chạm sẽ được tính vào tiến trình khám phá.</div>
-      <div id="galaxyInfo" style="text-align:center;margin-top:14px;color:#e2e8f0"></div>`);
-    content.querySelectorAll(".wow-node").forEach(b=>b.onclick=()=>{
-      const k=b.dataset.key,v=industries[k];galaxyTouched.add(k);progress.explored.includes(k)||progress.explored.push(k);save();
-      $("galaxyInfo").innerHTML=`<strong style="font-size:19px">${v.emoji} ${v.title}</strong><div style="color:#cbd5e1;margin-top:5px">${v.desc}</div>`;
-      awardXP(5,"Khám phá hành tinh");if(galaxyTouched.size>=keys.length)unlock("galaxy");
-    });
-  }
-
-  function showBadges(){
-    showPanel("🏆 Hall of Achievements",`<p style="color:#cbd5e1">Không cần “cày”. Mỗi huy hiệu chỉ là một dấu mốc nhỏ trong hành trình khám phá.</p><div class="wow-badges">${badges.map(b=>`<div class="wow-badge ${progress.badges.includes(b[3])?"":"locked"}"><b>${b[0]}</b><strong>${b[1]}</strong><span>${b[2]}</span></div>`).join("")}</div>`);
-  }
-
-  launcher.onclick=open;close.onclick=closeLab;$("wowBack").onclick=back;
-  backdrop.addEventListener("click",e=>{if(e.target===backdrop)closeLab();});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeLab();});
-  homeCards.querySelectorAll("[data-wow]").forEach(b=>b.addEventListener("click",()=>({
-    roulette,day,challenge,guess,galaxy,badges:showBadges
-  }[b.dataset.wow])()));
-  content.addEventListener("click",e=>{if(e.target.id==="wowNext")nextChallenge();});
-  updateStats();
-  unlock("first");
-
-  /* Track completed quizzes without touching the existing quiz engine. */
-  const quizApp=document.getElementById("quizApp");
-  if(quizApp){
-    const observer=new MutationObserver(()=>{
-      const result=quizApp.querySelector(".quiz-result");
-      if(!result || result.dataset.wowTracked)return;
-      result.dataset.wowTracked="1";
-      progress.quizCount++;
-      awardXP(quizState && quizState.score>=15 ? 50 : 30,"Hoàn thành Quiz");
-      unlock("quiz1");
-      if(quizState && quizState.score===20)unlock("perfect");
-      if(progress.explored.length>=5)unlock("five");
-      if(progress.quizCount>0)unlock("quiz1");
-      updateStats();
-    });
-    observer.observe(quizApp,{childList:true,subtree:true});
-  }
+"use strict";
+const $=id=>document.getElementById(id), overlay=$("cuOverlay"), view=$("cuView");
+const industries=(typeof INDUSTRIES!=="undefined")?INDUSTRIES:{};
+const keys=Object.keys(industries);
+const store="career-universe-v2";
+let state;try{state=JSON.parse(localStorage.getItem(store))||{};}catch(e){state={};}
+state.xp=Number(state.xp)||0;state.explored=Array.isArray(state.explored)?state.explored:[];state.completed=Array.isArray(state.completed)?state.completed:[];state.badges=Array.isArray(state.badges)?state.badges:[];state.quiz=Number(state.quiz)||0;state.streak=Number(state.streak)||0;state.lastDay=state.lastDay||"";
+const dayKey=new Date().toISOString().slice(0,10);
+if(state.lastDay!==dayKey){state.daily={roulette:false,lab:false,explore:false};state.lastDay=dayKey;state.streak=Math.max(1,state.streak+1);save();}
+state.daily=state.daily||{roulette:false,lab:false,explore:false};
+let labIndex=0,labScore=0,labDone=false,rouletteTurn=0,currentDayKey=keys[0]||"it",dayIndex=0,drawerIndustry=null;
+const cases=[
+ {k:"it",title:"Production bug lúc 02:13",q:"Một bản cập nhật khiến 1% người dùng gặp lỗi ngắt quãng. Bạn có 20 phút trước khi traffic tăng mạnh. Nước đi đầu tiên?",o:["Rollback ngay mà không kiểm tra phạm vi","Khoanh vùng log, điều kiện tái hiện và blast radius rồi chọn rollback/hotfix","Deploy thêm một bản sửa để thử vận may","Chờ người dùng báo thêm"],a:1,w:"Điểm mấu chốt là giảm bất định trước khi thay đổi hệ thống: xác định phạm vi, điều kiện và mức ảnh hưởng."},
+ {k:"business",title:"Doanh thu ↑ nhưng lợi nhuận ↓",q:"Dashboard báo doanh thu tăng 20%, nhưng lợi nhuận giảm 8%. Bạn được giao tìm nguyên nhân trong 30 phút.",o:["Tăng quảng cáo để kéo thêm doanh thu","Nhìn số đơn hàng là đủ","Phân rã giá bán, giá vốn, mix sản phẩm và chi phí theo từng nhóm","Kết luận đội sales có vấn đề"],a:2,w:"Một chỉ số tổng không giải thích nguyên nhân. Người phân tích cần tách các thành phần tạo nên kết quả."},
+ {k:"health",title:"Một dữ kiện không khớp",q:"Một bệnh nhân có triệu chứng mới không khớp hoàn toàn với giả định ban đầu. Bạn ưu tiên bước nào?",o:["Giữ nguyên giả định vì hồ sơ đã ghi","Bỏ qua vì chỉ là một triệu chứng","Xem lại dữ kiện, chẩn đoán phân biệt và thông tin cần kiểm chứng","Chọn bệnh hiếm nhất để không bỏ sót"],a:2,w:"Tư duy chuyên môn cần cập nhật giả thuyết khi có dữ kiện mới, thay vì bảo vệ kết luận cũ."},
+ {k:"engineering",title:"Hệ thống rung bất thường",q:"Một thiết bị hoạt động ổn định nhiều tháng rồi xuất hiện rung. Trước khi thay linh kiện, bạn làm gì?",o:["Thay toàn bộ linh kiện","Đo rung theo điều kiện vận hành, tần số và nguồn gây rung","Tăng tải thật lớn để thử","Bỏ qua nếu chưa hỏng"],a:1,w:"Đo lường và xác định nguyên nhân giúp tránh can thiệp tốn kém hoặc làm tình hình tệ hơn."},
+ {k:"marketing",title:"Viral nhưng không chuyển đổi",q:"Một video đạt 10× lượt xem nhưng doanh số gần như không đổi. Bạn kiểm tra gì?",o:["Kết luận video thất bại","Tăng ngân sách ngay","Mục tiêu, chất lượng traffic, funnel và nhóm khán giả sau khi xem","Xóa video"],a:2,w:"Attention chỉ là đầu phễu. Cần nối dữ liệu tiếp cận với hành vi và mục tiêu kinh doanh."},
+ {k:"law",title:"Một câu hợp đồng mơ hồ",q:"Hai bên hiểu khác nhau về cùng một điều khoản. Bạn cần làm gì trước khi khẳng định bên nào đúng?",o:["Chọn cách hiểu có lợi cho bên mình","Đọc điều khoản trong toàn văn, định nghĩa, bối cảnh và bằng chứng liên quan","Đăng hỏi cộng đồng","Bỏ qua vì đã ký"],a:1,w:"Phân tích pháp lý thường cần đặt câu chữ trong hệ thống văn bản và bối cảnh giao kết."},
+ {k:"education",title:"Học sinh biết nhưng không nói",q:"Một học sinh làm bài đúng nhưng gần như không phát biểu. Bạn muốn tăng sự tham gia.",o:["Ép phát biểu mỗi tiết","Cho điểm thấp để tạo áp lực","Tìm nguyên nhân và thiết kế cách tham gia an toàn, phù hợp","Bỏ qua vì điểm vẫn ổn"],a:2,w:"Quan sát hành vi, tìm nguyên nhân và thiết kế môi trường phù hợp thường hữu ích hơn áp lực đơn thuần."},
+ {k:"architecture",title:"Đẹp nhưng đi rất xa",q:"Một phương án đẹp nhưng người dùng phải đi vòng xa và thiếu ánh sáng tự nhiên. Bạn ưu tiên gì?",o:["Giữ nguyên vì hình ảnh đẹp","Tối ưu circulation, ánh sáng và công năng rồi cân bằng với thẩm mỹ","Thêm trang trí","Đổi màu"],a:1,w:"Thiết kế tốt giải quyết trải nghiệm và công năng đồng thời với thẩm mỹ."},
+ {k:"environment",title:"Một điểm ô nhiễm đột biến",q:"Dữ liệu chất lượng nước tăng đột biến chỉ trong một ngày. Trước khi công bố nguyên nhân, bạn làm gì?",o:["Công bố nguồn gây ô nhiễm","Xóa điểm dữ liệu","Kiểm tra mẫu, quy trình đo, dữ liệu lân cận và sự kiện bất thường","Lấy trung bình với các ngày khác"],a:2,w:"Một outlier có thể là tín hiệu hoặc lỗi. Cần kiểm tra chất lượng dữ liệu và bối cảnh."},
+ {k:"tourism",title:"Check-in vỡ trận",q:"Khách sạn kín phòng, hàng dài ở quầy check-in và khách bắt đầu phàn nàn. Bạn xử lý thế nào?",o:["Đổ lỗi khách đến sớm","Xác định bottleneck và điều phối nhân sự/luồng khách","Đóng quầy","Chỉ tặng quà"],a:1,w:"Vận hành dịch vụ cần nhìn cả trải nghiệm khách và quy trình phía sau."}
+];
+const dayData={
+ it:["08:30|Stand-up & ưu tiên ticket|Bắt đầu ngày bằng việc hiểu việc gì quan trọng nhất.","10:00|Build / debug|Tập trung vào một vấn đề đủ sâu để tạo ra tiến bộ thật.","13:30|Review / pair work|Trao đổi với người khác để bắt lỗi tư duy và chất lượng.","15:30|Test & ship|Kiểm tra trước khi đưa thay đổi ra người dùng.","17:30|Ghi chú & plan|Chốt những gì đã học và việc cần làm tiếp."],
+ business:["08:00|Dashboard|Tìm tín hiệu bất thường thay vì chỉ nhìn số đẹp.","09:30|Deep analysis|Đào nguyên nhân, giả thuyết và trade-off.","13:30|Stakeholder|Biến phân tích thành một quyết định có thể hành động.","15:30|Model options|So sánh phương án bằng dữ liệu.","17:30|Review|Theo dõi kết quả và điều chỉnh."],
+ health:["07:00|Handover|Tiếp nhận thông tin quan trọng từ ca trước.","08:00|Assess|Quan sát, hỏi, kiểm tra và ưu tiên.","10:30|Care / coordinate|Xử lý và phối hợp với các bên liên quan.","14:00|Document|Ghi chép rõ để quyết định tiếp theo có cơ sở.","17:00|Handover|Bàn giao và tổng kết."],
+ engineering:["08:00|System check|Kiểm tra thông số và điều kiện vận hành.","09:30|Design|Chuyển yêu cầu thành phương án có ràng buộc.","11:00|Simulate|Thử trước khi làm thật.","14:00|Prototype / test|Đo, so sánh, tìm sai lệch.","17:30|Report|Ghi lại quyết định và rủi ro."],
+ marketing:["08:30|Campaign scan|Đọc tín hiệu từ chiến dịch.","09:30|Research|Tìm insight thay vì đoán.","11:00|Create|Viết, thiết kế và thử ý tưởng.","14:00|Optimize|Đọc dữ liệu và điều chỉnh.","17:30|Next concept|Biến dữ liệu thành ý tưởng tiếp theo."],
+ law:["08:30|Case intake|Xác định vấn đề và dữ kiện cần kiểm chứng.","10:00|Research|Đối chiếu văn bản, hồ sơ và lập luận.","13:30|Draft / review|Biến phân tích thành văn bản rõ ràng.","15:30|Client|Giải thích lựa chọn và rủi ro.","17:30|Risk check|Rà deadline và điểm có thể tranh chấp."],
+ education:["07:30|Prepare|Thiết kế mục tiêu và hoạt động.","08:00|Class|Quan sát cách người học phản ứng.","10:30|Feedback|Phản hồi để người học biết bước tiếp theo.","14:00|Adapt|Điều chỉnh cách dạy theo dữ liệu.","17:00|Reflect|Tổng kết điều gì hiệu quả."],
+ architecture:["08:30|Brief|Đọc yêu cầu, site và constraints.","09:30|Concept|Sketch, test và loại phương án yếu.","13:30|Coordinate|Phối hợp kiến trúc với kỹ thuật.","15:30|Feedback|Chỉnh theo dữ liệu và người dùng.","18:00|Deliver|Kiểm tra hồ sơ trước khi phát hành."],
+ environment:["07:30|Field / data|Kiểm tra dữ liệu và hiện trường.","09:30|Sample|Lấy mẫu hoặc xác minh dữ liệu.","13:00|Analyze|Tìm pattern, outlier và nguyên nhân khả dĩ.","15:00|Impact|Đánh giá tác động và phương án.","17:00|Recommend|Viết đề xuất có thể hành động."],
+ tourism:["06:30|Briefing|Nắm tình trạng khách và vận hành.","08:00|Guest experience|Quan sát điểm chạm quan trọng.","10:30|Coordinate|Điều phối người và dịch vụ.","14:00|Solve|Xử lý sự cố mà vẫn giữ trải nghiệm.","18:00|Review|Tổng kết và chuẩn bị ngày mai."]
+};
+const badges=[['🧭','First Orbit','Mở Career Universe','first'],['🎮','Quiz Runner','Hoàn thành quiz','quiz'],['🧩','Problem Solver','Giải đúng Decision Lab','lab'],['🌍','World Hopper','Khám phá 5 lĩnh vực','five'],['🌌','Galaxy Walker','Khám phá đủ 10 hành tinh','ten'],['🎰','Lucky Spark','Quay Roulette','roulette'],['🕘','Day Walker','Xem một ngày làm nghề','day'],['⚡','100 XP','Chạm mốc 100 XP','xp']];
+function save(){localStorage.setItem(store,JSON.stringify(state));stats();}
+function stats(){if($("cuXP"))$("cuXP").textContent=state.xp;if($("cuLevel"))$("cuLevel").textContent=`Lv.${Math.max(1,Math.floor(state.xp/100)+1)}`;}
+function toast(s){const e=$("cuToast");e.textContent=s;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),2200)}
+function xp(n,why){state.xp+=n;save();toast(`+${n} XP · ${why}`);if(state.xp>=100)badge('xp')}
+function badge(id){if(!state.badges.includes(id)){state.badges.push(id);save();const b=badges.find(x=>x[3]===id);if(b)toast(`🏆 Huy hiệu mở khóa: ${b[1]}`)}}
+function explore(k){if(!state.explored.includes(k)){state.explored.push(k);xp(8,'Khám phá lĩnh vực')}save();if(state.explored.length>=5)badge('five');if(state.explored.length>=10)badge('ten')}
+function open(){overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');stats();render('explore');drawStars()}
+function close(){overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true')}
+function render(name){document.querySelectorAll('.cu-tab').forEach(b=>b.classList.toggle('active',b.dataset.view===name));({explore,missions,galaxy,lab,day,roulette,profile}[name]||explore)();}
+function card(k){const v=industries[k];return `<button class="cu-card" data-k="${k}"><span class="cu-pill">EXPLORE</span><div class="cu-icon">${v.emoji}</div><h4>${v.title}</h4><p>${v.desc}</p></button>`}
+function explore(){view.innerHTML=`<div class="cu-section-title"><div><h3>Choose your curiosity</h3><p>Không cần biết nghề nào “đúng”. Chỉ cần có một nghề khiến bạn muốn bấm vào.</p></div></div><div class="cu-mission"><div><small>MISSION OF THE DAY</small><h3>${state.daily.lab?'✨ Nhiệm vụ đã hoàn thành':'🧩 Giải một tình huống khó'}</h3><p>Chọn một case, đưa ra quyết định, xem hậu quả và nhận XP.</p><div class="cu-progress"><i style="width:${state.daily.lab?100:18}%"></i></div></div><button class="cu-btn primary" id="cuMissionBtn">${state.daily.lab?'✓ Đã xong':'Chơi ngay'}</button></div><div class="cu-section-title"><div><h3>10 constellations</h3><p>Mỗi lĩnh vực là một thế giới với cách suy nghĩ khác nhau.</p></div></div><div class="cu-grid">${keys.map(card).join('')}</div>`;view.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>industryDrawer(b.dataset.k));$("cuMissionBtn").onclick=()=>render('lab')}
+function missions(){const done=Object.values(state.daily).filter(Boolean).length;view.innerHTML=`<div class="cu-section-title"><div><h3>🎯 Daily Missions</h3><p>Ba nhiệm vụ nhỏ. Không phải để “cày”, mà để tạo một lý do mở website hôm nay.</p></div><div class="cu-big-number">${done}/3</div></div><div class="cu-grid"><button class="cu-card" id="mExplore"><span class="cu-pill">+8 XP</span><div class="cu-icon">🌍</div><h4>Chạm một hành tinh</h4><p>Khám phá một lĩnh vực bạn chưa từng mở.</p></button><button class="cu-card" id="mLab"><span class="cu-pill">+20 XP</span><div class="cu-icon">🧩</div><h4>Giải một case</h4><p>Ra quyết định trong một tình huống nghề nghiệp.</p></button><button class="cu-card" id="mRoulette"><span class="cu-pill">+12 XP</span><div class="cu-icon">🎰</div><h4>Thử vận may</h4><p>Quay Roulette và xem vũ trụ ném gì về phía bạn.</p></button></div><div class="cu-section-title"><div><h3>🔥 Streak</h3><p>${state.streak} ngày khám phá liên tiếp (tính theo lượt mở Career Universe).</p></div></div>`;$("mExplore").onclick=()=>render('galaxy');$("mLab").onclick=()=>render('lab');$("mRoulette").onclick=()=>render('roulette')}
+function galaxy(){view.innerHTML=`<div class="cu-section-title"><div><h3>🌌 Career Galaxy</h3><p>Chạm một hành tinh. Đọc tín hiệu. Nếu tò mò hơn, nhảy vào quiz hoặc hỏi AI.</p></div><span class="cu-muted">${state.explored.length}/${keys.length} explored</span></div><div class="cu-galaxy" id="cuGalaxy"><div class="cu-orbit o1"></div><div class="cu-orbit o2"></div><div class="cu-orbit o3"></div><div class="cu-galaxy-core">✦</div>${keys.map((k,i)=>{const a=i/keys.length*Math.PI*2-Math.PI/2;const r=i%3===0?100:i%3===1?165:250;const x=50+Math.cos(a)*r/5;const y=50+Math.sin(a)*r/5;return `<button class="cu-planet ${state.explored.includes(k)?'active':''}" data-k="${k}" style="left:${x}%;top:${y}%" title="${industries[k].title}">${industries[k].emoji}</button>`}).join('')}<div class="cu-galaxy-info" id="cuGalaxyInfo"><strong>✨ Chọn một hành tinh</strong><span>Không có “đáp án đúng” ở đây — chỉ có thứ khiến bạn muốn tìm hiểu thêm.</span></div></div>`;view.querySelectorAll('.cu-planet').forEach(b=>b.onclick=()=>{explore(b.dataset.k);showGalaxyInfo(b.dataset.k)});}
+function showGalaxyInfo(k){const v=industries[k];const e=$("cuGalaxyInfo");e.innerHTML=`<strong>${v.emoji} ${v.title}</strong><span>${v.desc}</span><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="cu-btn primary" id="gQuiz">🎮 Thử quiz</button><button class="cu-btn" id="gAI">🤖 Hỏi AI</button></div>`;$("gQuiz").onclick=()=>{close();switchMode('quiz');setTimeout(()=>{if(typeof startQuiz==='function')startQuiz(k)},60)};$("gAI").onclick=()=>{close();switchMode('chat');setTimeout(()=>{if(typeof userInput!=='undefined'){userInput.value=`Mình muốn khám phá lĩnh vực ${v.title}. Hãy cho mình một tình huống thực tế để thử xem mình có hợp với cách tư duy của lĩnh vực này không.`;userInput.focus()}},80)}}
+function lab(){if(!cases.length)return;const c=cases[labIndex%cases.length];view.innerHTML=`<div class="cu-section-title"><div><h3>🧩 Decision Lab</h3><p>Không hỏi “bạn thích nghề gì?”. Hãy xem bạn xử lý một vấn đề như thế nào.</p></div><span class="cu-muted">Case ${labIndex+1}/${cases.length}</span></div><div class="cu-lab"><section class="cu-stage"><div class="cu-eyebrow">${industries[c.k]?.emoji||'🧠'} ${industries[c.k]?.title||c.k}</div><h3>${c.title}</h3><p class="cu-muted">${c.q}</p><div id="cuChoices">${c.o.map((o,i)=>`<button class="cu-choice" data-i="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div><div id="cuFeedback" class="cu-feedback"></div><button class="cu-btn primary" id="cuNext" style="display:none;margin-top:14px">Case tiếp theo →</button></section><aside class="cu-side"><h3>Signal</h3><div class="cu-score" id="cuLabScore">${labScore}</div><p class="cu-muted">điểm quyết định trong phiên này</p><div class="cu-progress"><i style="width:${Math.min(100,labScore*20)}%"></i></div><p class="cu-muted" style="margin-top:16px">Mẹo: đừng tìm đáp án nghe “ngầu” nhất. Hãy tìm bước giúp giảm bất định, nhìn trade-off và tránh quyết định vội.</p></aside></div>`;labDone=false;view.querySelectorAll('.cu-choice').forEach(b=>b.onclick=()=>answerLab(Number(b.dataset.i)));$("cuNext").onclick=()=>{labIndex=(labIndex+1)%cases.length;render('lab')}}
+function answerLab(i){if(labDone)return;labDone=true;const c=cases[labIndex%cases.length];view.querySelectorAll('.cu-choice').forEach((b,n)=>{b.disabled=true;if(n===c.a)b.classList.add('correct');if(n===i&&n!==c.a)b.classList.add('wrong')});if(i===c.a){labScore++;xp(20,'Decision Lab');state.daily.lab=true;badge('lab')}else toast('💡 Không sao — xem feedback để hiểu góc nhìn khác');$("cuFeedback").innerHTML=`<strong>${i===c.a?'✅ Good call.':'🔎 Một góc nhìn khác.'}</strong> ${c.w}`;$("cuNext").style.display='inline-block';save()}
+function day(){const data=dayData[currentDayKey]||dayData.it;view.innerHTML=`<div class="cu-section-title"><div><h3>🕘 Một ngày làm nghề</h3><p>Một mô phỏng nhanh — thực tế thay đổi theo vị trí, tổ chức và môi trường.</p></div><select id="cuDaySelect" class="cu-btn" style="background:#0b1020;color:#fff">${keys.map(k=>`<option value="${k}" ${k===currentDayKey?'selected':''}>${industries[k].emoji} ${industries[k].title}</option>`).join('')}</select></div><div class="cu-day"><div class="cu-time-list">${data.map((x,i)=>{const [t]=x.split('|');return `<button class="cu-time-btn ${i===dayIndex?'active':''}" data-i="${i}">${t}</button>`}).join('')}</div><section class="cu-time-main" id="cuTimeMain"></section></div>`;$("cuDaySelect").onchange=e=>{currentDayKey=e.target.value;dayIndex=0;explore(currentDayKey);render('day')};view.querySelectorAll('.cu-time-btn').forEach(b=>b.onclick=()=>{dayIndex=Number(b.dataset.i);renderDayMain(data)});renderDayMain(data);if(!state.completed.includes('day')){state.completed.push('day');state.daily.explore=true;xp(10,'Day in Life');badge('day')}}
+function renderDayMain(data){const [time,title,desc]=data[dayIndex].split('|');$("cuTimeMain").innerHTML=`<div class="clock">${time}</div><h3>${title}</h3><p>${desc}</p><p class="cu-muted">${industries[currentDayKey]?.desc||''}</p><input class="cu-range" type="range" min="0" max="${data.length-1}" value="${dayIndex}" aria-label="Thời điểm trong ngày">`;$("cuTimeMain").querySelector('input').oninput=e=>{dayIndex=Number(e.target.value);renderDayMain(data);view.querySelectorAll('.cu-time-btn').forEach((b,i)=>b.classList.toggle('active',i===dayIndex))}}
+function roulette(){view.innerHTML=`<div class="cu-roulette"><div class="cu-wheel-wrap"><div class="cu-pointer">▼</div><div class="cu-wheel" id="cuWheel"></div></div><section><div class="cu-eyebrow">CAREER ROULETTE</div><h3 style="font-size:38px;margin:8px 0 12px">Để vũ trụ chọn một hướng.</h3><p class="cu-muted">Nếu hôm nay bạn chưa biết bắt đầu từ đâu, hãy để một lĩnh vực bất ngờ xuất hiện. Không phải kết luận — chỉ là một cú hích.</p><button class="cu-btn primary" id="cuSpin" style="margin-top:14px">🎰 SPIN</button><div class="cu-result" id="cuResult" style="margin-top:25px">?</div></section></div>`;$("cuSpin").onclick=()=>{const k=keys[Math.floor(Math.random()*keys.length)],idx=keys.indexOf(k),extra=(keys.length-idx)*36;rouletteTurn+=1440+extra;$("cuWheel").style.transform=`rotate(${rouletteTurn}deg)`;$("cuSpin").disabled=true;setTimeout(()=>{const v=industries[k];$("cuResult").innerHTML=`${v.emoji} ${v.title}<small>${v.desc}</small>`;explore(k);state.daily.roulette=true;badge('roulette');xp(12,'Career Roulette');$("cuSpin").disabled=false},2850)}}
+function profile(){const pct=Math.min(100,state.xp%100);view.innerHTML=`<div class="cu-profile"><section class="cu-profile-card"><div class="cu-avatar">🧭</div><div class="cu-eyebrow">EXPLORER PROFILE</div><h3 style="font-size:30px;margin:6px 0">Career Pathfinder</h3><p class="cu-muted">${state.explored.length} / ${keys.length} lĩnh vực đã chạm · ${state.quiz} quiz · streak ${state.streak}.</p><div class="cu-progress"><i style="width:${pct||100}%"></i></div><p class="cu-muted">${state.xp} XP · ${Math.max(1,Math.floor(state.xp/100)+1)} level</p><button class="cu-btn primary" id="cuProfileQuiz">🎮 Đi vào Quiz</button></section><section class="cu-profile-card"><h3>🏆 Hall of Signals</h3><p class="cu-muted">Huy hiệu là dấu mốc, không phải điểm xếp hạng.</p><div class="cu-badges">${badges.map(b=>`<div class="cu-badge ${state.badges.includes(b[3])?'':'lock'}"><b>${b[0]}</b><span><strong>${b[1]}</strong><br>${b[2]}</span></div>`).join('')}</div></section></div>`;$("cuProfileQuiz").onclick=()=>{close();switchMode('quiz')}}
+function industryDrawer(k){drawerIndustry=k;const v=industries[k];$("cuDrawerTitle").textContent=`${v.emoji} ${v.title}`;$("cuDrawerBody").innerHTML=`<p class="cu-muted">${v.desc}</p><div class="cu-list"><div>🧠 <strong>Cách tư duy:</strong> phân tích vấn đề, thử giả thuyết và kiểm tra bằng chứng.</div><div>🛠️ <strong>Trải nghiệm:</strong> vào Decision Lab để thử một tình huống của lĩnh vực này.</div><div>🎮 <strong>Tiếp theo:</strong> làm quiz 20 câu để khám phá sâu hơn.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px"><button class="cu-btn primary" id="dLab">🧩 Thử case</button><button class="cu-btn" id="dQuiz">🎮 Quiz ngành</button><button class="cu-btn" id="dAI">🤖 Hỏi AI</button></div>`;$("cuDrawer").classList.add('open');$("dLab").onclick=()=>{$("cuDrawer").classList.remove('open');render('lab')};$("dQuiz").onclick=()=>{close();$("cuDrawer").classList.remove('open');switchMode('quiz');setTimeout(()=>startQuiz(k),50)};$("dAI").onclick=()=>{close();$("cuDrawer").classList.remove('open');switchMode('chat');setTimeout(()=>{userInput.value=`Mình muốn tìm hiểu ${v.title}. Hãy phỏng vấn mình bằng vài câu hỏi tự nhiên để xem mình có hợp với cách tư duy và môi trường của lĩnh vực này không.`;userInput.focus()},70)}}
+function drawStars(){const c=$("cuCanvas"),ctx=c.getContext('2d');let w,h,dots=[];function resize(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio;dots=Array.from({length:Math.min(180,Math.floor(innerWidth/7))},()=>({x:Math.random()*w,y:Math.random()*h,r:(Math.random()*1.5+.2)*devicePixelRatio,v:(Math.random()*.25+.05)*devicePixelRatio}))}function frame(){if(!overlay.classList.contains('open'))return;ctx.clearRect(0,0,w,h);ctx.fillStyle='rgba(255,255,255,.8)';dots.forEach(s=>{ctx.globalAlpha=.2+Math.random()*.5;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();s.y-=s.v;if(s.y<0)s.y=h});requestAnimationFrame(frame)}resize();addEventListener('resize',resize,{passive:true});frame()}
+$("cuLaunch").onclick=open;$("cuClose").onclick=close;$("cuDrawerClose").onclick=()=>$("cuDrawer").classList.remove('open');$("cuDrawer").onclick=e=>{if(e.target===$("cuDrawer"))$("cuDrawer").classList.remove('open')};overlay.addEventListener('click',e=>{if(e.target===overlay)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();$("cuDrawer").classList.remove('open')}});$("cuNav").addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)render(b.dataset.view)});$("cuStartMission").onclick=()=>render('lab');$("cuOpenQuiz").onclick=()=>{close();switchMode('quiz')};$("cuTalkAI").onclick=()=>{close();switchMode('chat');setTimeout(()=>userInput?.focus(),50)};stats();badge('first');
+const qa=$("quizApp");if(qa){const obs=new MutationObserver(()=>{if(qa.querySelector('.quiz-result')&&!state._quizSeen){state._quizSeen=true;state.quiz++;state.completed.push('quiz-'+Date.now());xp(30,'Hoàn thành Quiz');badge('quiz');save()}});obs.observe(qa,{childList:true,subtree:true})}
+window.careerUniverse={open,close,render};
 })();
 </script>
 
