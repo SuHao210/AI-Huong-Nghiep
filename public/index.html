@@ -3203,9 +3203,14 @@ function roulette(){
     const v=industries[key]||{};
     const label=document.createElement('div');
     label.className='wow-wheel-label-v2';
-    const angle=i*segment+segment/2;
-    const radius=count<=10?35:32;
-    label.style.transform=`rotate(${angle}deg) translateY(-${radius}% ) rotate(-${angle}deg)`;
+    const angle=(i*segment+segment/2)*Math.PI/180;
+    const radius=31;
+    // Đặt nhãn theo tọa độ cực: 0° nằm đúng phía trên bánh xe.
+    const x=Math.sin(angle)*radius;
+    const y=-Math.cos(angle)*radius;
+    label.style.left=`calc(50% + ${x}% )`;
+    label.style.top=`calc(50% + ${y}% )`;
+    label.style.transform='translate(-50%,-50%)';
     label.innerHTML=`<span class="wow-wheel-emoji">${v.emoji||'✨'}</span><span>${v.title||key}</span>`;
     wheel.appendChild(label);
   });
@@ -3219,8 +3224,10 @@ function roulette(){
     const v=industries[key]||{};
     const center=idx*segment+segment/2;
     const target=((360-center)%360);
+    const current=((rouletteTurn%360)+360)%360;
+    const correction=((target-current)+360)%360;
     const fullSpins=6+Math.floor(Math.random()*2);
-    rouletteTurn += fullSpins*360 + target;
+    rouletteTurn += fullSpins*360 + correction;
 
     spin.disabled=true;
     wheel.classList.remove('wow-spinning-v2');
@@ -3234,7 +3241,7 @@ function roulette(){
     setTimeout(()=>{
       wheel.classList.remove('wow-spinning-v2');
       result.innerHTML=`<span class="wow-winner-v2">${v.emoji||'✨'} ${v.title||key}</span><small>${v.desc||'Một hướng đáng để khám phá.'}</small>`;
-      explore(key);
+      // Giữ nguyên màn hình Roulette để người dùng thấy kết quả và nút Quiz.
       state.daily.roulette=true;
       badge('roulette');
       xp(12,'Career Roulette');
@@ -3264,6 +3271,16 @@ window.careerUniverse={open,close,render};
 })();
 </script>
 
+
+<style id="roulette-wow-v3-fix">
+/* Roulette v3: nhãn nằm đúng trên từng ô, không bị xoay/đẩy ra khỏi bánh */
+.wow-wheel-v2{position:relative!important;isolation:isolate!important;}
+.wow-wheel-label-v2{left:50%;top:50%;width:88px!important;margin:0!important;transform:translate(-50%,-50%)!important;z-index:8!important;}
+.wow-wheel-label-v2 span:last-child{display:block;white-space:normal;}
+.wow-wheel-emoji{line-height:1!important;}
+.wow-roulette-v2 .wow-spin-btn{position:relative;z-index:40;cursor:pointer;}
+.wow-roulette-v2 .wow-spin-btn:disabled{opacity:.7;cursor:wait;}
+</style>
 </body>
 
 </html>
