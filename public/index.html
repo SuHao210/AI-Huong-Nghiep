@@ -2733,6 +2733,19 @@ Q("Một khách sạn có hai phân khúc: khách công tác đặt sớm và kh
   ]
     });
 
+    // ===================== QUIZ RUNTIME STATE =====================
+    // These values are intentionally initialized before any quiz event can fire.
+    // Without them the quiz script aborts during startup at Object.values(quizSounds),
+    // so industry cards render but clicking a card cannot start the quiz.
+    const quizSounds = {
+      ding: new Audio("/sounds/ding.mp3"),
+      wrong: new Audio("/sounds/wrong.mp3"),
+      winner: new Audio("/sounds/winner.mp3"),
+      fail: new Audio("/sounds/fail.mp3")
+    };
+    let soundOn = true;
+    let quizState = null;
+
     // Easter egg + global click sound. Đặt 2 file trong public/sounds/.
     const clickSound = new Audio("/sounds/240721__amishaque__click.mp3");
     const indianSong = new Audio("/sounds/indian-song.mp3");
