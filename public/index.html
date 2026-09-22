@@ -1356,7 +1356,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
         if (!last || last.querySelector(".personal-quiz-box")) return;
         const box = document.createElement("div");
         box.className = "personal-quiz-box";
-        box.innerHTML = `<strong>🎯 Muốn tìm hiểu sâu hơn từ chính cuộc trò chuyện này?</strong><span>AI có thể tạo một quiz riêng dựa trên những gì bạn vừa chia sẻ. Quiz chỉ xuất hiện cho các lĩnh vực có bộ quiz hỗ trợ.</span><div class="career-quiz-buttons"></div>`;
+        const tx=window.careerLanguage?.t?.()||{}; box.innerHTML = `<strong>${tx.personalBoxTitle||"🎯 Muốn tìm hiểu sâu hơn từ chính cuộc trò chuyện này?"}</strong><span>${tx.personalBoxDesc||"AI có thể tạo một quiz riêng dựa trên những gì bạn vừa chia sẻ."}</span><div class="career-quiz-buttons"></div>`;
         const buttons = box.querySelector(".career-quiz-buttons");
         matches.forEach(item => {
             const b = document.createElement("button");
@@ -1378,7 +1378,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
             addMessage(text,"user");
             userInput.value = "";
             triggerEasterEgg();
-            status.textContent = "🥚 Easter egg đã được kích hoạt";
+            status.textContent = window.careerLanguage?.get?.()==="en" ? "🥚 Easter egg activated" : "🥚 Easter egg đã được kích hoạt";
             userInput.focus();
             return;
         }
@@ -2899,7 +2899,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
       let list;
       try{ list=await getLocalizedQuestions(); }
       catch(error){
-        quizPanel.querySelector("#quizApp").innerHTML=`<div class="loading-card"><div style="font-size:48px">🌐</div><h3>${currentLang==="en"?"English quiz is temporarily unavailable":"Chưa tải được bản ngôn ngữ"}</h3><p>${String(error.message||error)}</p><button class="primary-action" id="retryQuizLanguage" style="border:0;border-radius:12px;padding:12px 16px">↻ ${currentLang==="en"?"Try again":"Thử lại"}</button></div>`;
+        const tx=window.careerLanguage?.t?.()||{}; quizPanel.querySelector("#quizApp").innerHTML=`<div class="loading-card"><div style="font-size:48px">🌐</div><h3>${tx.translateErrorTitle||(currentLang==="en"?"English quiz unavailable":"Chưa tải được bản ngôn ngữ")}</h3><p>${tx.translateErrorBody||(currentLang==="en"?"The questions could not be translated right now. Please try again.":"Không thể chuyển bộ câu hỏi sang ngôn ngữ này lúc này. Bạn có thể thử lại.")}</p><button class="primary-action" id="retryQuizLanguage" style="border:0;border-radius:12px;padding:12px 16px">${tx.retry||(currentLang==="en"?"↻ Try again":"↻ Thử lại")}</button></div>`;
         quizPanel.querySelector("#retryQuizLanguage").onclick=()=>renderQuestion();
         return;
       }
@@ -2927,7 +2927,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
         else playQuizSound("fail");
       }
       const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry]; const metaView=quizState.personal?meta:({...meta,...industryView(quizState.industry,meta)});
-      quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>${window.careerLanguage?.t().done||"Hoàn thành!"}</h2><p style="color:#64748b">${metaView.emoji} ${metaView.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${pct>=80?"Bạn có nhiều điểm mạnh đáng khám phá!":pct>=60?"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!":"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"}</h3><p style="color:#64748b;line-height:1.6">Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp.</p><div class="result-actions"><button class="primary-action" id="againBtn">${window.careerLanguage?.t().again||"🔄 Làm lại"}</button><button class="secondary-action" id="otherBtn">${window.careerLanguage?.t().other||"🎮 Chọn ngành khác"}</button><button class="secondary-action" id="chatBtn">${window.careerLanguage?.t().talk||"💬 Trò chuyện với AI về lĩnh vực này"}</button></div></div>`;
+      const tx=window.careerLanguage?.t?.()||{}; const insight=pct>=80?(tx.resultHigh||"Bạn có nhiều điểm mạnh đáng khám phá!"):pct>=60?(tx.resultMid||"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!"):(tx.resultLow||"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"); quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>${tx.done||"Hoàn thành!"}</h2><p style="color:#64748b">${metaView.emoji} ${metaView.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${insight}</h3><p style="color:#64748b;line-height:1.6">${tx.resultDisclaimer||"Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp."}</p><div class="result-actions"><button class="primary-action" id="againBtn">${tx.again||"🔄 Làm lại"}</button><button class="secondary-action" id="otherBtn">${tx.other||"🎮 Chọn ngành khác"}</button><button class="secondary-action" id="chatBtn">${tx.talk||"💬 Trò chuyện với AI về lĩnh vực này"}</button></div></div>`;
       quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;quizState.resultSoundPlayed=false;renderQuestion();};
       quizPanel.querySelector("#otherBtn").onclick=renderQuizHome;
       quizPanel.querySelector("#chatBtn").onclick=()=>switchMode("chat");
@@ -2937,7 +2937,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
       if(!sessionId){switchMode("chat");return;}
       quizState={industry:industryKey,index:0,score:0,answered:false,personal:true,personalQuestions:null,personalTitle:`Quiz riêng: ${label.replace(/^\S+\s/,"")}`,resultSoundPlayed:false,displayQuestions:null,baseQuestionLanguage:window.careerLanguage?.get?.()||"vi",questionLanguage:window.careerLanguage?.get?.()||"vi"};
       switchMode("quiz");
-      const app=quizPanel.querySelector("#quizApp"); app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>🧠 Đang tạo quiz riêng cho bạn...</strong><p>AI đang dùng ngữ cảnh cuộc trò chuyện và nghề bạn vừa được gợi ý để tạo 20 câu phù hợp.</p></div>`;
+      const app=quizPanel.querySelector("#quizApp"); const tx=window.careerLanguage?.t?.()||{}; app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>${tx.personalLoading||"🧠 Đang tạo quiz riêng cho bạn..."}</strong><p>${tx.personalLoadingDesc||"AI đang dùng ngữ cảnh cuộc trò chuyện để tạo 20 câu phù hợp."}</p></div>`;
       try{
         const response=await fetch("/api/personalized-quiz",{method:"POST",headers:{"Content-Type":"application/json","X-Session-Id":sessionId},body:JSON.stringify({industry:industryKey,careerLabel:label,language:window.careerLanguage?.get?.()||"vi"})});
         const data=await response.json().catch(()=>({}));
@@ -2946,7 +2946,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
         quizState.personalQuestions=data.questions.map(q=>({q:q.question,opts:q.options,a:Number(q.answer),e:q.explanation||"Đáp án giúp bạn khám phá thêm cách suy nghĩ của mình.",art:"🧠"})); quizState.baseQuestionLanguage=window.careerLanguage?.get?.()||"vi"; quizState.questionLanguage=window.careerLanguage?.get?.()||"vi";
         renderQuestion();
       }catch(err){
-        app.innerHTML=`<div class="loading-card"><div style="font-size:48px">😕</div><h3>Chưa tạo được quiz riêng</h3><p>${String(err.message||err)}</p><button class="primary-action" id="retryPersonal" style="border:0;border-radius:12px;padding:12px 16px">↻ Thử lại</button></div>`;
+        const tx2=window.careerLanguage?.t?.()||{}; app.innerHTML=`<div class="loading-card"><div style="font-size:48px">😕</div><h3>${tx2.personalErrorTitle||"Chưa tạo được quiz riêng"}</h3><p>${tx2.personalErrorBody||"Đã có lỗi khi tạo quiz. Bạn có thể thử lại."}</p><button class="primary-action" id="retryPersonal" style="border:0;border-radius:12px;padding:12px 16px">${tx2.personalRetry||"↻ Thử lại"}</button></div>`;
         app.querySelector("#retryPersonal").onclick=()=>startPersonalizedQuiz(industryKey,label);
       }
     }
@@ -2956,11 +2956,11 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
 </script>
 
 
-\n<script id="language-switcher">
+<script id="language-switcher">
 (function(){
   const translations={
-    vi:{chat:"💬 AI Chat",quiz:"🎮 Quiz ngành nghề",title:"Chuyên Gia Hướng Nghiệp AI",subtitle:"Khám phá bản thân bằng trò chuyện AI và quiz ngành nghề.",send:"Gửi",reset:"🔄 Bắt đầu cuộc trò chuyện mới",ready:"🟢 AI đang sẵn sàng",thinking:"🟡 AI đang suy nghĩ...",placeholder:"Ví dụ: Em thích chơi game, bóng đá và làm video...",quizHome:"Quiz khám phá ngành nghề",quizDesc:"Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.",sound:"🔊 Âm thanh",mute:"🔇 Tắt âm thanh",back:"← Chọn lại ngành",next:"Câu tiếp theo →",finish:"🏆 Xem kết quả",done:"Hoàn thành!",again:"🔄 Làm lại",other:"🎮 Chọn ngành khác",talk:"💬 Trò chuyện với AI về lĩnh vực này",note:"🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz.",lang:"EN",chatWelcome:["Chào bạn! 👋","Mình sẽ trò chuyện với bạn để tìm hiểu sở thích, cách suy nghĩ, điểm mạnh và môi trường làm việc phù hợp.","Không có bài trắc nghiệm cứng và cũng không giới hạn số câu hỏi.","Hãy bắt đầu bằng việc kể cho mình một vài thứ bạn thích làm khi rảnh nhé."]},
-    en:{chat:"💬 AI Chat",quiz:"🎮 Career Quiz",title:"AI Career Guide",subtitle:"Explore yourself through AI conversation and career quizzes.",send:"Send",reset:"🔄 Start a new conversation",ready:"🟢 AI is ready",thinking:"🟡 AI is thinking...",placeholder:"Example: I enjoy gaming, football and making videos...",quizHome:"Career Discovery Quiz",quizDesc:"Choose a field and try 20 questions. Results are for exploration, not a definitive career conclusion.",sound:"🔊 Sound",mute:"🔇 Sound off",back:"← Choose another field",next:"Next question →",finish:"🏆 See results",done:"Completed!",again:"🔄 Try again",other:"🎮 Choose another field",talk:"💬 Chat with AI about this field",note:"🔊 Quiz sounds can be turned on/off while playing.",lang:"VI",chatWelcome:["Hi there! 👋","I’ll talk with you to understand your interests, thinking style, strengths, and preferred work environment.","This is an open conversation, not a rigid test, and there is no fixed number of questions.","Start by telling me a few things you enjoy doing in your free time."]}
+    vi:{chat:"💬 AI Chat",quiz:"🎮 Quiz ngành nghề",title:"Chuyên Gia Hướng Nghiệp AI",subtitle:"Khám phá bản thân bằng trò chuyện AI và quiz ngành nghề.",send:"Gửi",reset:"🔄 Bắt đầu cuộc trò chuyện mới",ready:"🟢 AI đang sẵn sàng",thinking:"🟡 AI đang suy nghĩ...",placeholder:"Ví dụ: Em thích chơi game, bóng đá và làm video...",quizHome:"Quiz khám phá ngành nghề",quizDesc:"Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp.",sound:"🔊 Âm thanh",mute:"🔇 Tắt âm thanh",back:"← Chọn lại ngành",next:"Câu tiếp theo →",finish:"🏆 Xem kết quả",done:"Hoàn thành!",again:"🔄 Làm lại",other:"🎮 Chọn ngành khác",talk:"💬 Trò chuyện với AI về lĩnh vực này",note:"🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz.",lang:"EN",chatWelcome:["Chào bạn! 👋","Mình sẽ trò chuyện với bạn để tìm hiểu sở thích, cách suy nghĩ, điểm mạnh và môi trường làm việc phù hợp.","Không có bài trắc nghiệm cứng và cũng không giới hạn số câu hỏi.","Hãy bắt đầu bằng việc kể cho mình một vài thứ bạn thích làm khi rảnh nhé."],resultHigh:"Bạn có nhiều điểm mạnh đáng khám phá!",resultMid:"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!",resultLow:"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!",resultDisclaimer:"Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp.",translateErrorTitle:"Chưa tải được bản ngôn ngữ",translateErrorBody:"Không thể chuyển bộ câu hỏi sang ngôn ngữ này lúc này. Bạn có thể thử lại.",retry:"↻ Thử lại",personalLoading:"🧠 Đang tạo quiz riêng cho bạn...",personalLoadingDesc:"AI đang dùng ngữ cảnh cuộc trò chuyện và nghề bạn vừa được gợi ý để tạo 20 câu phù hợp.",personalErrorTitle:"Chưa tạo được quiz riêng",personalErrorBody:"Đã có lỗi khi tạo quiz. Bạn có thể thử lại.",personalRetry:"↻ Thử lại",personalBoxTitle:"🎯 Muốn tìm hiểu sâu hơn từ chính cuộc trò chuyện này?",personalBoxDesc:"AI có thể tạo một quiz riêng dựa trên những gì bạn vừa chia sẻ. Quiz chỉ xuất hiện cho các lĩnh vực có bộ quiz hỗ trợ."},
+    en:{chat:"💬 AI Chat",quiz:"🎮 Career Quiz",title:"AI Career Guide",subtitle:"Explore yourself through AI conversation and career quizzes.",send:"Send",reset:"🔄 Start a new conversation",ready:"🟢 AI is ready",thinking:"🟡 AI is thinking...",placeholder:"Example: I enjoy gaming, football and making videos...",quizHome:"Career Discovery Quiz",quizDesc:"Choose a field and try 20 questions. Results are for exploration, not a definitive career conclusion.",sound:"🔊 Sound",mute:"🔇 Sound off",back:"← Choose another field",next:"Next question →",finish:"🏆 See results",done:"Completed!",again:"🔄 Try again",other:"🎮 Choose another field",talk:"💬 Chat with AI about this field",note:"🔊 Quiz sounds can be turned on/off while playing.",lang:"VI",chatWelcome:["Hi there! 👋","I’ll talk with you to understand your interests, thinking style, strengths, and preferred work environment.","This is an open conversation, not a rigid test, and there is no fixed number of questions.","Start by telling me a few things you enjoy doing in your free time."],resultHigh:"You have several strengths worth exploring!",resultMid:"You have some interesting signals worth exploring further!",resultLow:"Treat this as a starting point for further exploration.",resultDisclaimer:"This quiz reflects how you answered the situations in the question set; it is not a definitive career conclusion.",translateErrorTitle:"English quiz unavailable",translateErrorBody:"The questions could not be translated right now. Please try again.",retry:"↻ Try again",personalLoading:"🧠 Creating your personalized quiz...",personalLoadingDesc:"AI is using your conversation context and the career suggestions to create 20 tailored questions.",personalErrorTitle:"Could not create the personalized quiz",personalErrorBody:"Something went wrong while creating the quiz. Please try again.",personalRetry:"↻ Try again",personalBoxTitle:"🎯 Want to explore deeper from this conversation?",personalBoxDesc:"AI can create a personalized quiz based on what you just shared. It is available for supported fields."}
   };
   let lang=localStorage.getItem('career-language')||'vi';
   const t=()=>translations[lang];
@@ -2972,10 +2972,10 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
     const messages=chatBox?.querySelectorAll('.message')||[];
     if(messages.length!==1 || !messages[0].classList.contains('ai')) return;
     const bubble=messages[0].querySelector('.bubble'); if(!bubble) return;
-    const w=t().chatWelcome; bubble.innerHTML=`<div class="sender">🧭 AI Career Guide</div>${w.map(x=>x.replace(/</g,'&lt;')).join('<br><br>')}`;
+    const w=t().chatWelcome; bubble.innerHTML=`<div class="sender">${lang==='en'?"🧭 AI Career Guide":"🧭 AI Hướng Nghiệp"}</div>${w.map(x=>x.replace(/</g,'&lt;')).join('<br><br>')}`;
   }
   function applyLanguage(){
-    const x=t(); const b=document.getElementById('languageToggle'); if(b){b.innerHTML='🌐 '+x.lang+'<span class="lang-badge">Language</span>';b.setAttribute('aria-label',lang==='en'?'Switch to Vietnamese':'Chuyển sang English');}
+    const x=t(); const b=document.getElementById('languageToggle'); if(b){b.innerHTML='🌐 '+x.lang;b.setAttribute('aria-label',lang==='en'?'Switch to Vietnamese':'Chuyển sang English');}
     const title=document.querySelector('.header h1'); if(title) title.textContent=x.title;
     const sub=document.querySelector('.header .subtitle'); if(sub) sub.textContent=x.subtitle;
     const cb=document.getElementById('chatModeBtn'); if(cb) cb.textContent=x.chat;
@@ -2992,7 +2992,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
   window.careerLanguage={get:()=>lang,t,apply:applyLanguage};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',addButton); else addButton();
 })();
-</script>\n
+</script>
 
 <style id="career-universe-wow">
 :root{--cu-bg:#070a14;--cu-panel:rgba(13,18,35,.78);--cu-panel2:rgba(255,255,255,.055);--cu-line:rgba(255,255,255,.12);--cu-text:#f8fafc;--cu-muted:#aab4ca;--cu-violet:#8b5cf6;--cu-cyan:#22d3ee;--cu-pink:#f472b6;--cu-gold:#fbbf24;--cu-green:#34d399}
