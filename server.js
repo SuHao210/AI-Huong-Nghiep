@@ -420,6 +420,139 @@ app.get(
 
 
 /* =========================================================
+   HỒ SƠ HƯỚNG NGHIỆP
+   ========================================================= */
+
+const PROFILE_SCHEMA = {
+    type: "object",
+    properties: {
+        interests: { type: "array", items: { type: "string" } },
+        strengths: { type: "array", items: { type: "string" } },
+        thinking_style: { type: "string" },
+        motivations: { type: "string" },
+        work_environment: { type: "string" },
+        growth_areas: { type: "array", items: { type: "string" } },
+        career_directions: { type: "array", items: { type: "string" } }
+    },
+    required: [
+        "interests",
+        "strengths",
+        "thinking_style",
+        "motivations",
+        "work_environment",
+        "growth_areas",
+        "career_directions"
+    ],
+    additionalProperties: false
+};
+
+app.post(
+    "/api/profile",
+    async (req, res) => {
+
+        const sessionId = req.headers["x-session-id"];
+
+        if (
+            typeof sessionId !== "string" ||
+            !sessions.has(sessionId)
+        ) {
+            return res.status(400).json({
+                error: "Chưa có phiên trò chuyện. Hãy nhắn với AI trước."
+            });
+        }
+
+        const session = sessions.get(sessionId);
+        session.lastUsedAt = Date.now();
+
+        if (!session.lastInteractionId) {
+            return res.status(400).json({
+                error: "Hãy nhắn với AI ít nhất một lần để hồ sơ có dữ liệu."
+            });
+        }
+
+        let releaseGeminiSlot;
+
+        try {
+
+            releaseGeminiSlot = await acquireGeminiSlot();
+
+            const prompt = `
+Hãy tạo HỒ SƠ HƯỚNG NGHIỆP TẠM THỜI cho chính người dùng trong cuộc trò chuyện hiện tại.
+
+Chỉ dùng thông tin đã xuất hiện trong cuộc trò chuyện. Không bịa dữ kiện.
+Nếu dữ liệu chưa đủ, hãy ghi nhận là chưa đủ thay vì suy đoán.
+Hồ sơ dùng để khám phá, không phải chẩn đoán hay kết luận nghề nghiệp.
+
+Yêu cầu:
+- interests: 2-5 sở thích/tín hiệu đã được người dùng thể hiện.
+- strengths: 2-5 điểm mạnh có bằng chứng từ cách người dùng trả lời.
+- thinking_style: 1-2 câu ngắn.
+- motivations: 1-2 câu ngắn.
+- work_environment: 1-2 câu ngắn.
+- growth_areas: 2-4 điểm nên phát triển.
+- career_directions: 3-5 hướng nghề cụ thể đang đáng khám phá, chỉ khi có tín hiệu trong cuộc trò chuyện.
+
+Trả JSON đúng schema, không thêm markdown.
+`;
+
+            const interaction = await createInteractionWithRetry({
+                model: MODEL,
+                previous_interaction_id: session.lastInteractionId,
+                input: prompt,
+                response_format: {
+                    type: "text",
+                    mime_type: "application/json",
+                    schema: PROFILE_SCHEMA
+                },
+                generation_config: {
+                    thinking_level: "low",
+                    max_output_tokens: 900
+                },
+                store: false
+            }, 2);
+
+            const raw = getInteractionOutputText(interaction);
+
+            let profile;
+            try {
+                profile = JSON.parse(raw);
+            } catch {
+                throw new Error("Gemini trả về hồ sơ không hợp lệ.");
+            }
+
+            if (
+                !profile ||
+                !Array.isArray(profile.interests) ||
+                !Array.isArray(profile.strengths) ||
+                typeof profile.thinking_style !== "string" ||
+                typeof profile.motivations !== "string" ||
+                typeof profile.work_environment !== "string" ||
+                !Array.isArray(profile.growth_areas) ||
+                !Array.isArray(profile.career_directions)
+            ) {
+                throw new Error("Dữ liệu hồ sơ không đúng định dạng.");
+            }
+
+            return res.json({ profile });
+
+        } catch (error) {
+
+            console.error("Profile error:", error);
+
+            return res.status(503).json({
+                error: getFriendlyError(error)
+            });
+
+        } finally {
+
+            releaseGeminiSlot?.();
+
+        }
+    }
+);
+
+
+/* =========================================================
    CHAT
    ========================================================= */
 
