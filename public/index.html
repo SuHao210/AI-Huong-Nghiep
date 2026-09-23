@@ -459,6 +459,22 @@
             color: #fff;
             box-shadow: 0 6px 18px rgba(23,37,84,.18);
         }
+        .profile-nav-btn {
+            border: 1px solid #c7d2fe;
+            border-radius: 11px;
+            padding: 12px 14px;
+            background: linear-gradient(135deg,#eef2ff,#f5f3ff);
+            color: #4338ca;
+            font-weight: 900;
+            cursor: pointer;
+            transition: .2s ease;
+            box-shadow: 0 4px 12px rgba(67,56,202,.08);
+        }
+        .profile-nav-btn:hover {
+            transform: translateY(-1px);
+            background: linear-gradient(135deg,#e0e7ff,#ede9fe);
+            box-shadow: 0 7px 18px rgba(67,56,202,.14);
+        }
         .mode-panel { display: none; }
         .mode-panel.active { display: block; }
 
@@ -1230,6 +1246,73 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
 @media(prefers-reduced-motion:reduce){.brand-title-float,.brand-title-logo{animation:none!important}}
 </style>
 
+
+<style id="top-profile-feature">
+.top-profile-feature{
+  width:min(920px,94%);
+  margin:18px auto 14px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(99,102,241,.20);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 92% 12%,rgba(99,102,241,.16),transparent 28%),
+    radial-gradient(circle at 8% 100%,rgba(14,165,233,.12),transparent 30%),
+    linear-gradient(135deg,#ffffff 0%,#f7f8ff 52%,#f3fbff 100%);
+  box-shadow:0 16px 42px rgba(30,41,59,.10);
+  cursor:pointer;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.top-profile-feature:hover{
+  transform:translateY(-2px);
+  box-shadow:0 22px 54px rgba(30,41,59,.15);
+  border-color:rgba(99,102,241,.34);
+}
+.top-profile-feature:before{
+  content:"";
+  position:absolute;
+  width:180px;height:180px;
+  right:-70px;top:-95px;
+  border-radius:50%;
+  border:1px solid rgba(99,102,241,.14);
+  box-shadow:0 0 0 22px rgba(99,102,241,.035),0 0 0 44px rgba(99,102,241,.025);
+}
+.top-profile-inner{
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:16px;
+  padding:16px 18px;
+}
+.top-profile-icon{
+  width:52px;height:52px;
+  display:grid;place-items:center;
+  border-radius:17px;
+  font-size:27px;
+  background:linear-gradient(135deg,#eef2ff,#e0f2fe);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 20px rgba(79,70,229,.12);
+}
+.top-profile-copy .eyebrow{
+  font-size:10px;font-weight:950;letter-spacing:.18em;
+  color:#6366f1;text-transform:uppercase;margin-bottom:3px;
+}
+.top-profile-copy strong{display:block;font-size:17px;color:#172554;margin-bottom:3px}
+.top-profile-copy span{display:block;color:#64748b;font-size:12px;line-height:1.5}
+.top-profile-cta{
+  border:0;border-radius:13px;padding:11px 14px;
+  background:#172554;color:#fff;font-weight:900;font-size:12px;
+  box-shadow:0 8px 18px rgba(23,37,84,.16);
+  white-space:nowrap;
+}
+.top-profile-feature:hover .top-profile-cta{background:#263b70}
+@media(max-width:650px){
+  .top-profile-inner{grid-template-columns:auto 1fr;gap:11px;padding:13px}
+  .top-profile-cta{grid-column:1/-1;width:100%}
+  .top-profile-copy strong{font-size:15px}
+}
+</style>
+
 <style id="career-wow-upgrade">
 /* ===== AI CAREER LAB — next-level exploration UI ===== */
 .career-lab-box{margin-top:16px;padding:18px;border:1px solid #dfe3ff;border-radius:20px;background:linear-gradient(135deg,#fbfbff,#f4f7ff 55%,#f5fffb);box-shadow:0 14px 38px rgba(91,92,240,.08);animation:labIn .35s ease both}
@@ -1246,7 +1329,11 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
 @keyframes profileShimmer{to{background-position:-200% 0}}
 .profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
 .profile-card{padding:15px;border:1px solid #e4e8f1;border-radius:16px;background:#fbfcff}.profile-card h4{margin:0 0 7px;color:#172554;font-size:13px}.profile-card p{margin:0;color:#64748b;font-size:12px;line-height:1.6}.profile-card ul{margin:0;padding-left:18px;color:#64748b;font-size:12px;line-height:1.65}.profile-careers{display:flex;flex-wrap:wrap;gap:7px}.profile-pill{padding:7px 10px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:11px;font-weight:800}.profile-foot{margin-top:12px;padding:13px 15px;border-radius:16px;background:#f8fafc;color:#64748b;font-size:11px;line-height:1.55}.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.profile-error{padding:14px;border-radius:15px;background:#fff1f2;color:#be123c;font-size:12px;line-height:1.5}
-@media(max-width:700px){.profile-grid{grid-template-columns:1fr}}
+@media(max-width:700px){
+    .profile-grid{grid-template-columns:1fr}
+    .mode-switch{grid-template-columns:1fr 1fr}
+    .profile-nav-btn{grid-column:1/-1}
+}
 </style>
 <div id="profileModal" class="career-lab-modal" aria-hidden="true">
   <div class="career-lab-dialog profile-dialog">
@@ -1273,6 +1360,19 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         <div class="brand-title-float"><img class="brand-title-logo" src="/assets/ai-huong-nghiep-title.png" alt="AI-Hướng Nghiệp"></div>
         <div class="brand-title-sub">Khám phá bản thân bằng AI · Trải nghiệm nghề nghiệp · Tìm hướng đi phù hợp</div>
     </div>
+
+
+    <button class="top-profile-feature" id="profileHeroBtn" type="button" aria-label="Mở hồ sơ hướng nghiệp">
+      <div class="top-profile-inner">
+        <div class="top-profile-icon">🧠</div>
+        <div class="top-profile-copy">
+          <div class="eyebrow">YOUR CAREER PROFILE</div>
+          <strong>Hồ sơ hướng nghiệp của bạn</strong>
+          <span>AI tổng hợp những gì bạn đã chia sẻ thành một bản đồ cá nhân: sở thích, điểm mạnh, cách tư duy, động lực và hướng nghề đáng khám phá.</span>
+        </div>
+        <div class="top-profile-cta">✨ Xem hồ sơ</div>
+      </div>
+    </button>
 
     <div class="mode-switch" role="tablist" aria-label="Chế độ">
         <button class="mode-btn active" id="chatModeBtn" type="button">💬 AI Chat</button>
@@ -1342,6 +1442,8 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
     const status = document.getElementById("status");
     let sending = false;
     const profileBtn = document.getElementById("profileBtn");
+    const profileTopBtn = document.getElementById("profileTopBtn");
+    const profileHeroBtn = document.getElementById("profileHeroBtn");
     const profileModal = document.getElementById("profileModal");
     const profileClose = document.getElementById("profileClose");
     const profileBody = document.getElementById("profileBody");
@@ -1360,6 +1462,8 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         profileModal.setAttribute("aria-hidden","true");
     }
     profileBtn?.addEventListener("click", openProfileModal);
+    profileTopBtn?.addEventListener("click", openProfileModal);
+    profileHeroBtn?.addEventListener("click", openProfileModal);
     profileClose?.addEventListener("click", closeProfileModal);
     profileModal?.addEventListener("click", e => { if (e.target === profileModal) closeProfileModal(); });
 
