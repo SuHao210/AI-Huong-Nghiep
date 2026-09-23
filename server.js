@@ -239,6 +239,20 @@ async function createGenerateContentWithRetry(request, attempts = 3) {
     throw lastError;
 }
 
+async function createGenerateContentStreamWithRetry(request, attempts = 2) {
+    let lastError;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+        try {
+            return await ai.models.generateContentStream(request);
+        } catch (error) {
+            lastError = error;
+            if (!is429(error) || attempt === attempts - 1) throw error;
+            await sleep(500 * (attempt + 1));
+        }
+    }
+    throw lastError;
+}
+
 
 /* =========================================================
    SESSION
@@ -465,7 +479,7 @@ app.post(
         const session = sessions.get(sessionId);
         session.lastUsedAt = Date.now();
 
-        if (!session.lastInteractionId) {
+        if (!Array.isArray(session.messages) || !session.messages.some(m => m.role === "user")) {
             return res.status(400).json({
                 error: "Hãy nhắn với AI ít nhất một lần để hồ sơ có dữ liệu."
             });
@@ -674,188 +688,65 @@ app.post(
         try {
 
             /* -------------------------
-               TẠO REQUEST
+               TẠO CONTEXT CHAT
                ------------------------- */
 
-            const request = {
+            const transcript = (session.messages || [])
+                .slice(-20)
+                .map(m => `${m.role === "user" ? "NGƯỜI DÙNG" : "AI"}: ${String(m.text || "").slice(0, 1400)}`)
+                .join("\n\n");
 
-                model:
-                    MODEL,
-
-                input:
-                    message,
-
-                system_instruction:
-                    `${SYSTEM_INSTRUCTION}
+            const chatPrompt = `
+${SYSTEM_INSTRUCTION}
 
 LANGUAGE REQUIREMENT:
 - Reply entirely in Vietnamese.
-- Keep headings in Vietnamese, including "💼 NGHỀ NGHIỆP ĐÁNG THỬ".`,
+- Keep headings in Vietnamese, including "💼 NGHỀ NGHIỆP ĐÁNG THỬ".
+- Đây là lượt chat hiện tại. Hãy trả lời tự nhiên, ngắn gọn và đi thẳng vào ý.
+- Nếu đang khám phá hướng nghiệp, thường chỉ hỏi một câu tiếp theo.
 
-                generation_config: {
+LỊCH SỬ GẦN ĐÂY:
+${transcript}
 
-                    /* Ưu tiên độ trễ thấp cho chat. */
-                    thinking_level:
-                        "low",
-
-                    max_output_tokens:
-                        700
-
-                },
-
-                stream:
-                    true
-
-            };
-
+TIN NHẮN MỚI NHẤT CỦA NGƯỜI DÙNG:
+${message}
+`;
 
             /*
-             * Nếu đã có hội thoại,
-             * Gemini tự giữ lịch sử thông qua
-             * previous_interaction_id.
+             * Chat dùng generateContentStream thay vì interactions streaming.
+             * Cách này không phụ thuộc previous_interaction_id nên tránh lỗi
+             * 400 khi interaction cũ không còn hợp lệ, đồng thời vẫn stream
+             * chữ ra giao diện ngay khi Gemini bắt đầu trả lời.
              */
-
-            if (
-                session.lastInteractionId
-            ) {
-
-                request.previous_interaction_id =
-                    session.lastInteractionId;
-
-            }
-
-
-            /* -------------------------
-               GỌI GEMINI STREAM
-               ------------------------- */
-
-            const stream =
-                await createInteractionWithRetry(request, 1);
-
-
-            let newInteractionId =
-                null;
-
+            const stream = await createGenerateContentStreamWithRetry({
+                model: MODEL,
+                contents: chatPrompt,
+                config: {
+                    systemInstruction: "Bạn là AI hướng nghiệp thân thiện, thực tế và luôn trả lời bằng tiếng Việt.",
+                    thinkingConfig: { thinkingLevel: "low" },
+                    maxOutputTokens: 500
+                }
+            }, 2);
 
             let fullText = "";
 
-
-            /* -------------------------
-               ĐỌC STREAM
-               ------------------------- */
-
-            for await (
-                const event of stream
-            ) {
-
-                const eventType =
-                    event.type ||
-                    event.event_type;
-
-
-                /* ---------------------
-                   INTERACTION CREATED
-                   --------------------- */
-
-                if (
-                    eventType ===
-                    "interaction.created"
-                ) {
-
-                    newInteractionId =
-                        event
-                            ?.interaction
-                            ?.id ||
-                        null;
-
-                }
-
-
-                /* ---------------------
-                   TEXT DELTA
-                   --------------------- */
-
-                if (
-                    eventType ===
-                    "step.delta"
-                ) {
-
-                    const delta =
-                        event.delta;
-
-
-                    if (
-                        delta?.type ===
-                        "text"
-                    ) {
-
-                        const chunk =
-                            delta.text ||
-                            "";
-
-
-                        if (chunk) {
-
-                            fullText +=
-                                chunk;
-
-
-                            sendEvent({
-
-                                type:
-                                    "text",
-
-                                text:
-                                    chunk
-
-                            });
-
-                        }
-
-                    }
-
-                }
-
-
-                /* ---------------------
-                   ERROR
-                   --------------------- */
-
-                if (
-                    eventType ===
-                    "interaction.error"
-                ) {
-
-                    const errorMessage =
-                        event
-                            ?.error
-                            ?.message ||
-                        "Gemini interaction failed.";
-
-                    sendEvent({
-                        type: "error",
-                        message: getFriendlyError({ message: errorMessage })
-                    });
-
-                    return res.end();
-                }
-
+            for await (const chunk of stream) {
+                const chunkText = typeof chunk?.text === "string" ? chunk.text : "";
+                if (!chunkText) continue;
+                fullText += chunkText;
+                sendEvent({ type: "text", text: chunkText });
             }
 
+            if (!fullText.trim()) {
+                throw new Error("Gemini không trả về nội dung.");
+            }
 
             /* -------------------------
                LƯU CONVERSATION ID
                ------------------------- */
 
-            if (
-                newInteractionId &&
-                fullText
-            ) {
-
-                session.lastInteractionId =
-                    newInteractionId;
-                session.lastAssistantText =
-                    fullText;
+            if (fullText) {
+                session.lastAssistantText = fullText;
                 session.messages ||= [];
                 session.messages.push({
                     role: "assistant",
@@ -865,12 +756,11 @@ LANGUAGE REQUIREMENT:
                 if (session.messages.length > 40) session.messages = session.messages.slice(-40);
                 if (/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(fullText)) {
                     session.lastRecommendation = {
-                        interactionId: newInteractionId,
+                        interactionId: null,
                         text: fullText,
                         createdAt: Date.now()
                     };
                 }
-
             }
 
 
