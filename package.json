@@ -1,13 +1,12 @@
 {
   "name": "huong-nghiep-ai",
   "version": "1.0.0",
-  "description": "AI tư vấn hướng nghiệp",
+  "description": "AI tư vấn hướng nghiệp — giao diện tiếng Việt",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js",
-    "build": "node scripts/pretranslate-quiz.mjs"
+    "dev": "node --watch server.js"
   },
   "dependencies": {
     "@google/genai": "latest",
