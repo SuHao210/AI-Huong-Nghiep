@@ -1218,13 +1218,16 @@ body:not(.dark-theme) .lang-badge{font-size:11px;opacity:.82;margin-left:4px}
 <script src="/quiz-en.js"></script>
 
 <style id="ai-career-title-logo">
-.brand-title-logo{position:relative;z-index:2;display:block;width:min(720px,92%);height:auto;margin:0 auto 8px;object-fit:contain;filter:drop-shadow(0 14px 30px rgba(30,64,175,.24));animation:brandLogoIn .8s cubic-bezier(.2,.8,.2,1) both}
+.brand-title-float{position:relative;z-index:2;width:min(720px,92%);margin:0 auto 8px;animation:brandLogoFloat 4.6s ease-in-out .8s infinite}
+.brand-title-logo{position:relative;z-index:2;display:block;width:100%;height:auto;margin:0;object-fit:contain;filter:drop-shadow(0 14px 30px rgba(30,64,175,.24));animation:brandLogoIn .8s cubic-bezier(.2,.8,.2,1) both}
 .brand-title-kicker{position:relative;z-index:2;margin:0 auto 2px;text-align:center;font-size:11px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82)}
 .brand-title-sub{position:relative;z-index:2;margin:8px auto 0;max-width:720px;text-align:center;color:rgba(255,255,255,.92);font-size:14px;line-height:1.6}
 @keyframes brandLogoIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes brandLogoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 body:not(.dark-theme) .brand-title-kicker{color:#475569}
 body:not(.dark-theme) .brand-title-sub{color:#475569}
-@media(max-width:600px){.brand-title-logo{width:96%;margin-bottom:5px}.brand-title-kicker{font-size:9px;letter-spacing:.18em}.brand-title-sub{font-size:12px}}
+@media(max-width:600px){.brand-title-float{width:96%;margin-bottom:5px}.brand-title-kicker{font-size:9px;letter-spacing:.18em}.brand-title-sub{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.brand-title-float,.brand-title-logo{animation:none!important}}
 </style>
 </head>
 
@@ -1236,7 +1239,7 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
 
     <div class="header">
         <div class="brand-title-kicker">AI CAREER DISCOVERY</div>
-        <img class="brand-title-logo" src="/assets/ai-huong-nghiep-title.png" alt="AI-Hướng Nghiệp">
+        <div class="brand-title-float"><img class="brand-title-logo" src="/assets/ai-huong-nghiep-title.png" alt="AI-Hướng Nghiệp"></div>
         <div class="brand-title-sub">Khám phá bản thân bằng AI · Trải nghiệm nghề nghiệp · Tìm hướng đi phù hợp</div>
     </div>
 
