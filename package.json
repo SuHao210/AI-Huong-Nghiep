@@ -6,10 +6,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "build": "node scripts/pretranslate-quiz.mjs"
   },
   "dependencies": {
-    "@google/genai": "2.22.0",
+    "@google/genai": "latest",
     "dotenv": "latest",
     "express": "latest",
     "express-rate-limit": "latest",
