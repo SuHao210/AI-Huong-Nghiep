@@ -1218,51 +1218,16 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
 @media(prefers-reduced-motion:reduce){.wow-wheel-v2{transition:none!important}.wow-spinning-v2,.wow-pointer-v2,.wow-spinning-text{animation:none!important}}
 </style>
 
+<script src="/quiz-en.js"></script>
 
-<style>
-/* ===== AI-HƯỚNG NGHIỆP TITLE LOGO ===== */
-.brand-title-logo{
-  position:relative;
-  z-index:2;
-  display:block;
-  width:min(720px, 92%);
-  height:auto;
-  margin:0 auto 8px;
-  object-fit:contain;
-  filter:drop-shadow(0 14px 30px rgba(30,64,175,.24));
-  transform:translateZ(0);
-  animation:brandLogoIn .8s cubic-bezier(.2,.8,.2,1) both;
-}
-.brand-title-kicker{
-  position:relative;
-  z-index:2;
-  margin:0 auto 2px;
-  text-align:center;
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:.24em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.82);
-}
-.brand-title-sub{
-  position:relative;
-  z-index:2;
-  margin:8px auto 0;
-  max-width:720px;
-  text-align:center;
-  color:rgba(255,255,255,.92);
-  font-size:14px;
-  line-height:1.6;
-}
-@keyframes brandLogoIn{
-  from{opacity:0;transform:translateY(12px) scale(.97)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
-@media(max-width:600px){
-  .brand-title-logo{width:96%;margin-bottom:5px}
-  .brand-title-kicker{font-size:9px;letter-spacing:.18em}
-  .brand-title-sub{font-size:12px}
-}
+<style id="ai-career-title-logo">
+.brand-title-logo{position:relative;z-index:2;display:block;width:min(720px,92%);height:auto;margin:0 auto 8px;object-fit:contain;filter:drop-shadow(0 14px 30px rgba(30,64,175,.24));animation:brandLogoIn .8s cubic-bezier(.2,.8,.2,1) both}
+.brand-title-kicker{position:relative;z-index:2;margin:0 auto 2px;text-align:center;font-size:11px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.82)}
+.brand-title-sub{position:relative;z-index:2;margin:8px auto 0;max-width:720px;text-align:center;color:rgba(255,255,255,.92);font-size:14px;line-height:1.6}
+@keyframes brandLogoIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+body:not(.dark-theme) .brand-title-kicker{color:#475569}
+body:not(.dark-theme) .brand-title-sub{color:#475569}
+@media(max-width:600px){.brand-title-logo{width:96%;margin-bottom:5px}.brand-title-kicker{font-size:9px;letter-spacing:.18em}.brand-title-sub{font-size:12px}}
 </style>
 </head>
 
@@ -1274,7 +1239,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
 
     <div class="header">
         <div class="brand-title-kicker">AI CAREER DISCOVERY</div>
-        <img class="brand-title-logo" src="assets/ai-huong-nghiep-title.png" alt="AI-Hướng Nghiệp">
+        <img class="brand-title-logo" src="/assets/ai-huong-nghiep-title.png" alt="AI-Hướng Nghiệp">
         <div class="brand-title-sub">Khám phá bản thân bằng AI · Trải nghiệm nghề nghiệp · Tìm hướng đi phù hợp</div>
     </div>
 
@@ -2966,66 +2931,32 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
 
     async function getLocalizedQuestions(targetLang, renderToken){
       const state=quizState;
-      const source = state?.personal ? state.personalQuestions : QUIZ[state?.industry];
-      const sourceLang = "vi"; // The built-in quiz bank is always Vietnamese.
-      if(!state || !source) return [];
+      if(!state) return [];
 
-      // Vietnamese is the canonical source. Switching back to VI is always
-      // synchronous and never touches Gemini.
-      if(targetLang === sourceLang){
-        state.displayQuestions = source;
-        state.questionLanguage = "vi";
-        return source;
+      // Standard quiz: Vietnamese and English are both preloaded locally.
+      // No Gemini call, no network request, no translation race condition.
+      if(!state.personal){
+        const source = QUIZ[state.industry];
+        if(!source) return [];
+        if(targetLang === "vi"){
+          state.displayQuestions = source;
+          state.questionLanguage = "vi";
+          return source;
+        }
+        const english = window.QUIZ_EN?.[state.industry];
+        if(!Array.isArray(english) || english.length !== source.length){
+          throw new Error("STATIC_ENGLISH_QUIZ_MISSING");
+        }
+        state.displayQuestions = english;
+        state.questionLanguage = "en";
+        return english;
       }
 
-      const cacheKey = `${state.personal ? "personal" : state.industry}:${sourceLang}->${targetLang}`;
-      const cached = quizEnglishCache.get(cacheKey);
-      if(cached){
-        state.displayQuestions = cached;
-        state.questionLanguage = targetLang;
-        return cached;
-      }
-
-      let request = quizTranslationInFlight.get(cacheKey);
-      if(!request){
-        const controller = new AbortController();
-        quizTranslationAbort = controller;
-        quizTranslationAbortKey = cacheKey;
-
-        request = fetch("/api/quiz-translate",{
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          signal:controller.signal,
-          body:JSON.stringify({
-            industry:state.personal ? state.personalTitle : state.industry,
-            questions:source.map(q=>({q:q.q,opts:q.opts,a:Number(q.a),e:q.e})),
-            sourceLanguage:"vi",
-            language:"en"
-          })
-        }).then(async response=>{
-          const data=await response.json().catch(()=>({}));
-          if(!response.ok) throw new Error(data?.error || "TRANSLATION_UNAVAILABLE");
-          const normalized=normalizeTranslatedQuestions(data,source.length);
-          quizEnglishCache.set(cacheKey,normalized);
-          return normalized;
-        }).finally(()=>{
-          // Only clear the shared controller if this is still the active request.
-          if(quizTranslationAbortKey===cacheKey){
-            quizTranslationAbort=null;
-            quizTranslationAbortKey=null;
-          }
-          quizTranslationInFlight.delete(cacheKey);
-        });
-        quizTranslationInFlight.set(cacheKey,request);
-      }
-
-      const localized=await request;
-      if(renderToken !== quizRenderToken || state !== quizState || currentQuizLanguage() !== targetLang){
-        throw new Error("STALE_RENDER");
-      }
-      state.displayQuestions=localized;
-      state.questionLanguage=targetLang;
-      return localized;
+      // Personalized quiz is generated by the backend in the selected language.
+      const personal = state.personalQuestions || [];
+      state.displayQuestions = personal;
+      state.questionLanguage = targetLang;
+      return personal;
     }
 
     async function renderQuestion(){
@@ -3040,11 +2971,8 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
       if(!app) return;
 
       if(currentLang !== (state.questionLanguage || "")){
-        // If the user switched back to Vietnamese, immediately cancel the
-        // English request. Its promise is also removed from the in-flight map,
-        // so a later EN switch gets a fresh request instead of a dead one.
-        if(currentLang === "vi") cancelQuizTranslation();
-        app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>${currentLang==="en"?"🌐 Translating the quiz into English…":"🌐 Đang chuyển quiz sang tiếng Việt…"}</strong><p>${currentLang==="en"?"Your current question and score will be kept.":"Giữ nguyên câu hiện tại và điểm của bạn."}</p></div>`;
+        // Both standard quiz languages are local; switching language is synchronous.
+        app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>${currentLang==="en"?"🌐 Loading English quiz…":"🌐 Đang tải quiz…"}</strong><p>${currentLang==="en"?"Your current question and score will be kept.":"Giữ nguyên câu hiện tại và điểm của bạn."}</p></div>`;
       }
 
       let list;
