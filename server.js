@@ -211,7 +211,7 @@ function is429(error) {
     return /429|rate.?limit|resource.?exhausted/i.test(text);
 }
 
-async function createInteractionWithRetry(request, attempts = 1) {
+async function createInteractionWithRetry(request, attempts = 2) {
     let lastError;
     for (let attempt = 0; attempt < attempts; attempt++) {
         try {
@@ -220,20 +220,6 @@ async function createInteractionWithRetry(request, attempts = 1) {
             lastError = error;
             if (!is429(error) || attempt === attempts - 1) throw error;
             await sleep(600 * (attempt + 1));
-        }
-    }
-    throw lastError;
-}
-
-async function createGenerateContentWithRetry(request, attempts = 3) {
-    let lastError;
-    for (let attempt = 0; attempt < attempts; attempt++) {
-        try {
-            return await ai.models.generateContent(request);
-        } catch (error) {
-            lastError = error;
-            if (!is429(error) || attempt === attempts - 1) throw error;
-            await sleep(700 * (attempt + 1));
         }
     }
     throw lastError;
@@ -266,14 +252,13 @@ const sessions =
 const SYSTEM_INSTRUCTION = `
 Bạn là Chuyên Gia Hướng Nghiệp AI. Trò chuyện tự nhiên bằng tiếng Việt.
 Mục tiêu: giúp người dùng khám phá sở thích, điểm mạnh, cách tư duy, động lực và môi trường làm việc phù hợp; không ép chọn một nghề.
-- Không biến chat thành bài trắc nghiệm; mỗi lượt chỉ hỏi tối đa 1 câu khi còn thiếu thông tin.
+- Đây là hội thoại, không phải bài trắc nghiệm. Mỗi lượt chỉ hỏi tối đa 1 câu khi còn thiếu thông tin.
 - Không hỏi lại điều người dùng đã nói.
-- Chưa đủ thông tin thì hỏi ngắn, sát câu trả lời mới nhất.
-- Khi đủ thông tin, tóm tắt hồ sơ hướng nghiệp và đề xuất khoảng 3 nghề cụ thể, giải thích dựa trên những gì người dùng đã chia sẻ.
+- Khi đủ thông tin, tóm tắt hồ sơ hướng nghiệp và đề xuất khoảng 3 nghề CỤ THỂ, giải thích dựa trên những gì người dùng chia sẻ.
 - Với mỗi nghề: vì sao phù hợp, điểm cần phát triển, và một cách thử thực tế.
 - Cuối cùng nêu 3 việc nhỏ có thể thử trong 7 ngày.
 - Không khẳng định nghề nào là định mệnh; chỉ xem là gợi ý để thử nghiệm.
-- Câu hỏi đơn giản: trả lời ngắn 2-5 câu. Đi thẳng vào ý chính, không mở đầu dài, không lặp lại toàn bộ lời người dùng.
+- Câu hỏi đơn giản: trả lời ngắn 2-5 câu, đi thẳng vào ý chính, không mở đầu dài và không lặp lại lời người dùng.
 - Thân thiện, dễ hiểu, không phán xét.
 `;
 
@@ -424,7 +409,9 @@ app.post(
             typeof req.body?.message === "string"
                 ? req.body.message.trim()
                 : "";
-/* -------------------------
+
+
+        /* -------------------------
            KIỂM TRA INPUT
            ------------------------- */
 
@@ -529,7 +516,8 @@ app.post(
                 input:
                     message,
 
-                system_instruction: SYSTEM_INSTRUCTION,
+                system_instruction:
+                    SYSTEM_INSTRUCTION,
 
                 generation_config: {
 
@@ -544,7 +532,7 @@ app.post(
                         "low",
 
                     max_output_tokens:
-                        550
+                        700
 
                 },
 
@@ -701,7 +689,7 @@ app.post(
                     newInteractionId;
                 session.lastAssistantText =
                     fullText;
-                if (/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(fullText)) {
+                if (/NGHỀ NGHIỆP ĐÁNG THỬ/i.test(fullText)) {
                     session.lastRecommendation = {
                         interactionId: newInteractionId,
                         text: fullText,
@@ -815,30 +803,6 @@ const INDUSTRY_RULES = {
     }
 };
 
-const NEW_INDUSTRY_RULES = {
-    law: {
-        title: "Luật & Pháp lý",
-        terms: ["law", "legal", "luật", "pháp lý", "luật sư", "lawyer", "legal counsel", "paralegal"]
-    },
-    education: {
-        title: "Giáo dục & Tâm lý",
-        terms: ["education", "psychology", "giáo dục", "tâm lý", "teacher", "giáo viên", "psychologist", "counselor"]
-    },
-    architecture: {
-        title: "Kiến trúc & Thiết kế",
-        terms: ["architecture", "design", "kiến trúc", "thiết kế", "architect", "kiến trúc sư", "designer", "interior designer"]
-    },
-    environment: {
-        title: "Môi trường & Nông nghiệp",
-        terms: ["environment", "agriculture", "môi trường", "nông nghiệp", "environmental analyst", "agronomy", "sustainability", "gis"]
-    },
-    tourism: {
-        title: "Du lịch & Nhà hàng - Khách sạn",
-        terms: ["tourism", "hospitality", "du lịch", "nhà hàng", "khách sạn", "hotel", "tour guide", "event", "revenue management"]
-    }
-};
-Object.assign(INDUSTRY_RULES, NEW_INDUSTRY_RULES);
-
 const PERSONAL_QUIZ_SCHEMA = {
     type: "object",
     properties: {
@@ -893,7 +857,8 @@ app.post(
         const sessionId = req.headers["x-session-id"];
         const industry = typeof req.body?.industry === "string" ? req.body.industry : "";
         const careerLabel = typeof req.body?.careerLabel === "string" ? req.body.careerLabel : "";
-if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
+
+        if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
             return res.status(400).json({ error: "Không tìm thấy cuộc trò chuyện hiện tại." });
         }
 
@@ -908,7 +873,7 @@ if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
         // Server-side enforcement: the button can only work when the latest AI
         // response actually reached its career recommendation section and
         // mentioned a profession supported by the selected quiz family.
-        if (!/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(recommendationText)) {
+        if (!/NGHỀ NGHIỆP ĐÁNG THỬ/i.test(recommendationText)) {
             return res.status(403).json({ error: "Quiz riêng chỉ mở sau khi AI đưa ra gợi ý nghề nghiệp." });
         }
 
