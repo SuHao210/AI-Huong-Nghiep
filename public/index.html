@@ -1229,6 +1229,19 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
 @media(max-width:600px){.brand-title-float{width:96%;margin-bottom:5px}.brand-title-kicker{font-size:9px;letter-spacing:.18em}.brand-title-sub{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.brand-title-float,.brand-title-logo{animation:none!important}}
 </style>
+
+<style id="career-wow-upgrade">
+/* ===== AI CAREER LAB — next-level exploration UI ===== */
+.career-lab-box{margin-top:16px;padding:18px;border:1px solid #dfe3ff;border-radius:20px;background:linear-gradient(135deg,#fbfbff,#f4f7ff 55%,#f5fffb);box-shadow:0 14px 38px rgba(91,92,240,.08);animation:labIn .35s ease both}
+.career-lab-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}.career-lab-kicker{font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#6366f1}.career-lab-title{margin:3px 0 3px;font-size:20px;color:#14213d}.career-lab-sub{font-size:12px;color:#64748b;line-height:1.55}.career-lab-badge{white-space:nowrap;padding:7px 10px;border-radius:999px;background:#eef2ff;color:#4f46e5;font-size:11px;font-weight:900}
+.career-lab-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.career-lab-card{min-width:0;padding:14px;border:1px solid #e3e7f2;border-radius:16px;background:#fff;box-shadow:0 6px 18px rgba(20,33,61,.04);transition:.2s ease}.career-lab-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(20,33,61,.09);border-color:#c8cbff}.career-lab-icon{font-size:24px;margin-bottom:8px}.career-lab-card h4{margin:0 0 6px;font-size:14px;color:#172554}.career-lab-card p{margin:0;color:#64748b;font-size:12px;line-height:1.55}.career-lab-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.career-lab-btn{border:0;border-radius:11px;padding:10px 12px;background:#172554;color:#fff;font-weight:800;cursor:pointer;transition:.18s ease}.career-lab-btn:hover{transform:translateY(-1px);background:#263b70}.career-lab-btn.alt{background:#eef2ff;color:#4338ca}.career-lab-btn.green{background:#ecfdf5;color:#047857}.career-lab-careers{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.career-lab-career{border:1px solid #cfd4ff;background:#f8f8ff;color:#4338ca;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer}.career-lab-career:hover{background:#eef2ff}
+.career-lab-profile{display:grid;grid-template-columns:1.2fr .8fr;gap:11px;margin-top:12px}.career-lab-mini{padding:13px;border-radius:15px;background:#fff;border:1px solid #e4e8f1}.career-lab-mini strong{display:block;font-size:12px;color:#172554;margin-bottom:5px}.career-lab-mini span{font-size:12px;line-height:1.55;color:#64748b}.career-lab-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(15,23,42,.48);backdrop-filter:blur(7px)}.career-lab-modal.open{display:flex}.career-lab-dialog{width:min(760px,96vw);max-height:86vh;overflow:auto;border-radius:24px;background:#fff;box-shadow:0 35px 100px rgba(15,23,42,.28);padding:22px}.career-lab-dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.career-lab-close{border:0;width:38px;height:38px;border-radius:12px;background:#f1f5f9;color:#475569;font-size:18px;cursor:pointer}.career-roadmap{display:grid;gap:10px;margin-top:15px}.career-step{display:grid;grid-template-columns:36px 1fr;gap:11px;align-items:start;padding:12px;border:1px solid #e5e7eb;border-radius:15px;background:#fbfcff}.career-step b{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#eef2ff;color:#4f46e5}.career-step strong{display:block;color:#172554;font-size:13px;margin-bottom:3px}.career-step span{font-size:12px;color:#64748b;line-height:1.55}
+@keyframes labIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:800px){.career-lab-grid{grid-template-columns:1fr}.career-lab-profile{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.career-lab-box,.career-lab-card{animation:none!important;transition:none!important}}
+</style>
+<div id="careerLabModal" class="career-lab-modal" aria-hidden="true"><div class="career-lab-dialog"><div class="career-lab-dialog-head"><div><div class="career-lab-kicker">CAREER PATH</div><h3 id="careerLabModalTitle" class="career-lab-title">Lộ trình khám phá</h3><div id="careerLabModalSub" class="career-lab-sub"></div></div><button id="careerLabClose" class="career-lab-close" type="button" aria-label="Đóng">×</button></div><div id="careerLabModalBody"></div></div></div>
+
 </head>
 
 
@@ -1360,6 +1373,43 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         const lower = text.toLowerCase();
         return map.filter(x => x.terms.some(t => lower.includes(t)));
     }
+    function extractCareerNames(text) {
+        const patterns = [
+            "Data Analyst","Data Scientist","Software Engineer","Software Developer","Lập trình viên","UX/UI Designer","UI/UX Designer","Product Designer","Game Designer","Gameplay Programmer","DevOps Engineer","Cybersecurity Specialist","Business Analyst","Financial Analyst","Digital Marketing Specialist","Content Strategist","Content Creator","Copywriter","SEO Specialist","Sales Specialist","Business Development Specialist","Kế toán","Bác sĩ","Điều dưỡng","Dược sĩ","Chuyên viên tâm lý","Giáo viên","Kiến trúc sư","Interior Designer","Kỹ sư cơ khí","Kỹ sư điện","Kỹ sư điện tử","Kỹ sư tự động hóa","Kỹ sư môi trường","Chuyên viên du lịch","Event Planner","Quản trị khách sạn"
+        ];
+        const lower=text.toLowerCase();
+        return patterns.filter(x=>lower.includes(x.toLowerCase())).slice(0,6);
+    }
+
+    function buildCareerLab(text) {
+        const careers=extractCareerNames(text);
+        const host=[...chatBox.querySelectorAll('.message.ai')].pop();
+        if(!host || host.querySelector('.career-lab-box') || careers.length===0) return;
+        const box=document.createElement('section'); box.className='career-lab-box';
+        const safe=(x)=>String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+        box.innerHTML=`<div class="career-lab-head"><div><div class="career-lab-kicker">AI CAREER LAB</div><div class="career-lab-title">🧭 Bản đồ khám phá dành riêng cho bạn</div><div class="career-lab-sub">Từ cuộc trò chuyện vừa rồi, đây là những hướng đáng để <b>thử thật</b> thay vì chỉ đọc về chúng.</div></div><div class="career-lab-badge">CÁ NHÂN HÓA</div></div>
+        <div class="career-lab-grid">
+          <div class="career-lab-card"><div class="career-lab-icon">🧠</div><h4>Hồ sơ của bạn</h4><p>AI đã tìm thấy các tín hiệu về sở thích, điểm mạnh, cách tư duy và môi trường làm việc. Xem lại toàn bộ hồ sơ và những điểm nổi bật.</p><button class="career-lab-btn alt" data-lab-action="profile">Xem hồ sơ</button></div>
+          <div class="career-lab-card"><div class="career-lab-icon">🧪</div><h4>Thử nghề</h4><p>Đừng đoán. Hãy làm một mini-case để xem bạn có thích cách công việc này vận hành ngoài đời hay không.</p><button class="career-lab-btn green" data-lab-action="try">Thử ngay</button></div>
+          <div class="career-lab-card"><div class="career-lab-icon">🚀</div><h4>Lộ trình 7 ngày</h4><p>Một tuần trải nghiệm nhỏ: học một kỹ năng, làm một mini-project và tự đánh giá cảm giác sau khi làm.</p><button class="career-lab-btn" data-lab-action="roadmap">Mở lộ trình</button></div>
+        </div>
+        <div class="career-lab-sub" style="margin-top:14px"><b>Những nghề đang nổi bật trong cuộc trò chuyện:</b></div><div class="career-lab-careers">${careers.map(c=>`<button class="career-lab-career" data-career="${safe(c)}">✨ ${safe(c)}</button>`).join('')}</div>`;
+        host.querySelector('.bubble')?.appendChild(box);
+        const open=(title,body)=>{const m=document.getElementById('careerLabModal');document.getElementById('careerLabModalTitle').textContent=title;document.getElementById('careerLabModalBody').innerHTML=body;m.classList.add('open');m.setAttribute('aria-hidden','false')};
+        const close=()=>{const m=document.getElementById('careerLabModal');m.classList.remove('open');m.setAttribute('aria-hidden','true')};
+        document.getElementById('careerLabClose').onclick=close;
+        document.getElementById('careerLabModal').onclick=e=>{if(e.target.id==='careerLabModal')close()};
+        box.querySelector('[data-lab-action="profile"]').onclick=()=>open('Hồ sơ hướng nghiệp của bạn',`<div class="career-lab-profile"><div class="career-lab-mini"><strong>🔎 Tín hiệu nổi bật</strong><span>${safe(text.slice(0,950))}${text.length>950?'…':''}</span></div><div class="career-lab-mini"><strong>💡 Cách dùng kết quả</strong><span>Đây là bản đồ khám phá, không phải nhãn cố định. Hãy dùng nó để chọn điều muốn thử tiếp theo.</span></div></div><div class="career-lab-actions"><button class="career-lab-btn" onclick="window.careerLabAsk('Hãy tổng hợp lại hồ sơ hướng nghiệp của mình thành: sở thích, điểm mạnh, cách tư duy, động lực, môi trường phù hợp và 3 điểm cần phát triển. Dựa hoàn toàn vào cuộc trò chuyện này.')">🤖 Nhờ AI phân tích sâu</button></div>`);
+        box.querySelector('[data-lab-action="try"]').onclick=()=>open('Thử nghề trong 15 phút',`<p class="career-lab-sub">Chọn một nghề dưới đây. AI sẽ phỏng vấn bạn bằng một tình huống thực tế thay vì hỏi lý thuyết.</p><div class="career-lab-careers">${careers.map(c=>`<button class="career-lab-career" data-modal-career="${safe(c)}">🧪 ${safe(c)}</button>`).join('')}</div>`);
+        box.querySelector('[data-lab-action="roadmap"]').onclick=()=>open('Lộ trình khám phá 7 ngày',`<div class="career-roadmap">${careers.slice(0,3).map((c,i)=>`<div class="career-step"><b>${i+1}</b><div><strong>${safe(c)} · ngày ${i*2+1}–${i*2+2}</strong><span>Đọc 1 tài liệu nhập môn → làm một nhiệm vụ nhỏ → ghi lại điều bạn thấy thú vị/khó chịu → hỏi AI một câu phản biện.</span></div></div>`).join('')}<div class="career-step"><b>7</b><div><strong>Ngày 7 · Quyết định bước tiếp</strong><span>Chọn hướng khiến bạn muốn làm thêm dù không ai bắt. Nếu vẫn tò mò, bắt đầu một mini-project 2–4 tuần.</span></div></div></div>`);
+        box.querySelectorAll('[data-career]').forEach(b=>b.onclick=()=>window.careerLabAsk(`Hãy phỏng vấn mình về nghề ${b.dataset.career}. Đừng đưa kết luận ngay. Hãy dùng nhiều kiểu câu hỏi khác nhau (sở thích, tình huống, cách giải quyết vấn đề, môi trường làm việc, động lực) và mỗi lượt chỉ hỏi một câu dựa trên câu trả lời trước.`));
+        document.getElementById('careerLabModalBody').addEventListener('click',e=>{const b=e.target.closest('[data-modal-career]');if(b)window.careerLabAsk(`Hãy cho mình một mini-case thực tế 10-15 phút của nghề ${b.dataset.modalCareer}. Đừng giải thích đáp án trước; để mình tự làm rồi nhận xét cách tư duy của mình.`)});
+    }
+    window.careerLabAsk=function(prompt){
+        const modal=document.getElementById('careerLabModal'); if(modal) modal.classList.remove('open');
+        switchMode('chat'); userInput.value=prompt; userInput.focus();
+    };
+
     function addPersonalQuizButtons(text) {
         const matches = normalizeRecommendationText(text);
         if (!matches?.length) return;
@@ -1416,7 +1466,7 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
                     if(event.type==="error"){streamError=true; aiContent.textContent="❌ "+(event.message||"AI gặp lỗi.");}
                 }
             }
-            if(!streamError && fullText) addPersonalQuizButtons(fullText);
+            if(!streamError && fullText){ addPersonalQuizButtons(fullText); buildCareerLab(fullText); }
             status.textContent = streamError ? "🔴 AI tạm thời không sẵn sàng" : "🟢 AI đang sẵn sàng";
         } catch(error) {
             console.error(error); typing.remove(); addMessage("❌ Không thể kết nối tới server. Vui lòng thử lại sau.","ai"); status.textContent="🔴 Mất kết nối server";
