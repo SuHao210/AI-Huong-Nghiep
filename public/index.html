@@ -1218,6 +1218,51 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
 @media(prefers-reduced-motion:reduce){.wow-wheel-v2{transition:none!important}.wow-spinning-v2,.wow-pointer-v2,.wow-spinning-text{animation:none!important}}
 </style>
 
+
+/* ===== AI-HƯỚNG NGHIỆP TITLE LOGO ===== */
+.brand-title-logo{
+  position:relative;
+  z-index:2;
+  display:block;
+  width:min(720px, 92%);
+  height:auto;
+  margin:0 auto 8px;
+  object-fit:contain;
+  filter:drop-shadow(0 14px 30px rgba(30,64,175,.24));
+  transform:translateZ(0);
+  animation:brandLogoIn .8s cubic-bezier(.2,.8,.2,1) both;
+}
+.brand-title-kicker{
+  position:relative;
+  z-index:2;
+  margin:0 auto 2px;
+  text-align:center;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.82);
+}
+.brand-title-sub{
+  position:relative;
+  z-index:2;
+  margin:8px auto 0;
+  max-width:720px;
+  text-align:center;
+  color:rgba(255,255,255,.92);
+  font-size:14px;
+  line-height:1.6;
+}
+@keyframes brandLogoIn{
+  from{opacity:0;transform:translateY(12px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:600px){
+  .brand-title-logo{width:96%;margin-bottom:5px}
+  .brand-title-kicker{font-size:9px;letter-spacing:.18em}
+  .brand-title-sub{font-size:12px}
+}
+
 </head>
 
 
@@ -1227,9 +1272,9 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
 <div class="app">
 
     <div class="header">
-        <div class="logo">🧭</div>
-        <h1>Chuyên Gia Hướng Nghiệp AI</h1>
-        <div class="subtitle">Khám phá bản thân bằng trò chuyện AI và quiz ngành nghề.</div>
+        <div class="brand-title-kicker">AI CAREER DISCOVERY</div>
+        <img class="brand-title-logo" src="/assets/ai-huong-nghiep-title.png" alt="AI-Hướng Nghiệp">
+        <div class="brand-title-sub">Khám phá bản thân bằng AI · Trải nghiệm nghề nghiệp · Tìm hướng đi phù hợp</div>
     </div>
 
     <div class="mode-switch" role="tablist" aria-label="Chế độ">
