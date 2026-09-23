@@ -225,6 +225,20 @@ async function createInteractionWithRetry(request, attempts = 2) {
     throw lastError;
 }
 
+async function createGenerateContentWithRetry(request, attempts = 3) {
+    let lastError;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+        try {
+            return await ai.models.generateContent(request);
+        } catch (error) {
+            lastError = error;
+            if (!is429(error) || attempt === attempts - 1) throw error;
+            await sleep(700 * (attempt + 1));
+        }
+    }
+    throw lastError;
+}
+
 
 /* =========================================================
    SESSION
@@ -250,16 +264,271 @@ const sessions =
    ========================================================= */
 
 const SYSTEM_INSTRUCTION = `
-Bạn là Chuyên Gia Hướng Nghiệp AI. Trò chuyện tự nhiên bằng tiếng Việt.
-Mục tiêu: giúp người dùng khám phá sở thích, điểm mạnh, cách tư duy, động lực và môi trường làm việc phù hợp; không ép chọn một nghề.
-- Đây là hội thoại, không phải bài trắc nghiệm. Mỗi lượt chỉ hỏi tối đa 1 câu khi còn thiếu thông tin.
-- Không hỏi lại điều người dùng đã nói.
-- Khi đủ thông tin, tóm tắt hồ sơ hướng nghiệp và đề xuất khoảng 3 nghề CỤ THỂ, giải thích dựa trên những gì người dùng chia sẻ.
-- Với mỗi nghề: vì sao phù hợp, điểm cần phát triển, và một cách thử thực tế.
-- Cuối cùng nêu 3 việc nhỏ có thể thử trong 7 ngày.
-- Không khẳng định nghề nào là định mệnh; chỉ xem là gợi ý để thử nghiệm.
-- Câu hỏi đơn giản: trả lời ngắn 2-5 câu, đi thẳng vào ý chính, không mở đầu dài và không lặp lại lời người dùng.
-- Thân thiện, dễ hiểu, không phán xét.
+
+Bạn là "Chuyên Gia Hướng Nghiệp AI".
+
+Bạn đang trò chuyện trực tiếp với một người đang muốn
+khám phá sở thích, năng lực và hướng nghề nghiệp phù hợp.
+
+MỤC TIÊU:
+
+Không phải ép người dùng chọn một nghề duy nhất.
+
+Mục tiêu là giúp họ hiểu bản thân hơn và tìm ra
+những hướng nghề nghiệp đáng để thử nghiệm.
+
+==================================================
+NGUYÊN TẮC HỘI THOẠI
+==================================================
+
+Đây là một cuộc trò chuyện tự nhiên.
+
+KHÔNG phải bài trắc nghiệm.
+
+KHÔNG có giới hạn cứng về số câu hỏi.
+
+Không được hỏi liên tục một danh sách câu hỏi.
+
+Mỗi lần người dùng trả lời, hãy đọc kỹ câu trả lời
+và quyết định câu hỏi tiếp theo dựa trên thông tin
+mới nhất.
+
+Không hỏi lại thông tin người dùng đã nói rõ.
+
+==================================================
+KHÁM PHÁ SỞ THÍCH
+==================================================
+
+Hãy tìm hiểu:
+
+- Người dùng thích làm gì.
+- Họ thường làm gì khi rảnh.
+- Việc gì khiến họ mất cảm giác về thời gian.
+- Họ thích tạo ra thứ gì.
+- Họ thích giải quyết vấn đề gì.
+- Điều gì khiến họ tò mò.
+- Họ thích làm một mình hay cùng người khác.
+
+Đừng vội biến một sở thích thành một nghề.
+
+Ví dụ:
+
+"Thích game"
+không có nghĩa
+"phải làm lập trình viên game".
+
+"Thích bóng đá"
+không có nghĩa
+"phải làm cầu thủ".
+
+Hãy tìm hiểu lý do phía sau sở thích.
+
+==================================================
+KHÁM PHÁ NĂNG LỰC
+==================================================
+
+Tùy theo cuộc trò chuyện, hãy tìm hiểu một số yếu tố:
+
+- Tư duy logic.
+- Khả năng phân tích.
+- Sáng tạo.
+- Giao tiếp.
+- Làm việc nhóm.
+- Làm việc độc lập.
+- Giải quyết vấn đề.
+- Khả năng thích nghi.
+- Kiên trì.
+- Chủ động.
+- Khả năng chịu áp lực.
+- Khả năng tổ chức.
+- Khả năng lãnh đạo.
+
+Không cần hỏi tất cả.
+
+Chỉ hỏi những yếu tố có liên quan.
+
+==================================================
+TÌNH HUỐNG
+==================================================
+
+Khi phù hợp, hãy đưa ra các tình huống thực tế.
+
+Ví dụ:
+
+"Nếu bạn đang làm một dự án và kế hoạch ban đầu
+không hiệu quả, bạn sẽ làm gì?"
+
+Hoặc:
+
+"Nếu hai thành viên trong nhóm bất đồng ý kiến,
+bạn sẽ xử lý thế nào?"
+
+Hoặc:
+
+"Nếu một video bạn đầu tư rất nhiều thời gian
+nhưng có rất ít người xem, bạn sẽ làm gì tiếp?"
+
+Những câu hỏi này nhằm hiểu cách người dùng suy nghĩ,
+không phải để chấm đúng/sai.
+
+==================================================
+KHÔNG KẾT LUẬN QUÁ SỚM
+==================================================
+
+Nếu người dùng mới nói một hoặc hai sở thích,
+chưa được đưa ra danh sách nghề nghiệp dài.
+
+Hãy tiếp tục khám phá.
+
+Nếu thông tin đã đủ rõ,
+hãy chủ động kết luận.
+
+Không cần hỏi đủ một số lượng câu cố định.
+
+==================================================
+KHI ĐÃ ĐỦ THÔNG TIN
+==================================================
+
+Khi cảm thấy đã có đủ thông tin,
+hãy nói rằng bạn đã có đủ cơ sở để phác họa
+hướng nghề nghiệp.
+
+Sau đó đưa ra:
+
+🧭 HỒ SƠ HƯỚNG NGHIỆP
+
+- Sở thích nổi bật.
+- Điểm mạnh.
+- Kiểu tư duy.
+- Động lực.
+- Môi trường làm việc phù hợp.
+- Điều nên phát triển thêm.
+
+Sau đó:
+
+💼 NGHỀ NGHIỆP ĐÁNG THỬ
+
+Đề xuất khoảng 3 nghề cụ thể.
+
+Không nói chung chung như:
+
+"IT"
+"kinh doanh"
+"truyền thông"
+
+Hãy cụ thể như:
+
+- Data Analyst.
+- UX/UI Designer.
+- Game Designer.
+- Gameplay Programmer.
+- Sports Data Analyst.
+- Content Strategist.
+- Digital Marketing Specialist.
+- Product Designer.
+
+Tùy vào thông tin thực tế.
+
+==================================================
+MỖI NGHỀ
+==================================================
+
+Với mỗi nghề:
+
+1. Vì sao phù hợp.
+2. Thông tin nào trong cuộc trò chuyện dẫn tới
+   gợi ý này.
+3. Điểm nào người dùng cần cải thiện.
+4. Mức độ phù hợp:
+
+- Rất phù hợp.
+- Khá phù hợp.
+- Có tiềm năng.
+
+Không được giả vờ rằng đây là kết quả khoa học
+chính xác tuyệt đối.
+
+Không nói:
+
+"Bạn chắc chắn phải làm nghề này."
+
+Hãy nói:
+
+"Nghề này đáng để bạn thử."
+
+==================================================
+LỘ TRÌNH
+==================================================
+
+Cuối cùng đưa ra:
+
+🚀 3 VIỆC NÊN THỬ NGAY
+
+Mỗi hướng nghề chính nên có:
+
+- Một việc thử trong 7 ngày.
+- Một kỹ năng nên học.
+- Một dự án nhỏ để kiểm chứng xem người dùng
+  có thật sự thích công việc đó hay không.
+
+==================================================
+NẾU CHƯA ĐỦ
+==================================================
+
+Chỉ hỏi một câu tiếp theo.
+
+Câu hỏi phải tự nhiên.
+
+Câu hỏi phải dựa vào câu trả lời gần nhất.
+
+Không hỏi lại thông tin đã có.
+
+==================================================
+PHONG CÁCH
+==================================================
+
+Thân thiện.
+
+Tự nhiên.
+
+Không phán xét.
+
+Không làm người dùng cảm thấy đang thi.
+
+Không dùng thuật ngữ quá khó.
+
+Nói tiếng Việt.
+
+Không cần lúc nào cũng dùng emoji.
+
+Nếu người dùng trả lời ngắn,
+hãy giúp họ mở rộng câu trả lời bằng câu hỏi dễ.
+
+==================================================
+TỐI ƯU TỐC ĐỘ
+==================================================
+
+Ưu tiên trả lời gọn, rõ và đi thẳng vào ý chính.
+
+Nếu câu hỏi đơn giản, chỉ cần 2-5 câu hoặc một câu hỏi
+tiếp theo phù hợp.
+
+Không viết phần mở đầu dài dòng.
+
+Không lặp lại toàn bộ những gì người dùng vừa nói.
+
+==================================================
+QUAN TRỌNG
+==================================================
+
+Đừng nói rằng bạn đang "theo dõi số câu hỏi".
+
+Đừng nói rằng bạn phải hỏi đủ 3 câu.
+
+Bạn được phép hỏi nhiều hoặc ít.
+
+Bạn chỉ kết luận khi thông tin đủ.
+
 `;
 
 
@@ -410,6 +679,11 @@ app.post(
                 ? req.body.message.trim()
                 : "";
 
+        const language =
+            req.body?.language === "en"
+                ? "en"
+                : "vi";
+
 
         /* -------------------------
            KIỂM TRA INPUT
@@ -517,17 +791,11 @@ app.post(
                     message,
 
                 system_instruction:
-                    SYSTEM_INSTRUCTION,
+                    `${SYSTEM_INSTRUCTION}\n\nLANGUAGE REQUIREMENT (CURRENT REQUEST):\n- The user interface language is ${language === "en" ? "English" : "Vietnamese"}.\n- Reply entirely in ${language === "en" ? "English" : "Vietnamese"}.\n- Do not switch languages just because the user uses a different language in a quoted example.\n- When English is selected, use the heading "💼 CAREERS WORTH TRYING" instead of the Vietnamese recommendation heading.\n- When Vietnamese is selected, use "💼 NGHỀ NGHIỆP ĐÁNG THỬ".`,
 
                 generation_config: {
 
-                    /*
-                     * Low để giảm độ trễ.
-                     *
-                     * Khi muốn AI suy luận sâu hơn,
-                     * có thể đổi thành "medium".
-                     */
-
+                    /* Ưu tiên độ trễ thấp cho chat. */
                     thinking_level:
                         "low",
 
@@ -689,7 +957,7 @@ app.post(
                     newInteractionId;
                 session.lastAssistantText =
                     fullText;
-                if (/NGHỀ NGHIỆP ĐÁNG THỬ/i.test(fullText)) {
+                if (/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(fullText)) {
                     session.lastRecommendation = {
                         interactionId: newInteractionId,
                         text: fullText,
@@ -803,6 +1071,64 @@ const INDUSTRY_RULES = {
     }
 };
 
+const NEW_INDUSTRY_RULES = {
+    law: {
+        title: "Luật & Pháp lý",
+        terms: ["law", "legal", "luật", "pháp lý", "luật sư", "lawyer", "legal counsel", "paralegal"]
+    },
+    education: {
+        title: "Giáo dục & Tâm lý",
+        terms: ["education", "psychology", "giáo dục", "tâm lý", "teacher", "giáo viên", "psychologist", "counselor"]
+    },
+    architecture: {
+        title: "Kiến trúc & Thiết kế",
+        terms: ["architecture", "design", "kiến trúc", "thiết kế", "architect", "kiến trúc sư", "designer", "interior designer"]
+    },
+    environment: {
+        title: "Môi trường & Nông nghiệp",
+        terms: ["environment", "agriculture", "môi trường", "nông nghiệp", "environmental analyst", "agronomy", "sustainability", "gis"]
+    },
+    tourism: {
+        title: "Du lịch & Nhà hàng - Khách sạn",
+        terms: ["tourism", "hospitality", "du lịch", "nhà hàng", "khách sạn", "hotel", "tour guide", "event", "revenue management"]
+    }
+};
+Object.assign(INDUSTRY_RULES, NEW_INDUSTRY_RULES);
+
+const QUIZ_TRANSLATION_SCHEMA = {
+    type: "object",
+    properties: {
+        questions: {
+            type: "array",
+            minItems: 20,
+            maxItems: 20,
+            items: {
+                type: "object",
+                properties: {
+                    q: { type: "string" },
+                    opts: { type: "array", minItems: 4, maxItems: 4, items: { type: "string" } },
+                    a: { type: "integer", minimum: 0, maximum: 3 },
+                    e: { type: "string" }
+                },
+                required: ["q", "opts", "a", "e"],
+                additionalProperties: false
+            }
+        }
+    },
+    required: ["questions"],
+    additionalProperties: false
+};
+
+const quizTranslationCache = new Map();
+const quizTranslateLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    limit: 12,
+    keyGenerator: sessionOrIpKey,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Bạn đã yêu cầu dịch quiz khá nhiều trong thời gian ngắn. Vui lòng thử lại sau." }
+});
+
 const PERSONAL_QUIZ_SCHEMA = {
     type: "object",
     properties: {
@@ -851,12 +1177,180 @@ function getInteractionOutputText(interaction) {
 }
 
 app.post(
+    "/api/quiz-translate",
+    quizTranslateLimiter,
+    async (req, res) => {
+        const language = req.body?.language === "en" ? "en" : "vi";
+        const sourceLanguage = req.body?.sourceLanguage === "en" ? "en" : "vi";
+        const industry = typeof req.body?.industry === "string" ? req.body.industry : "quiz";
+        const questions = Array.isArray(req.body?.questions) ? req.body.questions : [];
+
+        if (language === sourceLanguage) {
+            return res.json({ questions });
+        }
+
+        if (
+            questions.length !== 20 ||
+            questions.some(q =>
+                !q ||
+                typeof q.q !== "string" ||
+                !Array.isArray(q.opts) ||
+                q.opts.length !== 4 ||
+                q.opts.some(x => typeof x !== "string") ||
+                !Number.isInteger(q.a) ||
+                q.a < 0 ||
+                q.a > 3 ||
+                typeof q.e !== "string"
+            )
+        ) {
+            return res.status(400).json({
+                error: language === "en"
+                    ? "Invalid quiz translation payload."
+                    : "Dữ liệu quiz cần dịch không hợp lệ."
+            });
+        }
+
+        // Include both source/target language and the exact payload in the cache key.
+        // This prevents an English result from ever being reused for Vietnamese.
+        const payload = JSON.stringify(questions);
+        const cacheKey = `${industry}:${sourceLanguage}->${language}:${crypto.createHash("sha256").update(payload).digest("hex")}`;
+        if (quizTranslationCache.has(cacheKey)) {
+            return res.json({ questions: quizTranslationCache.get(cacheKey) });
+        }
+
+        let releaseGeminiSlot;
+        try {
+            releaseGeminiSlot = await acquireGeminiSlot();
+        } catch (error) {
+            return res.status(503).json({
+                error: language === "en"
+                    ? "The quiz translation service is busy. Please try again shortly."
+                    : "Dịch quiz đang bận. Bạn thử lại sau một chút nhé."
+            });
+        }
+
+        const translationSchema = {
+            type: "object",
+            properties: {
+                questions: {
+                    type: "array",
+                    minItems: 20,
+                    maxItems: 20,
+                    items: {
+                        type: "object",
+                        properties: {
+                            q: { type: "string" },
+                            opts: {
+                                type: "array",
+                                minItems: 4,
+                                maxItems: 4,
+                                items: { type: "string" }
+                            },
+                            a: { type: "integer", minimum: 0, maximum: 3 },
+                            e: { type: "string" }
+                        },
+                        required: ["q", "opts", "a", "e"],
+                        additionalProperties: false
+                    }
+                }
+            },
+            required: ["questions"],
+            additionalProperties: false
+        };
+
+        const prompt = `
+Translate this career quiz from ${sourceLanguage === "en" ? "English" : "Vietnamese"} to natural, concise ${language === "en" ? "English" : "Vietnamese"}.
+Industry: ${industry}
+
+STRICT RULES:
+- Return exactly 20 questions.
+- Translate the question text, all four options, and the explanation.
+- Preserve the exact answer index "a" for every question. Never solve or reorder the options.
+- Preserve the order of all 20 questions.
+- Preserve the difficulty and meaning. Do not simplify the situations.
+- Use natural language suitable for a career-orientation quiz.
+- Return JSON only, matching the supplied schema.
+
+Quiz JSON:
+${payload}
+`;
+
+        try {
+            // Use the current generateContent structured-output path for translation.
+            // It avoids storing a translation as a conversation interaction and is
+            // considerably more reliable for this stateless batch operation.
+            const response = await createGenerateContentWithRetry({
+                model: MODEL,
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: translationSchema,
+                    systemInstruction:
+                        `You are a professional translator for a career-orientation quiz. ` +
+                        `Output only valid JSON. Translate into ${language === "en" ? "English" : "Vietnamese"}. ` +
+                        `Never change answer indices, option order, question order, or difficulty.`
+                }
+            }, 3);
+
+            const raw = typeof response?.text === "string" ? response.text.trim() : "";
+            let parsed;
+            try {
+                parsed = JSON.parse(raw);
+            } catch {
+                throw new Error("Gemini returned invalid quiz translation JSON.");
+            }
+
+            const translated = parsed?.questions;
+            if (
+                !Array.isArray(translated) ||
+                translated.length !== 20 ||
+                translated.some(q =>
+                    !q ||
+                    typeof q.q !== "string" ||
+                    !Array.isArray(q.opts) ||
+                    q.opts.length !== 4 ||
+                    q.opts.some(x => typeof x !== "string") ||
+                    !Number.isInteger(q.a) ||
+                    q.a < 0 ||
+                    q.a > 3 ||
+                    typeof q.e !== "string"
+                )
+            ) {
+                throw new Error("Gemini returned an invalid quiz translation.");
+            }
+
+            // Re-assert the answer keys from the source so a model mistake can never
+            // change the scoring logic.
+            const safeTranslated = translated.map((q, i) => ({
+                q: q.q.trim(),
+                opts: q.opts.map(x => x.trim()),
+                a: questions[i].a,
+                e: q.e.trim()
+            }));
+
+            quizTranslationCache.set(cacheKey, safeTranslated);
+            return res.json({ questions: safeTranslated });
+        } catch (error) {
+            console.error("Quiz translation error:", error);
+            return res.status(503).json({
+                error: language === "en"
+                    ? "The English quiz could not be loaded right now. Please try again."
+                    : "Không thể tải bản tiếng Việt của quiz lúc này. Vui lòng thử lại."
+            });
+        } finally {
+            releaseGeminiSlot?.();
+        }
+    }
+);
+
+app.post(
     "/api/personalized-quiz",
     personalizedQuizLimiter,
     async (req, res) => {
         const sessionId = req.headers["x-session-id"];
         const industry = typeof req.body?.industry === "string" ? req.body.industry : "";
         const careerLabel = typeof req.body?.careerLabel === "string" ? req.body.careerLabel : "";
+        const language = req.body?.language === "en" ? "en" : "vi";
 
         if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
             return res.status(400).json({ error: "Không tìm thấy cuộc trò chuyện hiện tại." });
@@ -873,7 +1367,7 @@ app.post(
         // Server-side enforcement: the button can only work when the latest AI
         // response actually reached its career recommendation section and
         // mentioned a profession supported by the selected quiz family.
-        if (!/NGHỀ NGHIỆP ĐÁNG THỬ/i.test(recommendationText)) {
+        if (!/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(recommendationText)) {
             return res.status(403).json({ error: "Quiz riêng chỉ mở sau khi AI đưa ra gợi ý nghề nghiệp." });
         }
 
@@ -900,6 +1394,7 @@ YÊU CẦU QUAN TRỌNG:
 - Các đáp án nên có độ phân biệt, không để đáp án đúng luôn ở cùng một vị trí.
 - Không thêm markdown, không thêm văn bản ngoài JSON.
 - Quiz chỉ mang tính khám phá và tham khảo.
+- Ngôn ngữ đầu ra: ${language === "en" ? "English" : "Vietnamese"}. Cả câu hỏi, 4 lựa chọn và explanation phải dùng đúng ngôn ngữ này.
 `;
 
             const interaction = await withGeminiSlot(() =>
