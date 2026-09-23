@@ -2847,95 +2847,228 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
       return {title:english?(INDUSTRY_EN[key]?.title||v.title):v.title,desc:english?(INDUSTRY_EN[key]?.desc||v.desc):v.desc};
     }
     function renderQuizHome(){
+      if(quizState) quizState.screen="home";
       quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-hero"><div class="big-emoji">🎮</div><h2>${window.careerLanguage?.t().quizHome||"Quiz khám phá ngành nghề"}</h2><p>${window.careerLanguage?.t().quizDesc||"Chọn một lĩnh vực và thử 20 câu hỏi. Kết quả chỉ mang tính khám phá, không phải kết luận nghề nghiệp."}</p></div><div class="industry-grid">${Object.entries(INDUSTRIES).map(([key,v])=>{const d=industryView(key,v);return `<button class="industry-card" data-industry="${key}" type="button"><div class="industry-art">${v.art}</div><h3>${v.emoji} ${d.title}</h3><p>${d.desc}</p></button>`}).join("")}</div><div class="quiz-note">${window.careerLanguage?.t().note||"🔊 Âm thanh nhẹ có thể bật/tắt trong lúc làm quiz."}</div>`;
       quizPanel.querySelectorAll(".industry-card").forEach(b=>b.addEventListener("click",()=>startQuiz(b.dataset.industry)));
     }
-    function startQuiz(industry){ quizState={industry,index:0,score:0,answered:false,personal:false,personalQuestions:null,personalTitle:"",resultSoundPlayed:false,displayQuestions:null,baseQuestionLanguage:"vi",questionLanguage:"vi"}; beep(); renderQuestion(); }
+    // ===== Robust bilingual quiz state =====
+    // The quiz source is Vietnamese. English is generated once per industry and cached.
+    // A render token prevents an older translation request from overwriting a newer
+    // language choice (the bug that could leave the header in English while the quiz
+    // remained Vietnamese, or reset the quiz unexpectedly).
+    let quizRenderToken = 0;
+    let quizTranslationAbort = null;
+    const quizEnglishCache = new Map();
+    const quizTranslationInFlight = new Map();
+
+    function currentQuizLanguage(){
+      return window.careerLanguage?.get?.() === "en" ? "en" : "vi";
+    }
+
+    function cancelQuizTranslation(){
+      try { quizTranslationAbort?.abort(); } catch {}
+      quizTranslationAbort = null;
+    }
+
+    function startQuiz(industry){
+      cancelQuizTranslation();
+      quizRenderToken++;
+      quizState={
+        industry,
+        index:0,
+        score:0,
+        answered:false,
+        lastChoice:null,
+        screen:"question",
+        personal:false,
+        personalQuestions:null,
+        personalTitle:"",
+        resultSoundPlayed:false,
+        displayQuestions:null,
+        baseQuestionLanguage:"vi",
+        questionLanguage:null
+      };
+      beep();
+      renderQuestion();
+    }
+
     function getQuestions(){
       return quizState.displayQuestions || (quizState.personal ? quizState.personalQuestions : QUIZ[quizState.industry]);
     }
 
-    const quizEnglishCache = new Map();
-    const quizTranslationInFlight = new Map();
+    function normalizeTranslatedQuestions(data, expectedLength){
+      if(!data || !Array.isArray(data.questions) || data.questions.length!==expectedLength) {
+        throw new Error("TRANSLATION_INVALID");
+      }
+      const normalized=data.questions.map(q=>({
+        q:typeof q?.q === "string" ? q.q : "",
+        opts:Array.isArray(q?.opts) ? q.opts.map(x=>String(x)) : [],
+        a:Number(q?.a),
+        e:typeof q?.e === "string" ? q.e : "",
+        art:"🧠"
+      }));
+      if(normalized.some(q=>!q.q || q.opts.length!==4 || q.opts.some(x=>!x) || !Number.isInteger(q.a) || q.a<0 || q.a>3 || !q.e)) {
+        throw new Error("TRANSLATION_INVALID");
+      }
+      return normalized;
+    }
 
-    async function getLocalizedQuestions(){
-      const source = quizState.personal ? quizState.personalQuestions : QUIZ[quizState.industry];
-      const currentLang = window.careerLanguage?.get?.() || "vi";
-      const sourceLang = quizState.baseQuestionLanguage || "vi";
-      if(!source) return [];
-      if(currentLang === sourceLang){
-        quizState.displayQuestions = source;
+    async function getLocalizedQuestions(targetLang, renderToken){
+      const state=quizState;
+      const source = state?.personal ? state.personalQuestions : QUIZ[state?.industry];
+      const sourceLang = state?.baseQuestionLanguage || "vi";
+      if(!state || !source) return [];
+
+      // Switching back to Vietnamese must be synchronous and must never touch
+      // the translation API. Also explicitly update questionLanguage so a stale
+      // English request cannot make the next render think English is still active.
+      if(targetLang === sourceLang){
+        state.displayQuestions = source;
+        state.questionLanguage = targetLang;
         return source;
       }
-      const cacheKey = `${quizState.personal ? "personal" : quizState.industry}:${sourceLang}->${currentLang}`;
+
+      const cacheKey = `${state.personal ? "personal" : state.industry}:${sourceLang}->${targetLang}`;
       if(quizEnglishCache.has(cacheKey)){
-        const cached=quizEnglishCache.get(cacheKey); quizState.displayQuestions=cached; quizState.questionLanguage=currentLang; return cached;
+        const cached=quizEnglishCache.get(cacheKey);
+        state.displayQuestions=cached;
+        state.questionLanguage=targetLang;
+        return cached;
       }
-      if(quizTranslationInFlight.has(cacheKey)){
-        const waiting=await quizTranslationInFlight.get(cacheKey); quizState.displayQuestions=waiting; quizState.questionLanguage=currentLang; return waiting;
+
+      let request=quizTranslationInFlight.get(cacheKey);
+      if(!request){
+        cancelQuizTranslation();
+        const controller=new AbortController();
+        quizTranslationAbort=controller;
+        request=fetch("/api/quiz-translate",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          signal:controller.signal,
+          body:JSON.stringify({
+            industry:state.personal?state.personalTitle:state.industry,
+            questions:source.map(q=>({q:q.q,opts:q.opts,a:Number(q.a),e:q.e})),
+            sourceLanguage:sourceLang,
+            language:targetLang
+          })
+        }).then(async response=>{
+          const data=await response.json().catch(()=>({}));
+          if(!response.ok) throw new Error("TRANSLATION_UNAVAILABLE");
+          const normalized=normalizeTranslatedQuestions(data,source.length);
+          quizEnglishCache.set(cacheKey,normalized);
+          return normalized;
+        }).finally(()=>{
+          quizTranslationInFlight.delete(cacheKey);
+          if(quizTranslationAbort===controller) quizTranslationAbort=null;
+        });
+        quizTranslationInFlight.set(cacheKey,request);
       }
-      const request=fetch("/api/quiz-translate",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({industry:quizState.personal?quizState.personalTitle:quizState.industry,questions:source,sourceLanguage:sourceLang,language:currentLang})
-      }).then(async response=>{
-        const data=await response.json().catch(()=>({}));
-        if(!response.ok || !Array.isArray(data.questions) || data.questions.length!==source.length) throw new Error(data.error||"Không thể chuyển ngôn ngữ quiz.");
-        const normalized=data.questions.map(q=>({q:q.q,opts:q.opts,a:Number(q.a),e:q.e,art:"🧠"}));
-        quizEnglishCache.set(cacheKey,normalized); return normalized;
-      }).finally(()=>quizTranslationInFlight.delete(cacheKey));
-      quizTranslationInFlight.set(cacheKey,request);
-      const localized=await request; quizState.displayQuestions=localized; quizState.questionLanguage=currentLang; return localized;
+
+      const localized=await request;
+      if(renderToken !== quizRenderToken || state !== quizState || currentQuizLanguage() !== targetLang){
+        throw new Error("STALE_RENDER");
+      }
+      state.displayQuestions=localized;
+      state.questionLanguage=targetLang;
+      return localized;
     }
 
     async function renderQuestion(){
-      const currentLang = window.careerLanguage?.get?.() || "vi";
-      const source = quizState.personal ? quizState.personalQuestions : QUIZ[quizState.industry];
+      const token=++quizRenderToken;
+      const state=quizState;
+      if(!state) return;
+      const currentLang=currentQuizLanguage();
+      const source=state.personal ? state.personalQuestions : QUIZ[state.industry];
       if(!source) return;
-      if(currentLang !== (quizState.questionLanguage || "vi")){
-        const app=quizPanel.querySelector("#quizApp");
-        app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>${currentLang==="en"?"🌐 Loading English quiz...":"🌐 Đang tải bản tiếng Việt..."}</strong><p>${currentLang==="en"?"Translating the 20 questions while keeping the answer key unchanged.":"Đang chuyển ngôn ngữ và giữ nguyên đáp án."}</p></div>`;
+
+      const app=quizPanel.querySelector("#quizApp");
+      if(!app) return;
+
+      if(currentLang !== (state.questionLanguage || "")){
+        app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>${currentLang==="en"?"🌐 Translating the quiz into English…":"🌐 Đang chuyển quiz sang tiếng Việt…"}</strong><p>${currentLang==="en"?"Your current question and score will be kept.":"Giữ nguyên câu hiện tại và điểm của bạn."}</p></div>`;
       }
+
       let list;
-      try{ list=await getLocalizedQuestions(); }
-      catch(error){
-        const tx=window.careerLanguage?.t?.()||{}; quizPanel.querySelector("#quizApp").innerHTML=`<div class="loading-card"><div style="font-size:48px">🌐</div><h3>${tx.translateErrorTitle||(currentLang==="en"?"English quiz unavailable":"Chưa tải được bản ngôn ngữ")}</h3><p>${tx.translateErrorBody||(currentLang==="en"?"The questions could not be translated right now. Please try again.":"Không thể chuyển bộ câu hỏi sang ngôn ngữ này lúc này. Bạn có thể thử lại.")}</p><button class="primary-action" id="retryQuizLanguage" style="border:0;border-radius:12px;padding:12px 16px">${tx.retry||(currentLang==="en"?"↻ Try again":"↻ Thử lại")}</button></div>`;
-        quizPanel.querySelector("#retryQuizLanguage").onclick=()=>renderQuestion();
+      try{
+        list=await getLocalizedQuestions(currentLang,token);
+      }catch(error){
+        if(error?.message==="STALE_RENDER" || token!==quizRenderToken || state!==quizState) return;
+        const tx=window.careerLanguage?.t?.()||{};
+        app.innerHTML=`<div class="loading-card"><div style="font-size:48px">🌐</div><h3>${tx.translateErrorTitle||"Không thể tải bản ngôn ngữ"}</h3><p>${tx.translateErrorBody||"Không thể chuyển bộ câu hỏi sang ngôn ngữ đã chọn lúc này. Hãy thử lại."}</p><button class="primary-action" id="retryQuizLanguage" type="button" style="border:0;border-radius:12px;padding:12px 16px">${tx.retry||"↻ Thử lại"}</button></div>`;
+        app.querySelector("#retryQuizLanguage")?.addEventListener("click",()=>renderQuestion());
         return;
       }
-      const item=list[quizState.index], meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯",art:"🧠"}:INDUSTRIES[quizState.industry]; const metaView=quizState.personal?meta:({...meta,...industryView(quizState.industry,meta)});
+
+      // Never let a stale async translation repaint the quiz.
+      if(token!==quizRenderToken || state!==quizState || currentQuizLanguage()!==currentLang) return;
+      if(!list.length) return;
+      if(state.index<0) state.index=0;
+      if(state.index>=list.length) state.index=list.length-1;
+
+      const item=list[state.index];
+      const meta=state.personal?{title:state.personalTitle,emoji:"🎯",art:"🧠"}:INDUSTRIES[state.industry];
+      const metaView=state.personal?meta:({...meta,...industryView(state.industry,meta)});
       const t=window.careerLanguage?.t?.()||{};
-      const pct=Math.round((quizState.index/list.length)*100);
-      quizPanel.querySelector("#quizApp").innerHTML=`<button class="quiz-back" type="button" id="quizBack">${t.back||"← Chọn lại ngành"}</button><div class="quiz-top"><div class="quiz-title">${metaView.emoji} ${metaView.title}</div><button class="sound-btn" id="soundBtn" type="button">${soundOn?(t.sound||"🔊 Âm thanh"):(t.mute||"🔇 Sound off")}</button></div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><div class="question-card"><div class="question-illustration">${item.art||meta.art}</div><div style="color:#64748b;font-size:13px;margin-bottom:7px">${currentLang==="en"?`Question ${quizState.index+1}/${list.length}`:`Câu ${quizState.index+1}/${list.length}`}</div><h3>${item.q}</h3><div class="option-list">${item.opts.map((o,i)=>`<button class="option-btn" data-i="${i}" type="button"><strong>${String.fromCharCode(65+i)}.</strong> ${o}</button>`).join("")}</div><div class="quiz-explain" id="quizExplain"></div><button class="quiz-next" id="quizNext" type="button">${quizState.index===list.length-1?(t.finish||"🏆 See results"):(t.next||"Next question →")}</button></div>`;
-      quizPanel.querySelector("#quizBack").addEventListener("click",renderQuizHome);
-      quizPanel.querySelector("#soundBtn").addEventListener("click",()=>{soundOn=!soundOn;renderQuestion();});
-      quizPanel.querySelectorAll(".option-btn").forEach(btn=>btn.addEventListener("click",()=>answerQuestion(Number(btn.dataset.i))));
-      quizPanel.querySelector("#quizNext").addEventListener("click",nextQuestion);
+      const pct=Math.round((state.index/list.length)*100);
+      const answered=!!state.answered;
+      const lastChoice=state.lastChoice;
+      const optionsHtml=item.opts.map((o,i)=>{
+        let cls="option-btn";
+        if(answered && i===item.a) cls+=" correct";
+        if(answered && lastChoice!==null && i===lastChoice && lastChoice!==item.a) cls+=" wrong";
+        return `<button class="${cls}" data-i="${i}" type="button" ${answered?"disabled":""}><strong>${String.fromCharCode(65+i)}.</strong> ${o}</button>`;
+      }).join("");
+      const explanation=answered
+        ? `<strong>${lastChoice===item.a?(currentLang==="en"?"✅ Correct!":"✅ Chính xác!"):(currentLang==="en"?"💡 Correct answer: ":"💡 Đáp án đúng là ")+String.fromCharCode(65+item.a)+"."}</strong> ${item.e}`
+        : "";
+
+      app.innerHTML=`<button class="quiz-back" type="button" id="quizBack">${t.back||"← Choose another field"}</button><div class="quiz-top"><div class="quiz-title">${metaView.emoji} ${metaView.title}</div><button class="sound-btn" id="soundBtn" type="button">${soundOn?(t.sound||"🔊 Sound"):(t.mute||"🔇 Sound off")}</button></div><div class="progress-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><div class="question-card"><div class="question-illustration">${item.art||meta.art}</div><div style="color:#64748b;font-size:13px;margin-bottom:7px">${currentLang==="en"?`Question ${state.index+1}/${list.length}`:`Câu ${state.index+1}/${list.length}`}</div><h3>${item.q}</h3><div class="option-list">${optionsHtml}</div><div class="quiz-explain" id="quizExplain" style="${answered?"display:block":""}">${explanation}</div><button class="quiz-next" id="quizNext" type="button" style="${answered?"display:block":""}">${state.index===list.length-1?(t.finish||"🏆 See results"):(t.next||"Next question →")}</button></div>`;
+
+      app.querySelector("#quizBack")?.addEventListener("click",renderQuizHome);
+      app.querySelector("#soundBtn")?.addEventListener("click",()=>{soundOn=!soundOn;renderQuestion();});
+      if(!answered) app.querySelectorAll(".option-btn").forEach(btn=>btn.addEventListener("click",()=>answerQuestion(Number(btn.dataset.i))));
+      app.querySelector("#quizNext")?.addEventListener("click",nextQuestion);
     }
+
     function answerQuestion(choice){
-      if(quizState.answered) return; quizState.answered=true; const list=getQuestions(),item=list[quizState.index];
-      const buttons=[...quizPanel.querySelectorAll(".option-btn")]; buttons.forEach(b=>b.disabled=true); buttons[item.a].classList.add("correct");
-      if(choice===item.a){quizState.score++;playQuizSound("ding");}else{buttons[choice].classList.add("wrong");playQuizSound("wrong");}
-      const ex=quizPanel.querySelector("#quizExplain"); ex.style.display="block"; const en=window.careerLanguage?.get?.()==="en"; ex.innerHTML=`<strong>${choice===item.a?(en?"✅ Correct!":"✅ Chính xác!"):(en?"💡 Correct answer: ":"💡 Đáp án đúng là ")+String.fromCharCode(65+item.a)+"."}</strong> ${item.e}`;
-      quizPanel.querySelector("#quizNext").style.display="block";
+      if(!quizState || quizState.answered) return;
+      quizState.answered=true;
+      quizState.lastChoice=choice;
+      const list=getQuestions(),item=list[quizState.index];
+      if(choice===item.a){quizState.score++;playQuizSound("ding");}else{playQuizSound("wrong");}
+      renderQuestion();
     }
-    function nextQuestion(){ if(!quizState.answered)return; if(quizState.index>=getQuestions().length-1){renderResult();return;} quizState.index++;quizState.answered=false;renderQuestion(); }
+
+    function nextQuestion(){
+      if(!quizState || !quizState.answered) return;
+      const list=getQuestions();
+      if(quizState.index>=list.length-1){renderResult();return;}
+      quizState.index++;
+      quizState.answered=false;
+      quizState.lastChoice=null;
+      renderQuestion();
+    }
+
     function renderResult(){
+      if(quizState) quizState.screen="result";
+      cancelQuizTranslation();
+      quizRenderToken++;
+      if(!quizState) return;
       if(!quizState.resultSoundPlayed){
         quizState.resultSoundPlayed=true;
         if(quizState.score>=15) playQuizSound("winner");
         else playQuizSound("fail");
       }
       const list=getQuestions(),pct=Math.round(quizState.score/list.length*100),meta=quizState.personal?{title:quizState.personalTitle,emoji:"🎯"}:INDUSTRIES[quizState.industry]; const metaView=quizState.personal?meta:({...meta,...industryView(quizState.industry,meta)});
-      const tx=window.careerLanguage?.t?.()||{}; const insight=pct>=80?(tx.resultHigh||"Bạn có nhiều điểm mạnh đáng khám phá!"):pct>=60?(tx.resultMid||"Bạn có một số tín hiệu thú vị để tìm hiểu thêm!"):(tx.resultLow||"Hãy xem đây là điểm bắt đầu để khám phá thêm nhé!"); quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>${tx.done||"Hoàn thành!"}</h2><p style="color:#64748b">${metaView.emoji} ${metaView.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${insight}</h3><p style="color:#64748b;line-height:1.6">${tx.resultDisclaimer||"Quiz chỉ phản ánh cách bạn trả lời các tình huống trong bộ câu hỏi, không phải kết luận chắc chắn về nghề nghiệp."}</p><div class="result-actions"><button class="primary-action" id="againBtn">${tx.again||"🔄 Làm lại"}</button><button class="secondary-action" id="otherBtn">${tx.other||"🎮 Chọn ngành khác"}</button><button class="secondary-action" id="chatBtn">${tx.talk||"💬 Trò chuyện với AI về lĩnh vực này"}</button></div></div>`;
-      quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;quizState.resultSoundPlayed=false;renderQuestion();};
+      const tx=window.careerLanguage?.t?.()||{}; const insight=pct>=80?(tx.resultHigh||"You have several strengths worth exploring!"):pct>=60?(tx.resultMid||"You have some interesting signals worth exploring further!"):(tx.resultLow||"Treat this as a starting point for further exploration."); quizPanel.querySelector("#quizApp").innerHTML=`<div class="quiz-result"><div style="font-size:54px">🏆</div><h2>${tx.done||"Completed!"}</h2><p style="color:#64748b">${metaView.emoji} ${metaView.title}</p><div class="score-ring" style="background:conic-gradient(#2563eb ${pct*3.6}deg,#e2e8f0 ${pct*3.6}deg)"><span>${quizState.score}/${list.length}</span></div><h3>${insight}</h3><p style="color:#64748b;line-height:1.6">${tx.resultDisclaimer||"This quiz reflects how you answered the situations in the question set; it is not a definitive career conclusion."}</p><div class="result-actions"><button class="primary-action" id="againBtn">${tx.again||"🔄 Try again"}</button><button class="secondary-action" id="otherBtn">${tx.other||"🎮 Choose another field"}</button><button class="secondary-action" id="chatBtn">${tx.talk||"💬 Chat with AI about this field"}</button></div></div>`;
+      quizPanel.querySelector("#againBtn").onclick=()=>{quizState.index=0;quizState.score=0;quizState.answered=false;quizState.lastChoice=null;quizState.resultSoundPlayed=false;quizState.screen="question";renderQuestion();};
       quizPanel.querySelector("#otherBtn").onclick=renderQuizHome;
       quizPanel.querySelector("#chatBtn").onclick=()=>switchMode("chat");
     }
 
     async function startPersonalizedQuiz(industryKey,label){
       if(!sessionId){switchMode("chat");return;}
-      quizState={industry:industryKey,index:0,score:0,answered:false,personal:true,personalQuestions:null,personalTitle:`Quiz riêng: ${label.replace(/^\S+\s/,"")}`,resultSoundPlayed:false,displayQuestions:null,baseQuestionLanguage:window.careerLanguage?.get?.()||"vi",questionLanguage:window.careerLanguage?.get?.()||"vi"};
+      quizState={industry:industryKey,index:0,score:0,answered:false,personal:true,personalQuestions:null,personalTitle:`Quiz riêng: ${label.replace(/^\S+\s/,"")}`,resultSoundPlayed:false,lastChoice:null,screen:"question",displayQuestions:null,baseQuestionLanguage:window.careerLanguage?.get?.()||"vi",questionLanguage:window.careerLanguage?.get?.()||"vi"};
       switchMode("quiz");
       const app=quizPanel.querySelector("#quizApp"); const tx=window.careerLanguage?.t?.()||{}; app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>${tx.personalLoading||"🧠 Đang tạo quiz riêng cho bạn..."}</strong><p>${tx.personalLoadingDesc||"AI đang dùng ngữ cảnh cuộc trò chuyện để tạo 20 câu phù hợp."}</p></div>`;
       try{
@@ -2943,7 +3076,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
         const data=await response.json().catch(()=>({}));
         if(!response.ok) throw new Error(data.error||"Không thể tạo quiz riêng.");
         if(!Array.isArray(data.questions)||data.questions.length!==20) throw new Error("Quiz trả về không đủ 20 câu.");
-        quizState.personalQuestions=data.questions.map(q=>({q:q.question,opts:q.options,a:Number(q.answer),e:q.explanation||"Đáp án giúp bạn khám phá thêm cách suy nghĩ của mình.",art:"🧠"})); quizState.baseQuestionLanguage=window.careerLanguage?.get?.()||"vi"; quizState.questionLanguage=window.careerLanguage?.get?.()||"vi";
+        quizState.personalQuestions=data.questions.map(q=>({q:q.question,opts:q.options,a:Number(q.answer),e:q.explanation||"Đáp án giúp bạn khám phá thêm cách suy nghĩ của mình.",art:"🧠"})); quizState.baseQuestionLanguage=window.careerLanguage?.get?.()||"vi"; quizState.questionLanguage=window.careerLanguage?.get?.()||"vi"; quizState.displayQuestions=quizState.personalQuestions; quizState.lastChoice=null;
         renderQuestion();
       }catch(err){
         const tx2=window.careerLanguage?.t?.()||{}; app.innerHTML=`<div class="loading-card"><div style="font-size:48px">😕</div><h3>${tx2.personalErrorTitle||"Chưa tạo được quiz riêng"}</h3><p>${tx2.personalErrorBody||"Đã có lỗi khi tạo quiz. Bạn có thể thử lại."}</p><button class="primary-action" id="retryPersonal" style="border:0;border-radius:12px;padding:12px 16px">${tx2.personalRetry||"↻ Thử lại"}</button></div>`;
@@ -2986,8 +3119,13 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
     const st=document.getElementById('status'); if(st && !st.textContent.includes('🔴')) st.textContent=x.ready;
     document.documentElement.lang=lang==='vi'?'vi':'en';
     updateWelcomeIfFresh();
-    if(typeof quizState!=='undefined' && quizState && quizPanel?.classList.contains('active') && (quizState.industry || quizState.personal)) renderQuestion();
-    else if(typeof renderQuizHome==='function') renderQuizHome();
+    if(typeof quizState!=='undefined' && quizState && quizPanel?.classList.contains('active') && (quizState.industry || quizState.personal)){
+      cancelQuizTranslation?.();
+      quizRenderToken++;
+      if(quizState.screen === "result" && typeof renderResult === "function") renderResult();
+      else if(quizState.screen === "question" && typeof renderQuestion === "function") renderQuestion();
+      else if(typeof renderQuizHome === "function") renderQuizHome();
+    } else if(typeof renderQuizHome==='function') renderQuizHome();
   }
   window.careerLanguage={get:()=>lang,t,apply:applyLanguage};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',addButton); else addButton();
