@@ -1259,6 +1259,35 @@ body.dark-theme .theme-toggle{
   .brand-title-sub{font-size:12px}
 }
 
+
+<script id="vi-only-cleanup">
+(() => {
+  const removeLegacyLanguageUi = () => {
+    const selectors = [
+      '#languageSwitcher',
+      '#language-switcher',
+      '.language-switcher',
+      '[data-language-switcher]',
+      '[data-lang-switcher]',
+      '[data-language-toggle]'
+    ];
+    document.querySelectorAll(selectors.join(',')).forEach(el => el.remove());
+
+    document.querySelectorAll('button, a').forEach(el => {
+      const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      if (/^(🌐\s*)?EN$/i.test(text) || /^🌐\s*EN\b/i.test(text)) {
+        el.remove();
+      }
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', removeLegacyLanguageUi, {once:true});
+  } else {
+    removeLegacyLanguageUi();
+  }
+})();
+</script>
+
 </head>
 
 
