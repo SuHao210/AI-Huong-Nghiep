@@ -1098,6 +1098,40 @@ const NEW_INDUSTRY_RULES = {
 };
 Object.assign(INDUSTRY_RULES, NEW_INDUSTRY_RULES);
 
+const QUIZ_TRANSLATION_SCHEMA = {
+    type: "object",
+    properties: {
+        questions: {
+            type: "array",
+            minItems: 20,
+            maxItems: 20,
+            items: {
+                type: "object",
+                properties: {
+                    q: { type: "string" },
+                    opts: { type: "array", minItems: 4, maxItems: 4, items: { type: "string" } },
+                    a: { type: "integer", minimum: 0, maximum: 3 },
+                    e: { type: "string" }
+                },
+                required: ["q", "opts", "a", "e"],
+                additionalProperties: false
+            }
+        }
+    },
+    required: ["questions"],
+    additionalProperties: false
+};
+
+const quizTranslationCache = new Map();
+const quizTranslateLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    limit: 12,
+    keyGenerator: sessionOrIpKey,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Bạn đã yêu cầu dịch quiz khá nhiều trong thời gian ngắn. Vui lòng thử lại sau." }
+});
+
 const PERSONAL_QUIZ_SCHEMA = {
     type: "object",
     properties: {
@@ -1146,13 +1180,180 @@ function getInteractionOutputText(interaction) {
 }
 
 app.post(
+    "/api/quiz-translate",
+    quizTranslateLimiter,
+    async (req, res) => {
+        const language = req.body?.language === "en" ? "en" : "vi";
+        const sourceLanguage = req.body?.sourceLanguage === "en" ? "en" : "vi";
+        const industry = typeof req.body?.industry === "string" ? req.body.industry : "quiz";
+        const questions = Array.isArray(req.body?.questions) ? req.body.questions : [];
+
+        if (language === sourceLanguage) {
+            return res.json({ questions });
+        }
+
+        if (
+            questions.length !== 20 ||
+            questions.some(q =>
+                !q ||
+                typeof q.q !== "string" ||
+                !Array.isArray(q.opts) ||
+                q.opts.length !== 4 ||
+                q.opts.some(x => typeof x !== "string") ||
+                !Number.isInteger(q.a) ||
+                q.a < 0 ||
+                q.a > 3 ||
+                typeof q.e !== "string"
+            )
+        ) {
+            return res.status(400).json({
+                error: language === "en"
+                    ? "Invalid quiz translation payload."
+                    : "Dữ liệu quiz cần dịch không hợp lệ."
+            });
+        }
+
+        // Include both source/target language and the exact payload in the cache key.
+        // This prevents an English result from ever being reused for Vietnamese.
+        const payload = JSON.stringify(questions);
+        const cacheKey = `${industry}:${sourceLanguage}->${language}:${crypto.createHash("sha256").update(payload).digest("hex")}`;
+        if (quizTranslationCache.has(cacheKey)) {
+            return res.json({ questions: quizTranslationCache.get(cacheKey) });
+        }
+
+        let releaseGeminiSlot;
+        try {
+            releaseGeminiSlot = await acquireGeminiSlot();
+        } catch (error) {
+            return res.status(503).json({
+                error: language === "en"
+                    ? "The quiz translation service is busy. Please try again shortly."
+                    : "Dịch quiz đang bận. Bạn thử lại sau một chút nhé."
+            });
+        }
+
+        const translationSchema = {
+            type: "object",
+            properties: {
+                questions: {
+                    type: "array",
+                    minItems: 20,
+                    maxItems: 20,
+                    items: {
+                        type: "object",
+                        properties: {
+                            q: { type: "string" },
+                            opts: {
+                                type: "array",
+                                minItems: 4,
+                                maxItems: 4,
+                                items: { type: "string" }
+                            },
+                            a: { type: "integer", minimum: 0, maximum: 3 },
+                            e: { type: "string" }
+                        },
+                        required: ["q", "opts", "a", "e"],
+                        additionalProperties: false
+                    }
+                }
+            },
+            required: ["questions"],
+            additionalProperties: false
+        };
+
+        const prompt = `
+Translate this career quiz from ${sourceLanguage === "en" ? "English" : "Vietnamese"} to natural, concise ${language === "en" ? "English" : "Vietnamese"}.
+Industry: ${industry}
+
+STRICT RULES:
+- Return exactly 20 questions.
+- Translate the question text, all four options, and the explanation.
+- Preserve the exact answer index "a" for every question. Never solve or reorder the options.
+- Preserve the order of all 20 questions.
+- Preserve the difficulty and meaning. Do not simplify the situations.
+- Use natural language suitable for a career-orientation quiz.
+- Return JSON only, matching the supplied schema.
+
+Quiz JSON:
+${payload}
+`;
+
+        try {
+            // Use the current generateContent structured-output path for translation.
+            // It avoids storing a translation as a conversation interaction and is
+            // considerably more reliable for this stateless batch operation.
+            const response = await createGenerateContentWithRetry({
+                model: MODEL,
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: translationSchema,
+                    systemInstruction:
+                        `You are a professional translator for a career-orientation quiz. ` +
+                        `Output only valid JSON. Translate into ${language === "en" ? "English" : "Vietnamese"}. ` +
+                        `Never change answer indices, option order, question order, or difficulty.`
+                }
+            }, 3);
+
+            const raw = typeof response?.text === "string" ? response.text.trim() : "";
+            let parsed;
+            try {
+                parsed = JSON.parse(raw);
+            } catch {
+                throw new Error("Gemini returned invalid quiz translation JSON.");
+            }
+
+            const translated = parsed?.questions;
+            if (
+                !Array.isArray(translated) ||
+                translated.length !== 20 ||
+                translated.some(q =>
+                    !q ||
+                    typeof q.q !== "string" ||
+                    !Array.isArray(q.opts) ||
+                    q.opts.length !== 4 ||
+                    q.opts.some(x => typeof x !== "string") ||
+                    !Number.isInteger(q.a) ||
+                    q.a < 0 ||
+                    q.a > 3 ||
+                    typeof q.e !== "string"
+                )
+            ) {
+                throw new Error("Gemini returned an invalid quiz translation.");
+            }
+
+            // Re-assert the answer keys from the source so a model mistake can never
+            // change the scoring logic.
+            const safeTranslated = translated.map((q, i) => ({
+                q: q.q.trim(),
+                opts: q.opts.map(x => x.trim()),
+                a: questions[i].a,
+                e: q.e.trim()
+            }));
+
+            quizTranslationCache.set(cacheKey, safeTranslated);
+            return res.json({ questions: safeTranslated });
+        } catch (error) {
+            console.error("Quiz translation error:", error);
+            return res.status(503).json({
+                error: language === "en"
+                    ? "The English quiz could not be loaded right now. Please try again."
+                    : "Không thể tải bản tiếng Việt của quiz lúc này. Vui lòng thử lại."
+            });
+        } finally {
+            releaseGeminiSlot?.();
+        }
+    }
+);
+
+app.post(
     "/api/personalized-quiz",
     personalizedQuizLimiter,
     async (req, res) => {
         const sessionId = req.headers["x-session-id"];
         const industry = typeof req.body?.industry === "string" ? req.body.industry : "";
         const careerLabel = typeof req.body?.careerLabel === "string" ? req.body.careerLabel : "";
-        const language = "vi";
+        const language = req.body?.language === "en" ? "en" : "vi";
 
         if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
             return res.status(400).json({ error: "Không tìm thấy cuộc trò chuyện hiện tại." });
