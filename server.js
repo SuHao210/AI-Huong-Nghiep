@@ -106,6 +106,7 @@ function sessionOrIpKey(req) {
 
     return `ip:${ipKeyGenerator(req.ip)}`;
 }
+
 const chatLimiter =
     rateLimit({
 
@@ -219,6 +220,20 @@ async function createInteractionWithRetry(request, attempts = 2) {
             lastError = error;
             if (!is429(error) || attempt === attempts - 1) throw error;
             await sleep(600 * (attempt + 1));
+        }
+    }
+    throw lastError;
+}
+
+async function createGenerateContentWithRetry(request, attempts = 3) {
+    let lastError;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+        try {
+            return await ai.models.generateContent(request);
+        } catch (error) {
+            lastError = error;
+            if (!is429(error) || attempt === attempts - 1) throw error;
+            await sleep(700 * (attempt + 1));
         }
     }
     throw lastError;
@@ -1176,15 +1191,32 @@ app.post(
         if (language === sourceLanguage) {
             return res.json({ questions });
         }
-        if (questions.length !== 20 || questions.some(q =>
-            !q || typeof q.q !== "string" || !Array.isArray(q.opts) || q.opts.length !== 4 ||
-            q.opts.some(x => typeof x !== "string") || !Number.isInteger(q.a) || q.a < 0 || q.a > 3 || typeof q.e !== "string"
-        )) {
-            return res.status(400).json({ error: "Quiz translation payload is invalid." });
+
+        if (
+            questions.length !== 20 ||
+            questions.some(q =>
+                !q ||
+                typeof q.q !== "string" ||
+                !Array.isArray(q.opts) ||
+                q.opts.length !== 4 ||
+                q.opts.some(x => typeof x !== "string") ||
+                !Number.isInteger(q.a) ||
+                q.a < 0 ||
+                q.a > 3 ||
+                typeof q.e !== "string"
+            )
+        ) {
+            return res.status(400).json({
+                error: language === "en"
+                    ? "Invalid quiz translation payload."
+                    : "Dữ liệu quiz cần dịch không hợp lệ."
+            });
         }
 
+        // Include both source/target language and the exact payload in the cache key.
+        // This prevents an English result from ever being reused for Vietnamese.
         const payload = JSON.stringify(questions);
-        const cacheKey = `${industry}:${crypto.createHash("sha256").update(payload).digest("hex")}`;
+        const cacheKey = `${industry}:${sourceLanguage}->${language}:${crypto.createHash("sha256").update(payload).digest("hex")}`;
         if (quizTranslationCache.has(cacheKey)) {
             return res.json({ questions: quizTranslationCache.get(cacheKey) });
         }
@@ -1193,56 +1225,121 @@ app.post(
         try {
             releaseGeminiSlot = await acquireGeminiSlot();
         } catch (error) {
-            return res.status(503).json({ error: getFriendlyError(error) });
+            return res.status(503).json({
+                error: language === "en"
+                    ? "The quiz translation service is busy. Please try again shortly."
+                    : "Dịch quiz đang bận. Bạn thử lại sau một chút nhé."
+            });
         }
 
-        try {
-            const prompt = `
+        const translationSchema = {
+            type: "object",
+            properties: {
+                questions: {
+                    type: "array",
+                    minItems: 20,
+                    maxItems: 20,
+                    items: {
+                        type: "object",
+                        properties: {
+                            q: { type: "string" },
+                            opts: {
+                                type: "array",
+                                minItems: 4,
+                                maxItems: 4,
+                                items: { type: "string" }
+                            },
+                            a: { type: "integer", minimum: 0, maximum: 3 },
+                            e: { type: "string" }
+                        },
+                        required: ["q", "opts", "a", "e"],
+                        additionalProperties: false
+                    }
+                }
+            },
+            required: ["questions"],
+            additionalProperties: false
+        };
+
+        const prompt = `
 Translate this career quiz from ${sourceLanguage === "en" ? "English" : "Vietnamese"} to natural, concise ${language === "en" ? "English" : "Vietnamese"}.
 Industry: ${industry}
-Rules:
-- Translate ONLY the text; preserve the exact meaning and difficulty.
-- Return exactly 20 questions.
-- Preserve the answer index "a" exactly.
-- Preserve four options per question.
-- Do not add, remove, reorder, simplify, or solve questions.
-- Explanations must also be English.
-- Avoid awkward literal translation; use natural English suitable for a career-orientation quiz.
-- Return JSON only.
 
-Vietnamese quiz JSON:
+STRICT RULES:
+- Return exactly 20 questions.
+- Translate the question text, all four options, and the explanation.
+- Preserve the exact answer index "a" for every question. Never solve or reorder the options.
+- Preserve the order of all 20 questions.
+- Preserve the difficulty and meaning. Do not simplify the situations.
+- Use natural language suitable for a career-orientation quiz.
+- Return JSON only, matching the supplied schema.
+
+Quiz JSON:
 ${payload}
 `;
 
-            const interaction = await createInteractionWithRetry({
+        try {
+            // Use the current generateContent structured-output path for translation.
+            // It avoids storing a translation as a conversation interaction and is
+            // considerably more reliable for this stateless batch operation.
+            const response = await createGenerateContentWithRetry({
                 model: MODEL,
-                input: prompt,
-                response_format: {
-                    type: "text",
-                    mime_type: "application/json",
-                    schema: QUIZ_TRANSLATION_SCHEMA
-                },
-                generation_config: { thinking_level: "low" },
-                store: true
-            }, 2);
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: translationSchema,
+                    systemInstruction:
+                        `You are a professional translator for a career-orientation quiz. ` +
+                        `Output only valid JSON. Translate into ${language === "en" ? "English" : "Vietnamese"}. ` +
+                        `Never change answer indices, option order, question order, or difficulty.`
+                }
+            }, 3);
 
-            const raw = getInteractionOutputText(interaction);
+            const raw = typeof response?.text === "string" ? response.text.trim() : "";
             let parsed;
-            try { parsed = JSON.parse(raw); } catch {
+            try {
+                parsed = JSON.parse(raw);
+            } catch {
                 throw new Error("Gemini returned invalid quiz translation JSON.");
             }
+
             const translated = parsed?.questions;
-            if (!Array.isArray(translated) || translated.length !== 20 || translated.some(q =>
-                !q || typeof q.q !== "string" || !Array.isArray(q.opts) || q.opts.length !== 4 ||
-                q.opts.some(x => typeof x !== "string") || !Number.isInteger(q.a) || q.a < 0 || q.a > 3 || typeof q.e !== "string"
-            )) {
+            if (
+                !Array.isArray(translated) ||
+                translated.length !== 20 ||
+                translated.some(q =>
+                    !q ||
+                    typeof q.q !== "string" ||
+                    !Array.isArray(q.opts) ||
+                    q.opts.length !== 4 ||
+                    q.opts.some(x => typeof x !== "string") ||
+                    !Number.isInteger(q.a) ||
+                    q.a < 0 ||
+                    q.a > 3 ||
+                    typeof q.e !== "string"
+                )
+            ) {
                 throw new Error("Gemini returned an invalid quiz translation.");
             }
-            quizTranslationCache.set(cacheKey, translated);
-            return res.json({ questions: translated });
+
+            // Re-assert the answer keys from the source so a model mistake can never
+            // change the scoring logic.
+            const safeTranslated = translated.map((q, i) => ({
+                q: q.q.trim(),
+                opts: q.opts.map(x => x.trim()),
+                a: questions[i].a,
+                e: q.e.trim()
+            }));
+
+            quizTranslationCache.set(cacheKey, safeTranslated);
+            return res.json({ questions: safeTranslated });
         } catch (error) {
             console.error("Quiz translation error:", error);
-            return res.status(503).json({ error: "Không thể tải bản tiếng Anh của quiz lúc này. Vui lòng thử lại." });
+            return res.status(503).json({
+                error: language === "en"
+                    ? "The English quiz could not be loaded right now. Please try again."
+                    : "Không thể tải bản tiếng Việt của quiz lúc này. Vui lòng thử lại."
+            });
         } finally {
             releaseGeminiSlot?.();
         }
