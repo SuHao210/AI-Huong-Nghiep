@@ -337,6 +337,7 @@ function getSession(req, res) {
                 lastInteractionId: null,
                 lastAssistantText: "",
                 lastRecommendation: null,
+                messages: [],
                 createdAt: Date.now(),
                 lastUsedAt: Date.now()
             }
@@ -495,23 +496,28 @@ Yêu cầu:
 Trả JSON đúng schema, không thêm markdown.
 `;
 
-            const interaction = await createInteractionWithRetry({
+            const transcript = (session.messages || [])
+                .slice(-30)
+                .map((m) => `${m.role === "user" ? "NGƯỜI DÙNG" : "AI"}: ${m.text}`)
+                .join("\n\n");
+
+            const profileResponse = await createGenerateContentWithRetry({
                 model: MODEL,
-                previous_interaction_id: session.lastInteractionId,
-                input: prompt,
-                response_format: {
-                    type: "text",
-                    mime_type: "application/json",
-                    schema: PROFILE_SCHEMA
-                },
-                generation_config: {
-                    thinking_level: "low",
-                    max_output_tokens: 900
-                },
-                store: false
+                contents: `${prompt}
+
+LỊCH SỬ CUỘC TRÒ CHUYỆN:
+${transcript}`,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: PROFILE_SCHEMA,
+                    systemInstruction:
+                        "Bạn là AI phân tích hồ sơ hướng nghiệp. Chỉ sử dụng dữ kiện có trong transcript. Không bịa, không chẩn đoán, không khẳng định nghề nghiệp là định mệnh. Trả JSON hợp lệ theo schema."
+                }
             }, 2);
 
-            const raw = getInteractionOutputText(interaction);
+            const raw = typeof profileResponse?.text === "string"
+                ? profileResponse.text.trim()
+                : "";
 
             let profile;
             try {
@@ -600,6 +606,14 @@ app.post(
 
         const session =
             getSession(req, res);
+
+        session.messages ||= [];
+        session.messages.push({
+            role: "user",
+            text: message,
+            at: Date.now()
+        });
+        if (session.messages.length > 40) session.messages = session.messages.slice(-40);
 
         let releaseGeminiSlot;
         try {
@@ -842,6 +856,13 @@ LANGUAGE REQUIREMENT:
                     newInteractionId;
                 session.lastAssistantText =
                     fullText;
+                session.messages ||= [];
+                session.messages.push({
+                    role: "assistant",
+                    text: fullText,
+                    at: Date.now()
+                });
+                if (session.messages.length > 40) session.messages = session.messages.slice(-40);
                 if (/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(fullText)) {
                     session.lastRecommendation = {
                         interactionId: newInteractionId,
