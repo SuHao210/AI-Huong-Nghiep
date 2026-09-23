@@ -2858,6 +2858,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
     // remained Vietnamese, or reset the quiz unexpectedly).
     let quizRenderToken = 0;
     let quizTranslationAbort = null;
+    let quizTranslationAbortKey = null;
     const quizEnglishCache = new Map();
     const quizTranslationInFlight = new Map();
 
@@ -2866,8 +2867,12 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
     }
 
     function cancelQuizTranslation(){
-      try { quizTranslationAbort?.abort(); } catch {}
+      const key = quizTranslationAbortKey;
+      const controller = quizTranslationAbort;
+      try { controller?.abort(); } catch {}
       quizTranslationAbort = null;
+      quizTranslationAbortKey = null;
+      if(key) quizTranslationInFlight.delete(key);
     }
 
     function startQuiz(industry){
@@ -2886,7 +2891,7 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
         resultSoundPlayed:false,
         displayQuestions:null,
         baseQuestionLanguage:"vi",
-        questionLanguage:null
+        questionLanguage:"vi"
       };
       beep();
       renderQuestion();
@@ -2916,50 +2921,54 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
     async function getLocalizedQuestions(targetLang, renderToken){
       const state=quizState;
       const source = state?.personal ? state.personalQuestions : QUIZ[state?.industry];
-      const sourceLang = state?.baseQuestionLanguage || "vi";
+      const sourceLang = "vi"; // The built-in quiz bank is always Vietnamese.
       if(!state || !source) return [];
 
-      // Switching back to Vietnamese must be synchronous and must never touch
-      // the translation API. Also explicitly update questionLanguage so a stale
-      // English request cannot make the next render think English is still active.
+      // Vietnamese is the canonical source. Switching back to VI is always
+      // synchronous and never touches Gemini.
       if(targetLang === sourceLang){
         state.displayQuestions = source;
-        state.questionLanguage = targetLang;
+        state.questionLanguage = "vi";
         return source;
       }
 
       const cacheKey = `${state.personal ? "personal" : state.industry}:${sourceLang}->${targetLang}`;
-      if(quizEnglishCache.has(cacheKey)){
-        const cached=quizEnglishCache.get(cacheKey);
-        state.displayQuestions=cached;
-        state.questionLanguage=targetLang;
+      const cached = quizEnglishCache.get(cacheKey);
+      if(cached){
+        state.displayQuestions = cached;
+        state.questionLanguage = targetLang;
         return cached;
       }
 
-      let request=quizTranslationInFlight.get(cacheKey);
+      let request = quizTranslationInFlight.get(cacheKey);
       if(!request){
-        cancelQuizTranslation();
-        const controller=new AbortController();
-        quizTranslationAbort=controller;
-        request=fetch("/api/quiz-translate",{
+        const controller = new AbortController();
+        quizTranslationAbort = controller;
+        quizTranslationAbortKey = cacheKey;
+
+        request = fetch("/api/quiz-translate",{
           method:"POST",
           headers:{"Content-Type":"application/json"},
           signal:controller.signal,
           body:JSON.stringify({
-            industry:state.personal?state.personalTitle:state.industry,
+            industry:state.personal ? state.personalTitle : state.industry,
             questions:source.map(q=>({q:q.q,opts:q.opts,a:Number(q.a),e:q.e})),
-            sourceLanguage:sourceLang,
-            language:targetLang
+            sourceLanguage:"vi",
+            language:"en"
           })
         }).then(async response=>{
           const data=await response.json().catch(()=>({}));
-          if(!response.ok) throw new Error("TRANSLATION_UNAVAILABLE");
+          if(!response.ok) throw new Error(data?.error || "TRANSLATION_UNAVAILABLE");
           const normalized=normalizeTranslatedQuestions(data,source.length);
           quizEnglishCache.set(cacheKey,normalized);
           return normalized;
         }).finally(()=>{
+          // Only clear the shared controller if this is still the active request.
+          if(quizTranslationAbortKey===cacheKey){
+            quizTranslationAbort=null;
+            quizTranslationAbortKey=null;
+          }
           quizTranslationInFlight.delete(cacheKey);
-          if(quizTranslationAbort===controller) quizTranslationAbort=null;
         });
         quizTranslationInFlight.set(cacheKey,request);
       }
@@ -2985,6 +2994,10 @@ body:not(.dark-theme) .lang-toggle{color:#fff}
       if(!app) return;
 
       if(currentLang !== (state.questionLanguage || "")){
+        // If the user switched back to Vietnamese, immediately cancel the
+        // English request. Its promise is also removed from the in-flight map,
+        // so a later EN switch gets a fresh request instead of a dead one.
+        if(currentLang === "vi") cancelQuizTranslation();
         app.innerHTML=`<div class="loading-card"><div class="spinner"></div><strong>${currentLang==="en"?"🌐 Translating the quiz into English…":"🌐 Đang chuyển quiz sang tiếng Việt…"}</strong><p>${currentLang==="en"?"Your current question and score will be kept.":"Giữ nguyên câu hiện tại và điểm của bạn."}</p></div>`;
       }
 
