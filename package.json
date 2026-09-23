@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "build": "node scripts/pretranslate-quiz.mjs"
   },
   "dependencies": {
     "@google/genai": "latest",
