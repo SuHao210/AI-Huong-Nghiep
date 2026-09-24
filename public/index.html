@@ -1307,6 +1307,22 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
 @keyframes profileShimmer{to{background-position:-200% 0}}
 .profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
 .profile-card{padding:15px;border:1px solid #e4e8f1;border-radius:16px;background:#fbfcff}.profile-card h4{margin:0 0 7px;color:#172554;font-size:13px}.profile-card p{margin:0;color:#64748b;font-size:12px;line-height:1.6}.profile-card ul{margin:0;padding-left:18px;color:#64748b;font-size:12px;line-height:1.65}.profile-careers{display:flex;flex-wrap:wrap;gap:7px}.profile-pill{padding:7px 10px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:11px;font-weight:800}.profile-foot{margin-top:12px;padding:13px 15px;border-radius:16px;background:#f8fafc;color:#64748b;font-size:11px;line-height:1.55}.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.profile-error{padding:14px;border-radius:15px;background:#fff1f2;color:#be123c;font-size:12px;line-height:1.5}
+.profile-summary{padding:15px 16px;border:1px solid #dbeafe;border-radius:16px;background:linear-gradient(135deg,#f8fbff,#eef7ff);margin-bottom:11px}.profile-summary h4{margin:0 0 5px;color:#0f172a;font-size:14px}.profile-summary p{margin:0;color:#475569;font-size:12px;line-height:1.65}.profile-career-list{display:grid;grid-template-columns:1fr;gap:10px}.profile-career-item{padding:15px;border:1px solid #dbe3ef;border-radius:17px;background:#fff;box-shadow:0 6px 18px rgba(15,23,42,.04)}.profile-career-title{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;margin-bottom:7px}.profile-career-title strong{font-size:14px;color:#172554;line-height:1.35}.profile-career-rank{font-size:10px;font-weight:900;color:#4338ca;background:#eef2ff;border-radius:999px;padding:5px 8px;white-space:nowrap}.profile-career-copy{margin:0;color:#475569;font-size:12px;line-height:1.6}.profile-career-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.profile-mini{padding:9px 10px;border-radius:12px;background:#f8fafc}.profile-mini b{display:block;color:#334155;font-size:10px;margin-bottom:4px}.profile-mini span{display:block;color:#64748b;font-size:11px;line-height:1.5}.profile-evidence{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.profile-evidence span{padding:6px 8px;border-radius:10px;background:#f1f5f9;color:#475569;font-size:10px;line-height:1.35}.ai-markdown{font-size:14px;line-height:1.7;word-break:break-word}.ai-markdown h4{margin:12px 0 6px;color:#172554;font-size:14px}.ai-markdown p{margin:5px 0}.ai-markdown ul,.ai-markdown ol{margin:5px 0 7px;padding-left:22px}.ai-markdown li{margin:3px 0}.chat-retry{margin-top:9px;padding:7px 10px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:#334155;font-size:11px;font-weight:800;cursor:pointer}.profile-dialog .career-lab-dialog-head{align-items:flex-start}
+@media(max-width:700px){.profile-career-meta{grid-template-columns:1fr}.profile-career-title{display:block}.profile-career-rank{display:inline-block;margin-top:6px}}
+body.dark-theme .profile-summary{border-color:#25345a;background:linear-gradient(135deg,#121c31,#10243a)}
+body.dark-theme .profile-summary h4{color:#e8efff} body.dark-theme .profile-summary p{color:#aab6ca}
+body.dark-theme .profile-card{border-color:#263247;background:#111827} body.dark-theme .profile-card h4{color:#dce6ff} body.dark-theme .profile-card p,body.dark-theme .profile-card ul{color:#aab6ca}
+body.dark-theme .profile-career-item{border-color:#2b3951;background:#0f172a;box-shadow:0 12px 28px rgba(0,0,0,.22)}
+body.dark-theme .profile-career-title strong{color:#e6edff} body.dark-theme .profile-career-copy{color:#b3bfd1}
+body.dark-theme .profile-career-rank{background:#25204b;color:#b9b0ff}
+body.dark-theme .profile-mini{background:#111c2e} body.dark-theme .profile-mini b{color:#dce6ff} body.dark-theme .profile-mini span{color:#aab6ca}
+body.dark-theme .profile-evidence span{background:#182337;color:#bac6d8}
+body.dark-theme .profile-foot{background:#101827;color:#9eabbf}
+body.dark-theme .profile-skeleton{background:linear-gradient(90deg,#172033,#202c43,#172033)}
+body.dark-theme .career-lab-dialog{background:#0f172a;color:#edf2ff}
+body.dark-theme .career-lab-close{background:#1a2435;color:#cbd5e1}
+body.dark-theme .chat-retry{border-color:#34435d;background:#111c2d;color:#d8e2f3}
+body.dark-theme .ai-markdown h4{color:#dfe8ff} body.dark-theme .ai-markdown code{background:#1a2435;color:#e2e8f0}
 @media(max-width:700px){
     .profile-grid{grid-template-columns:1fr}
     .mode-switch{grid-template-columns:1fr 1fr}
@@ -1446,32 +1462,60 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
     function renderProfile(p) {
         const arr = x => Array.isArray(x) ? x : [];
         const list = x => arr(x).map(v => `<li>${escHtml(v)}</li>`).join("");
-        const pills = arr(p.career_directions).map(v => `<span class="profile-pill">${escHtml(v)}</span>`).join("");
-        profileBody.innerHTML = `<div class="profile-grid">
-          <div class="profile-card"><h4>✨ Sở thích nổi bật</h4><ul>${list(p.interests)}</ul></div>
-          <div class="profile-card"><h4>💪 Điểm mạnh có tín hiệu</h4><ul>${list(p.strengths)}</ul></div>
+        const careers = arr(p.career_directions).map((v, i) => {
+            if (typeof v === "string") return {career:v, why:"Đang được xem là một hướng để khám phá.", evidence:[], develop:"Tiếp tục kiểm chứng bằng trải nghiệm thực tế.", experiment:"Thử một nhiệm vụ nhỏ của nghề này và ghi lại cảm nhận."};
+            return {
+                career:String(v?.career || "").trim(), why:String(v?.why || "").trim(),
+                evidence:arr(v?.evidence).map(String).slice(0,4),
+                develop:String(v?.develop || "").trim(), experiment:String(v?.experiment || "").trim()
+            };
+        }).filter(v => v.career);
+
+        const careerHtml = careers.length ? careers.map((c,i) => `
+          <div class="profile-career-item">
+            <div class="profile-career-title"><strong>${i+1}. ${escHtml(c.career)}</strong><span class="profile-career-rank">HƯỚNG KHÁM PHÁ</span></div>
+            <p class="profile-career-copy"><b>Vì sao phù hợp:</b> ${escHtml(c.why || "Chưa đủ dữ liệu")}</p>
+            ${c.evidence.length ? `<div class="profile-evidence">${c.evidence.map(e=>`<span>${escHtml(e)}</span>`).join("")}</div>` : ""}
+            <div class="profile-career-meta">
+              <div class="profile-mini"><b>🌱 Cần phát triển</b><span>${escHtml(c.develop || "Chưa đủ dữ liệu")}</span></div>
+              <div class="profile-mini"><b>🧪 Cách thử</b><span>${escHtml(c.experiment || "Chưa có thử nghiệm cụ thể")}</span></div>
+              <div class="profile-mini"><b>🎯 Mục tiêu</b><span>Kiểm chứng bằng trải nghiệm, không đoán bằng cảm giác.</span></div>
+            </div>
+          </div>`).join("") : `<div class="profile-card"><h4>🧭 Hướng nghề</h4><p>Chưa đủ dữ liệu để đưa ra hướng nghề rõ ràng. Hãy trò chuyện thêm với AI rồi cập nhật hồ sơ.</p></div>`;
+
+        profileBody.innerHTML = `<div class="profile-summary"><h4>🧭 Bản đồ hướng nghiệp hiện tại</h4><p>Đây là các giả thuyết nghề nghiệp được suy ra từ chính cuộc trò chuyện. Hãy dùng từng hướng như một thứ để thử, không phải một nhãn cố định.</p></div>
+        <div class="profile-grid">
+          <div class="profile-card"><h4>✨ Sở thích nổi bật</h4><ul>${list(p.interests) || "<li>Chưa đủ dữ liệu</li>"}</ul></div>
+          <div class="profile-card"><h4>💪 Điểm mạnh có tín hiệu</h4><ul>${list(p.strengths) || "<li>Chưa đủ dữ liệu</li>"}</ul></div>
           <div class="profile-card"><h4>🧠 Cách tư duy</h4><p>${escHtml(p.thinking_style || "Chưa đủ dữ liệu")}</p></div>
           <div class="profile-card"><h4>🔥 Động lực</h4><p>${escHtml(p.motivations || "Chưa đủ dữ liệu")}</p></div>
           <div class="profile-card"><h4>🏡 Môi trường phù hợp</h4><p>${escHtml(p.work_environment || "Chưa đủ dữ liệu")}</p></div>
-          <div class="profile-card"><h4>🌱 Điều nên phát triển</h4><ul>${list(p.growth_areas)}</ul></div>
-          <div class="profile-card" style="grid-column:1/-1"><h4>🧭 Hướng nghề nên khám phá</h4><div class="profile-careers">${pills || '<span class="profile-pill">Tiếp tục trò chuyện để có thêm dữ liệu</span>'}</div></div>
+          <div class="profile-card"><h4>🌱 Điều nên phát triển</h4><ul>${list(p.growth_areas) || "<li>Chưa đủ dữ liệu</li>"}</ul></div>
+          <div class="profile-card" style="grid-column:1/-1"><h4>🧭 Hướng nghề nên khám phá</h4><div class="profile-career-list">${careerHtml}</div></div>
         </div>
-        <div class="profile-foot">Đây là hồ sơ khám phá tạm thời, không phải nhãn cố định. Hồ sơ sẽ thay đổi khi bạn chia sẻ thêm trải nghiệm, sở thích và cách bạn xử lý tình huống.</div>
+        <div class="profile-foot">Hồ sơ sẽ tự được cập nhật khi bạn chia sẻ thêm trải nghiệm. Hệ thống không dùng hồ sơ này để khẳng định bạn “chắc chắn hợp” với một nghề.</div>
         <div class="profile-actions"><button class="career-lab-btn" type="button" id="profileRefreshBtn">↻ Cập nhật hồ sơ</button><button class="career-lab-btn alt" type="button" id="profileContinueBtn">💬 Tiếp tục trò chuyện</button></div>`;
         document.getElementById("profileRefreshBtn")?.addEventListener("click", loadProfile);
         document.getElementById("profileContinueBtn")?.addEventListener("click", () => { closeProfileModal(); switchMode("chat"); userInput.focus(); });
     }
 
     async function loadProfile() {
-        if (!sessionId) { profileBody.innerHTML = `<div class="profile-error">Hãy nhắn với AI ít nhất một lần để hồ sơ có dữ liệu nhé.</div>`; return; }
+        if (!sessionId) {
+            profileBody.innerHTML = `<div class="profile-error">Hãy nhắn với AI ít nhất một lần để hồ sơ có dữ liệu nhé.</div>`;
+            return;
+        }
         profileLoading();
         try {
-            const r = await fetch("/api/profile", {method:"POST", headers:{...(sessionId?{"X-Session-Id":sessionId}: {})}});
+            const r = await fetch("/api/profile", {
+                method:"POST",
+                headers:{...(sessionId?{"X-Session-Id":sessionId}: {})}
+            });
             const data = await r.json().catch(() => ({}));
             if (!r.ok) throw new Error(data.error || "Không thể tải hồ sơ.");
             renderProfile(data.profile || {});
         } catch (e) {
-            profileBody.innerHTML = `<div class="profile-error">❌ ${escHtml(e.message || "Không thể tải hồ sơ lúc này.")}<br><br>Hãy thử lại sau khi gửi thêm một tin nhắn.</div>`;
+            profileBody.innerHTML = `<div class="profile-error">❌ ${escHtml(e.message || "Không thể tải hồ sơ lúc này.")}<br><br><button type="button" class="chat-retry" id="profileRetryBtn">↻ Thử lại hồ sơ</button></div>`;
+            document.getElementById("profileRetryBtn")?.addEventListener("click", loadProfile);
         }
     }
 
@@ -1482,6 +1526,45 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         localStorage.setItem("huongnghiep_session_id", id);
     }
     function scrollBottom() { chatBox.scrollTop = chatBox.scrollHeight; }
+    function renderMarkdownLite(text) {
+        const raw = String(text ?? "");
+        const escaped = escHtml(raw);
+        const lines = escaped.split(/\r?\n/);
+        let html = "";
+        let listType = null;
+        const closeList = () => {
+            if (listType) { html += `</${listType}>`; listType = null; }
+        };
+        const inline = (s) => s
+            .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+            .replace(/__([^_]+)__/g, "<strong>$1</strong>")
+            .replace(/`([^`]+)`/g, "<code>$1</code>");
+        for (const line of lines) {
+            const h = line.match(/^\s*#{1,4}\s+(.+)$/);
+            const ol = line.match(/^\s*(\d+)[.)]\s+(.+)$/);
+            const ul = line.match(/^\s*[-•]\s+(.+)$/);
+            if (!line.trim()) { closeList(); continue; }
+            if (h) { closeList(); html += `<h4>${inline(h[1])}</h4>`; continue; }
+            if (ol) {
+                if (listType !== "ol") { closeList(); html += "<ol>"; listType = "ol"; }
+                html += `<li>${inline(ol[2])}</li>`; continue;
+            }
+            if (ul) {
+                if (listType !== "ul") { closeList(); html += "<ul>"; listType = "ul"; }
+                html += `<li>${inline(ul[1])}</li>`; continue;
+            }
+            closeList();
+            html += `<p>${inline(line)}</p>`;
+        }
+        closeList();
+        return html || "<p></p>";
+    }
+
+    function setAiContent(node, text) {
+        node.classList.add("ai-markdown");
+        node.innerHTML = renderMarkdownLite(text);
+    }
+
     function addMessage(text, type) {
         const message = document.createElement("div");
         message.className = `message ${type}`;
@@ -1491,7 +1574,7 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         sender.className = "sender";
         sender.textContent = type === "user" ? "Bạn" : "🧭 AI Hướng Nghiệp";
         const content = document.createElement("div");
-        content.textContent = text;
+        if (type === "ai") setAiContent(content, text); else content.textContent = text;
         bubble.append(sender, content);
         message.appendChild(bubble);
         chatBox.appendChild(message);
@@ -1507,34 +1590,53 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         message.appendChild(bubble); chatBox.appendChild(message); scrollBottom(); return message;
     }
 
+    const CAREER_MATCH_MAP = [
+        { key:"it", label:"💻 Công nghệ thông tin", terms:["data analyst","data scientist","software engineer","software developer","lập trình viên","developer","ux/ui designer","ui/ux","game designer","gameplay programmer","product designer","devops","cybersecurity","an ninh mạng","kỹ sư phần mềm","kiểm thử phần mềm","qa engineer"] },
+        { key:"business", label:"📊 Kinh doanh & Tài chính", terms:["business analyst","financial analyst","finance","tài chính","kinh doanh","sales","bán hàng","business development","chuyên viên kinh doanh","phân tích kinh doanh","ngân hàng","accountant","kế toán","investment","operations analyst","chuyên viên vận hành","quản trị vận hành"] },
+        { key:"health", label:"🩺 Y tế & Chăm sóc sức khỏe", terms:["bác sĩ","điều dưỡng","dược sĩ","pharmacist","y tế","healthcare","chăm sóc sức khỏe","kỹ thuật viên xét nghiệm","vật lý trị liệu","physiotherapist","nutritionist","dinh dưỡng"] },
+        { key:"engineering", label:"⚙️ Kỹ thuật & Công nghệ", terms:["kỹ sư","engineering","kỹ thuật","cơ khí","điện tử","tự động hóa","robotics","civil engineer","xây dựng","cơ điện tử","mechatronics","mechanical"] },
+        { key:"marketing", label:"🎨 Marketing & Truyền thông", terms:["marketing","digital marketing","content strategist","content creator","truyền thông","social media","copywriter","seo","branding","quảng cáo","pr","quan hệ công chúng","creator","biên tập viên"] },
+        { key:"law", label:"⚖️ Luật & Pháp lý", terms:["law","legal","luật","pháp lý","lawyer","luật sư","legal counsel"] },
+        { key:"education", label:"🧠 Giáo dục & Tâm lý", terms:["education","psychology","giáo dục","tâm lý","teacher","giáo viên","psychologist","counselor"] },
+        { key:"architecture", label:"🏛️ Kiến trúc & Thiết kế", terms:["architecture","design","kiến trúc","thiết kế","architect","kiến trúc sư","designer","interior designer"] },
+        { key:"environment", label:"🌱 Môi trường & Nông nghiệp", terms:["environment","agriculture","môi trường","nông nghiệp","sustainability","gis","environmental analyst"] },
+        { key:"tourism", label:"✈️ Du lịch & Nhà hàng - Khách sạn", terms:["tourism","hospitality","du lịch","nhà hàng","khách sạn","hotel","tour guide","event","revenue management"] }
+    ];
+
     function normalizeRecommendationText(text) {
-        // Only expose the personalized-quiz button after the AI has reached its recommendation section.
-        const eligible = text.includes("💼 NGHỀ NGHIỆP ĐÁNG THỬ") || /NGHỀ NGHIỆP ĐÁNG THỬ/i.test(text) || text.includes("💼 CAREERS WORTH TRYING") || /CAREERS WORTH TRYING/i.test(text);
-        if (!eligible) return null;
-        const map = [
-            { key:"it", label:"💻 Công nghệ thông tin", terms:["data analyst","data scientist","software engineer","software developer","lập trình viên","developer","ux/ui designer","ui/ux","game designer","gameplay programmer","product designer","devops","cybersecurity","an ninh mạng","kỹ sư phần mềm","kiểm thử phần mềm","qa engineer"] },
-            { key:"business", label:"📊 Kinh doanh & Tài chính", terms:["business analyst","financial analyst","finance","tài chính","kinh doanh","sales","bán hàng","business development","chuyên viên kinh doanh","phân tích kinh doanh","ngân hàng","accountant","kế toán","investment"] },
-            { key:"health", label:"🩺 Y tế & Chăm sóc sức khỏe", terms:["bác sĩ","điều dưỡng","dược sĩ","pharmacist","y tế","healthcare","chăm sóc sức khỏe","kỹ thuật viên xét nghiệm","vật lý trị liệu","physiotherapist","nutritionist","dinh dưỡng"] },
-            { key:"engineering", label:"⚙️ Kỹ thuật & Công nghệ", terms:["kỹ sư","engineering","kỹ thuật","cơ khí","điện","điện tử","tự động hóa","robotics","civil engineer","xây dựng","cơ điện tử","mechatronics","mechanical"] },
-            { key:"marketing", label:"🎨 Marketing & Truyền thông", terms:["marketing","digital marketing","content strategist","content creator","truyền thông","social media","copywriter","seo","branding","quảng cáo","pr","quan hệ công chúng","creator","biên tập viên"] },
-            { key:"law", label:"⚖️ Luật & Pháp lý", terms:["law","legal","luật","pháp lý","lawyer","luật sư","legal counsel"] },
-            { key:"education", label:"🧠 Giáo dục & Tâm lý", terms:["education","psychology","giáo dục","tâm lý","teacher","giáo viên","psychologist","counselor"] },
-            { key:"architecture", label:"🏛️ Kiến trúc & Thiết kế", terms:["architecture","design","kiến trúc","thiết kế","architect","kiến trúc sư","designer","interior designer"] },
-            { key:"environment", label:"🌱 Môi trường & Nông nghiệp", terms:["environment","agriculture","môi trường","nông nghiệp","sustainability","gis","environmental analyst"] },
-            { key:"tourism", label:"✈️ Du lịch & Nhà hàng - Khách sạn", terms:["tourism","hospitality","du lịch","nhà hàng","khách sạn","hotel","tour guide","event"] }
-        ];
-        const lower = text.toLowerCase();
-        return map.filter(x => x.terms.some(t => lower.includes(t)));
+        const source = String(text || "");
+        if (!(source.includes("💼 NGHỀ NGHIỆP ĐÁNG THỬ") || /NGHỀ NGHIỆP ĐÁNG THỬ/i.test(source) || /CAREERS WORTH TRYING/i.test(source))) return null;
+        const lower = source.toLowerCase();
+        return CAREER_MATCH_MAP.filter(item => item.terms.some(t => lower.includes(t.toLowerCase())));
     }
+
     function extractCareerNames(text) {
-        const patterns = [
-            "Data Analyst","Data Scientist","Software Engineer","Software Developer","Lập trình viên","UX/UI Designer","UI/UX Designer","Product Designer","Game Designer","Gameplay Programmer","DevOps Engineer","Cybersecurity Specialist","Business Analyst","Financial Analyst","Digital Marketing Specialist","Content Strategist","Content Creator","Copywriter","SEO Specialist","Sales Specialist","Business Development Specialist","Kế toán","Bác sĩ","Điều dưỡng","Dược sĩ","Chuyên viên tâm lý","Giáo viên","Kiến trúc sư","Interior Designer","Kỹ sư cơ khí","Kỹ sư điện","Kỹ sư điện tử","Kỹ sư tự động hóa","Kỹ sư môi trường","Chuyên viên du lịch","Event Planner","Quản trị khách sạn"
-        ];
-        const lower=text.toLowerCase();
-        return patterns.filter(x=>lower.includes(x.toLowerCase())).slice(0,6);
+        const source = String(text || "");
+        const names = [];
+        const add = value => {
+            const clean = String(value || "").replace(/[\*`]/g, "").replace(/\s+/g," ").replace(/[.:：]+$/g,"").trim();
+            if (!clean || clean.length < 3 || clean.length > 90) return;
+            const banned = /^(vì sao phù hợp|dữ kiện|điểm cần phát triển|cách thử thực tế|bước tiếp theo|hướng đi)/i;
+            if (banned.test(clean)) return;
+            if (!names.some(n => n.toLowerCase() === clean.toLowerCase())) names.push(clean);
+        };
+        for (const line of source.split(/\r?\n/)) {
+            const match = line.match(/^\s*(?:\d+[.)]|[-•])\s*\**([^:\n]+?)(?:\**\s*[-–—:]|\**\s*$)/);
+            if (match) add(match[1]);
+            if (names.length >= 6) break;
+        }
+        if (names.length < 3) {
+            const patterns = [
+                "Data Analyst","Data Scientist","Software Engineer","Software Developer","Lập trình viên","UX/UI Designer","UI/UX Designer","Product Designer","Game Designer","Gameplay Programmer","DevOps Engineer","Cybersecurity Specialist","Business Analyst","Financial Analyst","Operations Analyst","Chuyên viên Phân tích Dữ liệu","Chuyên viên Vận hành","Digital Marketing Specialist","Content Strategist","Content Creator","Copywriter","SEO Specialist","Sales Specialist","Business Development Specialist","Kế toán","Bác sĩ","Điều dưỡng","Dược sĩ","Chuyên viên tâm lý","Giáo viên","Kiến trúc sư","Interior Designer","Kỹ sư cơ khí","Kỹ sư điện","Kỹ sư điện tử","Kỹ sư tự động hóa","Kỹ sư môi trường","Chuyên viên du lịch","Event Planner","Quản trị khách sạn"
+            ];
+            const lower = source.toLowerCase();
+            patterns.forEach(p => { if (lower.includes(p.toLowerCase())) add(p); });
+        }
+        return names.slice(0,6);
     }
 
     function buildCareerLab(text) {
+        if (!/NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING/i.test(text)) return;
         const careers=extractCareerNames(text);
         const host=[...chatBox.querySelectorAll('.message.ai')].pop();
         if(!host || host.querySelector('.career-lab-box') || careers.length===0) return;
@@ -1542,9 +1644,9 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         const safe=(x)=>String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
         box.innerHTML=`<div class="career-lab-head"><div><div class="career-lab-kicker">AI CAREER LAB</div><div class="career-lab-title">🧭 Bản đồ khám phá dành riêng cho bạn</div><div class="career-lab-sub">Từ cuộc trò chuyện vừa rồi, đây là những hướng đáng để <b>thử thật</b> thay vì chỉ đọc về chúng.</div></div><div class="career-lab-badge">CÁ NHÂN HÓA</div></div>
         <div class="career-lab-grid">
-          <div class="career-lab-card"><div class="career-lab-icon">🧠</div><h4>Hồ sơ của bạn</h4><p>AI đã tìm thấy các tín hiệu về sở thích, điểm mạnh, cách tư duy và môi trường làm việc. Xem lại toàn bộ hồ sơ và những điểm nổi bật.</p><button class="career-lab-btn alt" data-lab-action="profile">Xem hồ sơ</button></div>
-          <div class="career-lab-card"><div class="career-lab-icon">🧪</div><h4>Thử nghề</h4><p>Đừng đoán. Hãy làm một mini-case để xem bạn có thích cách công việc này vận hành ngoài đời hay không.</p><button class="career-lab-btn green" data-lab-action="try">Thử ngay</button></div>
-          <div class="career-lab-card"><div class="career-lab-icon">🚀</div><h4>Lộ trình 7 ngày</h4><p>Một tuần trải nghiệm nhỏ: học một kỹ năng, làm một mini-project và tự đánh giá cảm giác sau khi làm.</p><button class="career-lab-btn" data-lab-action="roadmap">Mở lộ trình</button></div>
+          <div class="career-lab-card"><div class="career-lab-icon">🧠</div><h4>Hồ sơ của bạn</h4><p>Mở hồ sơ có cấu trúc với sở thích, điểm mạnh, cách tư duy và từng hướng nghề kèm lý do, bằng chứng và cách thử.</p><button class="career-lab-btn alt" data-lab-action="profile">Xem hồ sơ</button></div>
+          <div class="career-lab-card"><div class="career-lab-icon">🧪</div><h4>Thử nghề</h4><p>Chọn một nghề để làm mini-case và xem bạn có thích cách công việc này vận hành ngoài đời hay không.</p><button class="career-lab-btn green" data-lab-action="try">Thử ngay</button></div>
+          <div class="career-lab-card"><div class="career-lab-icon">🚀</div><h4>Lộ trình 7 ngày</h4><p>Một tuần trải nghiệm nhỏ: học, làm mini-project và tự đánh giá điều khiến bạn muốn làm tiếp.</p><button class="career-lab-btn" data-lab-action="roadmap">Mở lộ trình</button></div>
         </div>
         <div class="career-lab-sub" style="margin-top:14px"><b>Những nghề đang nổi bật trong cuộc trò chuyện:</b></div><div class="career-lab-careers">${careers.map(c=>`<button class="career-lab-career" data-career="${safe(c)}">✨ ${safe(c)}</button>`).join('')}</div>`;
         host.querySelector('.bubble')?.appendChild(box);
@@ -1552,11 +1654,11 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         const close=()=>{const m=document.getElementById('careerLabModal');m.classList.remove('open');m.setAttribute('aria-hidden','true')};
         document.getElementById('careerLabClose').onclick=close;
         document.getElementById('careerLabModal').onclick=e=>{if(e.target.id==='careerLabModal')close()};
-        box.querySelector('[data-lab-action="profile"]').onclick=()=>open('Hồ sơ hướng nghiệp của bạn',`<div class="career-lab-profile"><div class="career-lab-mini"><strong>🔎 Tín hiệu nổi bật</strong><span>${safe(text.slice(0,950))}${text.length>950?'…':''}</span></div><div class="career-lab-mini"><strong>💡 Cách dùng kết quả</strong><span>Đây là bản đồ khám phá, không phải nhãn cố định. Hãy dùng nó để chọn điều muốn thử tiếp theo.</span></div></div><div class="career-lab-actions"><button class="career-lab-btn" onclick="window.careerLabAsk('Hãy tổng hợp lại hồ sơ hướng nghiệp của mình thành: sở thích, điểm mạnh, cách tư duy, động lực, môi trường phù hợp và 3 điểm cần phát triển. Dựa hoàn toàn vào cuộc trò chuyện này.')">🤖 Nhờ AI phân tích sâu</button></div>`);
-        box.querySelector('[data-lab-action="try"]').onclick=()=>open('Thử nghề trong 15 phút',`<p class="career-lab-sub">Chọn một nghề dưới đây. AI sẽ phỏng vấn bạn bằng một tình huống thực tế thay vì hỏi lý thuyết.</p><div class="career-lab-careers">${careers.map(c=>`<button class="career-lab-career" data-modal-career="${safe(c)}">🧪 ${safe(c)}</button>`).join('')}</div>`);
+        box.querySelector('[data-lab-action="profile"]').onclick=()=>openProfileModal();
+        box.querySelector('[data-lab-action="try"]').onclick=()=>open('Thử nghề trong 15 phút',`<p class="career-lab-sub">Chọn một nghề dưới đây. AI sẽ phỏng vấn bạn bằng tình huống thực tế thay vì hỏi lý thuyết.</p><div class="career-lab-careers">${careers.map(c=>`<button class="career-lab-career" data-modal-career="${safe(c)}">🧪 ${safe(c)}</button>`).join('')}</div>`);
         box.querySelector('[data-lab-action="roadmap"]').onclick=()=>open('Lộ trình khám phá 7 ngày',`<div class="career-roadmap">${careers.slice(0,3).map((c,i)=>`<div class="career-step"><b>${i+1}</b><div><strong>${safe(c)} · ngày ${i*2+1}–${i*2+2}</strong><span>Đọc 1 tài liệu nhập môn → làm một nhiệm vụ nhỏ → ghi lại điều bạn thấy thú vị/khó chịu → hỏi AI một câu phản biện.</span></div></div>`).join('')}<div class="career-step"><b>7</b><div><strong>Ngày 7 · Quyết định bước tiếp</strong><span>Chọn hướng khiến bạn muốn làm thêm dù không ai bắt. Nếu vẫn tò mò, bắt đầu một mini-project 2–4 tuần.</span></div></div></div>`);
         box.querySelectorAll('[data-career]').forEach(b=>b.onclick=()=>window.careerLabAsk(`Hãy phỏng vấn mình về nghề ${b.dataset.career}. Đừng đưa kết luận ngay. Hãy dùng nhiều kiểu câu hỏi khác nhau (sở thích, tình huống, cách giải quyết vấn đề, môi trường làm việc, động lực) và mỗi lượt chỉ hỏi một câu dựa trên câu trả lời trước.`));
-        document.getElementById('careerLabModalBody').addEventListener('click',e=>{const b=e.target.closest('[data-modal-career]');if(b)window.careerLabAsk(`Hãy cho mình một mini-case thực tế 10-15 phút của nghề ${b.dataset.modalCareer}. Đừng giải thích đáp án trước; để mình tự làm rồi nhận xét cách tư duy của mình.`)});
+        document.getElementById('careerLabModalBody').onclick=e=>{const b=e.target.closest('[data-modal-career]');if(b)window.careerLabAsk(`Hãy cho mình một mini-case thực tế 10-15 phút của nghề ${b.dataset.modalCareer}. Đừng giải thích đáp án trước; để mình tự làm rồi nhận xét cách tư duy của mình.`)};
     }
     window.careerLabAsk=function(prompt){
         const modal=document.getElementById('careerLabModal'); if(modal) modal.classList.remove('open');
@@ -1583,57 +1685,145 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
         last.querySelector(".bubble")?.appendChild(box);
     }
 
+    function addRetryButton(host, retryText) {
+        if (!host || host.querySelector(".chat-retry")) return;
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chat-retry";
+        btn.textContent = "↻ Thử lại";
+        btn.addEventListener("click", () => {
+            userInput.value = retryText || "";
+            sendMessage();
+        });
+        const target = host?.querySelector?.(".bubble") || host;
+        target?.appendChild(btn);
+    }
+
     async function sendMessage() {
         if (sending) return;
         const text = userInput.value.trim();
         if (!text) { userInput.focus(); return; }
         if (text.toLowerCase() === "36rauma") {
-            addMessage(text,"user");
-            userInput.value = "";
-            triggerEasterEgg();
-            status.textContent = "🥚 Easter egg đã được kích hoạt";
-            userInput.focus();
-            return;
+            addMessage(text,"user"); userInput.value = ""; triggerEasterEgg(); status.textContent = "🥚 Easter egg đã được kích hoạt"; userInput.focus(); return;
         }
-        sending = true; sendBtn.disabled = true; sendBtn.textContent = "Đang trả lời...";
-        addMessage(text,"user"); userInput.value = "";
-        const typing = addTyping(); status.textContent = window.careerLanguage?.t?.().thinking || "🟡 AI đang suy nghĩ...";
+
+        sending = true;
+        sendBtn.disabled = true;
+        sendBtn.textContent = "Đang trả lời...";
+        addMessage(text,"user");
+        userInput.value = "";
+        const typing = addTyping();
+        status.textContent = window.careerLanguage?.t?.().thinking || "🟡 AI đang suy nghĩ...";
+
         try {
-            const response = await fetch("/api/chat", { method:"POST", headers:{"Content-Type":"application/json", ...(sessionId?{"X-Session-Id":sessionId}: {})}, body:JSON.stringify({message:text}) });
+            const response = await fetch("/api/chat", {
+                method:"POST",
+                headers:{"Content-Type":"application/json", ...(sessionId?{"X-Session-Id":sessionId}: {})},
+                body:JSON.stringify({message:text})
+            });
             const returnedSession = response.headers.get("X-Session-Id");
             if (returnedSession) saveSessionId(returnedSession);
+
             if (!response.ok) {
-                typing.remove(); const data = await response.json().catch(()=>({}));
-                addMessage(data.error || "Có lỗi xảy ra.","ai"); status.textContent="🔴 AI tạm thời không sẵn sàng"; return;
+                typing.remove();
+                const data = await response.json().catch(()=>({}));
+                const host = addMessage(data.error || "Có lỗi xảy ra.","ai").parentElement;
+                addRetryButton(host, text);
+                status.textContent="🔴 AI tạm thời không sẵn sàng";
+                return;
             }
-            typing.remove(); const aiContent = addMessage("","ai"); let fullText="";
-            const reader=response.body.getReader(); const decoder=new TextDecoder("utf-8"); let buffer=""; let streamError=false;
+
+            typing.remove();
+            const aiContent = addMessage("","ai");
+            let fullText="";
+            const reader=response.body?.getReader?.();
+            if (!reader) throw new Error("Trình duyệt không hỗ trợ stream phản hồi.");
+            const decoder=new TextDecoder("utf-8");
+            let buffer="";
+            let streamError=null;
+
             while(true){
-                const {value,done}=await reader.read(); if(done) break;
-                buffer += decoder.decode(value,{stream:true}); const events=buffer.split("\n\n"); buffer=events.pop()||"";
+                const {value,done}=await reader.read();
+                if(done) break;
+                buffer += decoder.decode(value,{stream:true});
+                const events=buffer.split("\n\n");
+                buffer=events.pop()||"";
                 for(const eventText of events){
-                    if(!eventText.startsWith("data:")) continue;
-                    const jsonText=eventText.slice(5).trim(); if(!jsonText) continue;
+                    const line = eventText.split("\n").find(x => x.startsWith("data:"));
+                    if(!line) continue;
+                    const jsonText=line.slice(5).trim();
+                    if(!jsonText) continue;
                     let event; try{event=JSON.parse(jsonText);}catch{continue;}
-                    if(event.type==="text"){fullText += event.text||""; aiContent.textContent=fullText; scrollBottom();}
-                    if(event.type==="error"){streamError=true; aiContent.textContent="❌ "+(event.message||"AI gặp lỗi.");}
+                    if(event.type==="text"){
+                        fullText += event.text||"";
+                        setAiContent(aiContent, fullText);
+                        scrollBottom();
+                    }
+                    if(event.type==="error"){
+                        streamError=event;
+                        if (!fullText) setAiContent(aiContent, "❌ " + (event.message||"AI gặp lỗi."));
+                    }
                 }
             }
-            if(!streamError && fullText){ addPersonalQuizButtons(fullText); buildCareerLab(fullText); }
-            status.textContent = streamError ? "🔴 AI tạm thời không sẵn sàng" : "🟢 AI đang sẵn sàng";
+
+            if(streamError){
+                const bubble = aiContent.closest(".bubble");
+                addRetryButton(bubble?.parentElement, text);
+                status.textContent = "🔴 AI tạm thời không sẵn sàng";
+            } else if(fullText){
+                addPersonalQuizButtons(fullText);
+                buildCareerLab(fullText);
+                status.textContent = "🟢 AI đang sẵn sàng";
+            } else {
+                throw new Error("AI không trả về nội dung.");
+            }
         } catch(error) {
-            console.error(error); typing.remove(); addMessage("❌ Không thể kết nối tới server. Vui lòng thử lại sau.","ai"); status.textContent="🔴 Mất kết nối server";
-        } finally { sending=false; sendBtn.disabled=false; sendBtn.textContent=window.careerLanguage?.t?.().send || "Gửi"; userInput.focus(); }
+            console.error(error);
+            typing.remove();
+            const content = addMessage("❌ Không thể kết nối tới server. Vui lòng thử lại.","ai");
+            addRetryButton(content.parentElement?.parentElement, text);
+            status.textContent="🔴 Mất kết nối server";
+        } finally {
+            sending=false;
+            sendBtn.disabled=false;
+            sendBtn.textContent=window.careerLanguage?.t?.().send || "Gửi";
+            userInput.focus();
+        }
+    }
+
+    async function restoreSession(){
+        if(!sessionId) return;
+        try{
+            const r=await fetch("/api/session",{headers:{"X-Session-Id":sessionId}});
+            if(!r.ok) throw new Error("expired");
+            const data=await r.json();
+            const messages=Array.isArray(data.messages)?data.messages:[];
+            if(!messages.length) return;
+            chatBox.innerHTML="";
+            for(const m of messages){
+                if(m?.role === "user" || m?.role === "assistant") addMessage(String(m.text||""), m.role === "user" ? "user" : "ai");
+            }
+            const latest = [...messages].reverse().find(m=>m?.role==="assistant");
+            if(latest?.text){ addPersonalQuizButtons(String(latest.text)); buildCareerLab(String(latest.text)); }
+            status.textContent="🟢 Đã khôi phục cuộc trò chuyện";
+        }catch{
+            sessionId=null;
+            localStorage.removeItem("huongnghiep_session_id");
+        }
     }
 
     async function resetChat(){
         try{await fetch("/api/reset",{method:"POST",headers:{...(sessionId?{"X-Session-Id":sessionId}: {})}});}catch{}
         sessionId=null; localStorage.removeItem("huongnghiep_session_id");
+        sessionId = null;
+        sessionStorage.removeItem("huongnghiep_session_reset");
+        closeProfileModal();
         chatBox.innerHTML=`<div class="message ai"><div class="bubble"><div class="sender">🧭 AI Hướng Nghiệp</div>Chúng ta bắt đầu lại nhé! 👋<br><br>Hãy kể cho mình những thứ bạn thích, những việc bạn thường làm khi rảnh, hoặc điều gì khiến bạn tò mò.</div></div>`;
         status.textContent="🟢 AI đang sẵn sàng"; userInput.focus();
     }
     sendBtn.addEventListener("click",sendMessage); resetBtn.addEventListener("click",resetChat);
     userInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage();}});
+    restoreSession();
 
     /* ===================== QUIZ DATA ===================== */
     const INDUSTRIES = {
