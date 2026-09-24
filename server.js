@@ -337,6 +337,9 @@ function getSession(req, res) {
                 lastInteractionId: null,
                 lastAssistantText: "",
                 lastRecommendation: null,
+                recommendedCareers: [],
+                interview: null,
+                interviewQuestionCache: {},
                 messages: [],
                 createdAt: Date.now(),
                 lastUsedAt: Date.now()
@@ -544,8 +547,12 @@ Yêu cầu:
 - motivations: 1-2 câu ngắn.
 - work_environment: 1-2 câu ngắn.
 - growth_areas: 2-4 điểm nên phát triển.
-- career_directions: 3-5 TÊN NGHỀ CỤ THỂ, lấy từ các nghề thực sự xuất hiện ở phần gợi ý nghề nghiệp gần nhất trong cuộc trò chuyện; không đưa ngành chung chung nếu đã có nghề cụ thể.
+- career_directions: 3-5 TÊN NGHỀ CỤ THỂ, ưu tiên lấy từ danh sách nghề nổi bật đã được hệ thống lưu trong phiên hiện tại.
+- Không đưa ngành chung chung nếu đã có nghề cụ thể.
 - Mỗi nghề phải là một hướng nghề thực sự, không phải hành động, lời nhắc, bước tiếp theo, hoặc tên tính năng.
+
+DANH SÁCH NGHỀ NỔI BẬT ĐƯỢC HỆ THỐNG LƯU:
+${(session.recommendedCareers || []).join(" | ") || "Chưa có danh sách nghề nổi bật."}
 
 Trả JSON đúng schema, không thêm markdown.
 `;
@@ -567,7 +574,7 @@ ${transcript}`,
                     systemInstruction:
                         "Bạn là AI phân tích hồ sơ hướng nghiệp. Chỉ sử dụng dữ kiện có trong transcript. Không bịa, không chẩn đoán, không khẳng định nghề nghiệp là định mệnh. Trả JSON hợp lệ theo schema."
                 }
-            }, 2);
+            }, 4);
 
             const raw = typeof profileResponse?.text === "string"
                 ? profileResponse.text.trim()
@@ -736,12 +743,39 @@ app.post(
                 .map(m => `${m.role === "user" ? "NGƯỜI DÙNG" : "AI"}: ${String(m.text || "").slice(0, 1400)}`)
                 .join("\n\n");
 
-            const interviewMatch = message.match(/(?:phỏng vấn|phong van)\s+(?:mình|tôi|em)?\s*(?:về|ve)\s+(?:nghề\s+)?(.+?)(?:\.|$)/i);
+            const manualInterviewMatch = message.match(/(?:phỏng vấn|phong van)\s+(?:mình|tôi|em)?\s*(?:về|ve)\s+(?:nghề\s+)?(.+?)(?:\.|$)/i);
             const wantsSummary = /\b(tổng hợp|tong hop|gợi ý nghề|goi y nghe|hướng nghề|huong nghe|nên theo nghề|nen theo nghe|nghề gì|nghe gi)\b/i.test(message);
 
-            const interviewInstruction = interviewMatch
-                ? `\nĐẶC BIỆT — BẮT ĐẦU PHỎNG VẤN NGHỀ: Người dùng đang muốn khám phá riêng nghề "${interviewMatch[1].trim()}". Không lặp lại danh sách nghề nghiệp cũ. Không tạo lại Career Lab. Không kết luận. Chỉ hỏi ĐÚNG 1 câu hỏi mở đầu thật sự liên quan đến nghề này. Sau mỗi câu trả lời tiếp theo, chỉ hỏi 1 câu mới dựa trên câu trả lời vừa nhận được.\n`
-                : "";
+            const activeInterview = session.interview && session.interview.active
+                ? session.interview
+                : null;
+
+            if (manualInterviewMatch && !activeInterview) {
+                session.interview = {
+                    active: true,
+                    career: manualInterviewMatch[1].trim(),
+                    askedQuestions: [],
+                    turns: 0,
+                    startedAt: Date.now()
+                };
+            }
+
+            const interviewInstruction = (session.interview && session.interview.active)
+                ? `\nĐẶC BIỆT — ĐANG PHỎNG VẤN NGHỀ "${session.interview.career}":
+- Đây là cuộc phỏng vấn khám phá riêng nghề này.
+- Tin nhắn người dùng hiện tại là CÂU TRẢ LỜI cho câu hỏi trước, không phải yêu cầu tạo lại danh sách nghề.
+- Không lặp lại danh sách nghề, không tạo Career Lab, không quay lại hồ sơ.
+- Chỉ hỏi ĐÚNG 1 câu tiếp theo.
+- Câu tiếp theo phải dựa trực tiếp trên câu trả lời gần nhất.
+- Luân phiên kiểu câu hỏi để tránh máy móc; không lặp lại câu đã hỏi.
+- Chưa kết luận người dùng hợp/không hợp nghề ở giữa cuộc phỏng vấn.
+${Array.isArray(session.interview.askedQuestions) && session.interview.askedQuestions.length
+    ? `- Các câu đã hỏi: ${session.interview.askedQuestions.slice(-8).join(" | ")}`
+    : ""}
+\n`
+                : (manualInterviewMatch
+                    ? `\nĐẶC BIỆT — BẮT ĐẦU PHỎNG VẤN NGHỀ "${manualInterviewMatch[1].trim()}": Không lặp lại danh sách nghề cũ. Không tạo Career Lab. Chỉ hỏi ĐÚNG 1 câu mở đầu liên quan đến nghề này.\n`
+                    : "");
 
             const summaryInstruction = wantsSummary
                 ? `\nĐẶC BIỆT — YÊU CẦU TỔNG HỢP: Hãy hoàn thành trọn vẹn câu trả lời. Nếu đưa nghề nghiệp, phải có heading "💼 NGHỀ NGHIỆP ĐÁNG THỬ" và 3-5 nghề theo đúng định dạng số thứ tự. Không cắt ngang danh sách và không chèn lời dẫn lặp lại.\n`
@@ -774,7 +808,7 @@ ${message}
                 config: {
                     systemInstruction: "Bạn là AI hướng nghiệp thân thiện, thực tế và luôn trả lời bằng tiếng Việt.",
                     thinkingConfig: { thinkingLevel: "low" },
-                    maxOutputTokens: interviewMatch ? 350 : (wantsSummary ? 1400 : 850)
+                    maxOutputTokens: (session.interview && session.interview.active) || manualInterviewMatch ? 420 : (wantsSummary ? 1400 : 850)
                 }
             }, 4);
 
@@ -813,6 +847,23 @@ ${message}
                         createdAt: Date.now()
                     };
                     session.recommendedCareers = careers;
+                }
+
+                if (session.interview && session.interview.active && fullText.trim()) {
+                    const nextQuestion = fullText
+                        .replace(/^\s*\*+|\*+\s*$/g, "")
+                        .trim();
+                    if (nextQuestion) {
+                        session.interview.askedQuestions ||= [];
+                        if (!session.interview.askedQuestions.some(q =>
+                            q.toLocaleLowerCase("vi-VN") === nextQuestion.toLocaleLowerCase("vi-VN")
+                        )) {
+                            session.interview.askedQuestions.push(nextQuestion);
+                            session.interview.askedQuestions =
+                                session.interview.askedQuestions.slice(-8);
+                        }
+                        session.interview.turns = Number(session.interview.turns || 0) + 1;
+                    }
                 }
             }
 
@@ -902,6 +953,71 @@ const interviewQuestionLimiter = rateLimit({
     legacyHeaders: false,
     message: { error: "Bạn vừa tạo khá nhiều bộ câu hỏi. Vui lòng thử lại sau ít phút." }
 });
+
+const interviewStartLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    limit: 20,
+    keyGenerator: sessionOrIpKey,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Bạn vừa bắt đầu quá nhiều cuộc phỏng vấn. Vui lòng thử lại sau ít phút." }
+});
+
+app.post(
+    "/api/career-interview-start",
+    interviewStartLimiter,
+    (req, res) => {
+        const sessionId = req.headers["x-session-id"];
+        const career = typeof req.body?.career === "string" ? req.body.career.trim() : "";
+        const question = typeof req.body?.question === "string" ? req.body.question.trim() : "";
+
+        if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
+            return res.status(400).json({ error: "Không tìm thấy cuộc trò chuyện hiện tại." });
+        }
+
+        if (!career || career.length > 160 || !question || question.length > 600) {
+            return res.status(400).json({ error: "Thông tin bắt đầu phỏng vấn không hợp lệ." });
+        }
+
+        const session = sessions.get(sessionId);
+        session.lastUsedAt = Date.now();
+
+        const careers = Array.isArray(session.recommendedCareers)
+            ? session.recommendedCareers
+            : [];
+
+        const normalizedCareer = career.toLocaleLowerCase("vi-VN");
+        const isRecommendedCareer = careers.some(item =>
+            String(item).toLocaleLowerCase("vi-VN") === normalizedCareer
+        );
+
+        if (!isRecommendedCareer) {
+            return res.status(403).json({
+                error: "Chỉ có thể bắt đầu phỏng vấn với nghề vừa được AI đề xuất."
+            });
+        }
+
+        session.interview = {
+            active: true,
+            career,
+            askedQuestions: [question],
+            turns: 1,
+            startedAt: Date.now()
+        };
+
+        session.messages ||= [];
+        session.messages.push({
+            role: "assistant",
+            text: question,
+            at: Date.now()
+        });
+        if (session.messages.length > 40) {
+            session.messages = session.messages.slice(-40);
+        }
+
+        return res.json({ ok: true, career, question });
+    }
+);
 
 app.post(
     "/api/career-interview-questions",
@@ -1303,9 +1419,9 @@ function getFriendlyError(error) {
     }
 
 
-    if (/503|service.?unavailable|unavailable|high demand|temporar/i.test(message)) {
+    if (/500|502|503|504|service.?unavailable|unavailable|high demand|temporar|deadline.?exceeded/i.test(message)) {
 
-        return "AI đang hơi quá tải một chút. Hệ thống đã tự thử kết nối lại; bạn chờ vài giây rồi thử lại nhé.";
+        return "AI đang xử lý hơi quá tải hoặc kết nối tạm thời không ổn định. Hệ thống đã tự thử lại; bạn chờ vài giây rồi thử lại nhé.";
 
     }
 
