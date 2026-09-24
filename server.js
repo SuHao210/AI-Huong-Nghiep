@@ -153,19 +153,6 @@ const personalizedQuizLimiter =
         }
     });
 
-const profileLimiter =
-    rateLimit({
-        windowMs: 10 * 60 * 1000,
-        limit: 12,
-        keyGenerator: sessionOrIpKey,
-        standardHeaders: true,
-        legacyHeaders: false,
-        message: {
-            error:
-                "Bạn cập nhật hồ sơ hơi nhiều trong thời gian ngắn. Vui lòng thử lại sau ít phút."
-        }
-    });
-
 /*
  * Giới hạn số tác vụ Gemini chạy đồng thời trên một instance.
  * Các request còn lại được xếp hàng ngắn; nếu hàng đầy sẽ từ chối
@@ -219,51 +206,36 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function getErrorText(error) {
-    try {
-        return String(error?.message || error || "");
-    } catch {
-        return "";
-    }
-}
-
 function isRetryableGeminiError(error) {
-    const text = getErrorText(error);
-    return /(?:429|rate.?limit|resource.?exhausted|500|502|503|504|internal|service.?unavailable|unavailable|temporar|deadline.?exceeded|timeout|econnreset|socket|overloaded|high demand)/i.test(text);
+    const text = String(error?.message || error || "");
+    return /429|rate.?limit|resource.?exhausted|500|502|503|504|service.?unavailable|unavailable|deadline.?exceeded|temporar/i.test(text);
 }
 
-function retryDelay(attempt) {
-    const base = Math.min(8000, 700 * (2 ** attempt));
-    const jitter = Math.floor(Math.random() * 350);
-    return base + jitter;
-}
-
-async function runWithRetry(task, attempts = 4) {
+async function retryGemini(fn, attempts = 4) {
     let lastError;
     for (let attempt = 0; attempt < attempts; attempt++) {
         try {
-            return await task();
+            return await fn();
         } catch (error) {
             lastError = error;
-            if (!isRetryableGeminiError(error) || attempt === attempts - 1) {
-                throw error;
-            }
-            await sleep(retryDelay(attempt));
+            if (!isRetryableGeminiError(error) || attempt === attempts - 1) throw error;
+            const delay = Math.min(9000, 700 * (2 ** attempt)) + Math.floor(Math.random() * 350);
+            await sleep(delay);
         }
     }
     throw lastError;
 }
 
-async function createInteractionWithRetry(request, attempts = 4) {
-    return runWithRetry(() => ai.interactions.create(request), attempts);
+function createInteractionWithRetry(request, attempts = 4) {
+    return retryGemini(() => ai.interactions.create(request), attempts);
 }
 
-async function createGenerateContentWithRetry(request, attempts = 4) {
-    return runWithRetry(() => ai.models.generateContent(request), attempts);
+function createGenerateContentWithRetry(request, attempts = 4) {
+    return retryGemini(() => ai.models.generateContent(request), attempts);
 }
 
-async function createGenerateContentStreamWithRetry(request, attempts = 4) {
-    return runWithRetry(() => ai.models.generateContentStream(request), attempts);
+function createGenerateContentStreamWithRetry(request, attempts = 4) {
+    return retryGemini(() => ai.models.generateContentStream(request), attempts);
 }
 
 
@@ -291,118 +263,28 @@ const sessions =
    ========================================================= */
 
 const SYSTEM_INSTRUCTION = `
-Bạn là Chuyên Gia Hướng Nghiệp AI. Trò chuyện tự nhiên, rõ ràng và thực tế bằng tiếng Việt.
-Mục tiêu: giúp người dùng khám phá sở thích, điểm mạnh, cách tư duy, động lực, môi trường làm việc và các hướng nghề đáng thử; không ép người dùng chọn một nghề duy nhất.
-
-QUY TẮC HỘI THOẠI:
-- Đây là hội thoại khám phá, không phải bài trắc nghiệm cứng.
-- Khi còn thiếu thông tin, mỗi lượt chỉ hỏi tối đa 1 câu và câu hỏi phải dựa trực tiếp vào câu trả lời gần nhất.
-- Không hỏi lại điều người dùng đã nói; không hỏi máy móc kiểu “Bạn thích gì?” nhiều lần.
-- Luân phiên kiểu câu hỏi: sở thích, lý do/động lực, tình huống thực tế, A/B, môi trường, cách xử lý thất bại, dự án muốn làm, giá trị/điều không muốn đánh đổi, cách học kỹ năng mới.
-- Nếu người dùng đã nói rõ một lĩnh vực, đào sâu lĩnh vực đó trước khi mở rộng.
-- Không kết luận quá sớm và không nói nghề nào là “định mệnh”.
-- Trả lời 2-5 câu cho câu hỏi thông thường; chỉ dài hơn khi người dùng yêu cầu tổng hợp, phân tích hoặc gợi ý nghề.
-
-QUY TẮC KHI NGƯỜI DÙNG MUỐN TỔNG HỢP / HỎI NGHỀ:
-- Nếu người dùng hỏi kiểu “tổng hợp đi”, “thế nghề tui cần hướng là nghề gì”, “nghề nào hợp với tui”, “gợi ý nghề”, “nên theo nghề gì”, “định hướng nghề nghiệp”, hoặc tương tự: KHÔNG hỏi thêm câu nào trong lượt đó. Phải hoàn thành câu trả lời.
-- Luôn dùng tiêu đề: “💼 NGHỀ NGHIỆP ĐÁNG THỬ”.
-- Đưa 3-5 NGHỀ CỤ THỂ, không chỉ nêu tên ngành rộng.
-- Mỗi nghề phải có đủ 4 ý ngắn: “Vì sao phù hợp”, “Dữ kiện từ cuộc trò chuyện”, “Điểm cần phát triển”, “Cách thử thực tế”.
-- Sau danh sách nghề, luôn có “🧭 BƯỚC TIẾP THEO” với 2-4 việc nhỏ để người dùng kiểm chứng hướng đi.
-- Không kết thúc giữa một nghề hoặc giữa một danh sách. Nếu cần ngắn gọn, hãy rút mỗi ý lại chứ không cắt mất nghề hoặc phần quan trọng.
-- Không dùng các ví dụ nghề không có tín hiệu từ cuộc trò chuyện chỉ để làm đủ số lượng. Nếu dữ liệu thật sự chưa đủ, nói rõ “chưa đủ dữ liệu” và hỏi 1 câu trước ở các lượt thông thường.
-
-CÁCH LẬP LUẬN:
-- Ưu tiên các nghề giao thoa nhiều tín hiệu từ người dùng.
-- Dữ kiện phải lấy từ những gì người dùng thực sự đã nói hoặc cách họ xử lý tình huống trong cuộc trò chuyện.
-- Không chẩn đoán tính cách hay năng lực như sự thật tuyệt đối.
-- Mọi gợi ý đều là giả thuyết để thử nghiệm, không phải kết luận.
-
-ĐỊNH DẠNG:
-- Ưu tiên tiêu đề rõ ràng, danh sách đánh số, bullet ngắn.
-- Khi nêu nghề, dùng tên nghề cụ thể bằng tiếng Việt, có thể kèm tên tiếng Anh trong ngoặc.
+Bạn là Chuyên Gia Hướng Nghiệp AI. Trò chuyện tự nhiên bằng tiếng Việt.
+Mục tiêu: giúp người dùng khám phá sở thích, điểm mạnh, cách tư duy, động lực và môi trường làm việc phù hợp; không ép chọn một nghề duy nhất.
+- Đây là hội thoại, không phải bài trắc nghiệm. Mỗi lượt chỉ hỏi tối đa 1 câu khi còn thiếu thông tin.
+- Không hỏi lại điều người dùng đã nói.
+- Khi chưa đủ thông tin, hỏi câu tiếp theo dựa trên câu trả lời gần nhất. Không kết luận quá sớm.
+- Mỗi câu hỏi phải có lý do từ câu trả lời trước. Tuyệt đối tránh chuỗi câu hỏi máy móc.
+- LUÂN PHIÊN KIỂU CÂU HỎI để cuộc trò chuyện đa dạng: (1) câu hỏi mở về sở thích, (2) đào sâu lý do/động lực, (3) tình huống thực tế, (4) chọn giữa hai cách làm, (5) câu hỏi về môi trường làm việc, (6) cách xử lý thất bại, (7) dự án người dùng muốn tự làm, (8) giá trị và điều họ không muốn đánh đổi, (9) cách họ học một kỹ năng mới. Không cần dùng tất cả; chọn kiểu phù hợp nhất ở từng lượt.
+- Tránh hỏi liên tiếp cùng một dạng như "Bạn thích gì?", "Bạn có thích... không?". Nếu người dùng đã nói một sở thích, hãy chuyển sang hỏi về lý do, hành vi, trải nghiệm, mức độ kiên trì hoặc cách họ giải quyết vấn đề.
+- Có thể dùng câu hỏi giả định, mini-case hoặc lựa chọn A/B khi chúng giúp phân biệt hai hướng nghề nghiệp. Không chấm đúng/sai trừ khi người dùng yêu cầu.
+- Nếu người dùng trả lời quá ngắn, hãy hỏi một câu dễ mở rộng bằng ví dụ cụ thể thay vì lặp lại câu hỏi cũ.
+- Nếu người dùng đang hào hứng với một lĩnh vực, hãy đào sâu lĩnh vực đó trước khi mở thêm hướng khác. Nếu họ tỏ ra không thích một hướng, ghi nhận và không cố ép họ.
+- Khi đủ thông tin, tóm tắt: sở thích nổi bật, điểm mạnh, kiểu tư duy, động lực, môi trường phù hợp và điều nên phát triển.
+- Khi đủ thông tin, đề xuất 3-5 nghề CỤ THỂ. BẮT BUỘC trình bày ngay dưới tiêu đề "💼 NGHỀ NGHIỆP ĐÁNG THỬ" (hoặc heading tiếng Anh tương ứng) theo đúng cấu trúc: mỗi nghề bắt đầu bằng một dòng riêng dạng `1. **Tên nghề**`, `2. **Tên nghề**`, ...; tuyệt đối không dùng các câu hành động như "chọn ngay", "thử sức", "ghi lại" làm mục nghề.
+- Với mỗi nghề: vì sao phù hợp, dữ kiện từ cuộc trò chuyện, điểm cần phát triển và một cách thử thực tế.
+- Cuối cùng nêu 3 việc nhỏ có thể thử trong 7 ngày.
+- Không khẳng định nghề nào là định mệnh; chỉ xem là gợi ý để thử nghiệm.
+- Câu hỏi đơn giản: trả lời gọn 2-5 câu, đi thẳng vào ý chính, không mở đầu dài và không lặp lại lời người dùng.
+- Với câu hỏi khám phá, có thể trả lời ngắn 1-3 câu rồi hỏi tiếp một câu duy nhất. Với tình huống/case, cho đủ bối cảnh nhưng không biến thành bài thi dài.
+- Khi đề xuất nghề, ưu tiên nghề cụ thể và có thể kiểm chứng bằng một trải nghiệm nhỏ. Có thể đề xuất các nghề giao thoa giữa nhiều sở thích thay vì chỉ chọn một nhóm ngành truyền thống.
+- Thân thiện, dễ hiểu, không phán xét.
 `;
 
-
-/* =========================================================
-   TIỆN ÍCH PHÂN TÍCH HỘI THOẠI
-   ========================================================= */
-
-function normalizeForMatch(value) {
-    return String(value || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^\p{L}\p{N}]+/gu, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-function hasPhrase(text, phrase) {
-    const haystack = ` ${normalizeForMatch(text)} `;
-    const needle = ` ${normalizeForMatch(phrase)} `;
-    return needle.length > 2 && haystack.includes(needle);
-}
-
-function isRecommendationRequest(message) {
-    const t = normalizeForMatch(message);
-    return [
-        "tong hop", "tom lai", "ket luan", "goi y nghe", "goi y nghe nghiep",
-        "nghe gi hop", "nghe nao hop", "nen theo nghe gi", "huong nghe gi",
-        "huong nghiep", "dinh huong nghe nghiep", "nghe tui can huong",
-        "nghe toi nen", "nghe phu hop", "3 nghe", "4 nghe", "5 nghe",
-        "de xuat nghe", "chon nghe", "nen lam nghe gi", "cong viec phu hop"
-    ].some(k => t.includes(k));
-}
-
-function extractCareerCandidates(text) {
-    const source = String(text || "");
-    const found = [];
-    const add = (value) => {
-        const clean = String(value || "")
-            .replace(/^[\s#*`]+|[\s#*`]+$/g, "")
-            .replace(/\s+/g, " ")
-            .replace(/[.:：]+$/g, "")
-            .trim();
-        if (!clean || clean.length < 3 || clean.length > 90) return;
-        const normalized = normalizeForMatch(clean);
-        if (!normalized || found.some(x => normalizeForMatch(x) === normalized)) return;
-        const banned = ["vi sao phu hop", "dieu kien", "cach thu", "diem can phat trien", "bước tiep theo", "buoc tiep theo"];
-        if (banned.some(x => normalized === x || normalized.startsWith(`${x} `))) return;
-        found.push(clean);
-    };
-
-    const numbered = /^\s*(?:\d+\s*[.)]|[-•])\s*(?:\*\*)?([^\n:]{3,100}?)(?:\*\*)?\s*(?:[-–—:]|$)/gmi;
-    let match;
-    while ((match = numbered.exec(source)) && found.length < 6) add(match[1]);
-
-    if (found.length < 3) {
-        const boldLine = /^\s*\*\*([^*\n]{3,90})\*\*\s*$/gmi;
-        while ((match = boldLine.exec(source)) && found.length < 6) add(match[1]);
-    }
-
-    return found.slice(0, 6);
-}
-
-function isCareerRecommendation(text) {
-    const source = String(text || "");
-    return /NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING/i.test(source) || extractCareerCandidates(source).length >= 3;
-}
-
-function getConversationFingerprint(session) {
-    const payload = (session?.messages || [])
-        .slice(-40)
-        .map(m => `${m.role}:${m.text}`)
-        .join("\n");
-    return crypto.createHash("sha256").update(payload, "utf8").digest("hex");
-}
-
-function getTranscript(session, limit = 28) {
-    return (session?.messages || [])
-        .slice(-limit)
-        .map((m) => `${m.role === "user" ? "NGƯỜI DÙNG" : "AI"}: ${String(m.text || "").slice(0, 1800)}`)
-        .join("\n\n");
-}
 
 /* =========================================================
    TẠO SESSION ID
@@ -456,8 +338,6 @@ function getSession(req, res) {
                 lastAssistantText: "",
                 lastRecommendation: null,
                 messages: [],
-                profileCache: null,
-                personalizedQuizCache: new Map(),
                 createdAt: Date.now(),
                 lastUsedAt: Date.now()
             }
@@ -530,8 +410,7 @@ app.get(
             ok: true,
 
             model: MODEL,
-            activeGeminiRequests,
-            queuedGeminiRequests: geminiQueue.length,
+
             message:
                 "AI Hướng Nghiệp backend đang hoạt động."
 
@@ -542,55 +421,72 @@ app.get(
 
 
 /* =========================================================
+   TRÍCH XUẤT NGHỀ ĐƯỢC GỢI Ý
+   ========================================================= */
+
+function extractRecommendationSection(text) {
+    const source = String(text || "");
+    const start = source.search(/(?:💼\s*)?(?:NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i);
+    if (start < 0) return "";
+    let section = source.slice(start);
+    const stop = section.search(/(?:🧭\s*)?BƯỚC TIẾP THEO|(?:🎯.*?(?:quiz|QUIZ|tìm hiểu sâu hơn|learn more))|AI CAREER LAB/i);
+    if (stop > 0) section = section.slice(0, stop);
+    return section;
+}
+
+function cleanCareerTitle(value) {
+    return String(value || "")
+        .replace(/^\s*[-•*]+\s*/, "")
+        .replace(/\*{1,3}/g, "")
+        .replace(/\s+$/, "")
+        .replace(/^[-–—:]+\s*/, "")
+        .trim();
+}
+
+function extractRecommendedCareers(text) {
+    const section = extractRecommendationSection(text);
+    if (!section) return [];
+
+    const careers = [];
+    const seen = new Set();
+    const lines = section.split(/\r?\n/);
+
+    for (const line of lines) {
+        const match = line.match(/^\s*\d+[.)]\s+(?:\*{1,3})?(.+?)(?:\*{1,3})?\s*$/);
+        if (!match) continue;
+
+        const title = cleanCareerTitle(match[1]);
+        if (!title || title.length > 140) continue;
+
+        // Chỉ nhận dòng tiêu đề nghề: không lấy bước hành động, thời lượng, hoặc câu hướng dẫn.
+        if (/^(hãy|chọn|thử|dành|ghi|quay|bắt đầu|ngày|tuần|tự|mang|đọc|làm|xem|ghi chú|dành ra)\b/i.test(title)) continue;
+        if (/\b(ngày|buổi|giờ|phút)\b.*\b(thử|làm|ghi|đọc|bắt đầu)\b/i.test(title)) continue;
+
+        const key = title.toLocaleLowerCase('vi-VN');
+        if (seen.has(key)) continue;
+        seen.add(key);
+        careers.push(title);
+        if (careers.length >= 5) break;
+    }
+
+    return careers;
+}
+
+
+/* =========================================================
    HỒ SƠ HƯỚNG NGHIỆP
    ========================================================= */
 
 const PROFILE_SCHEMA = {
     type: "object",
     properties: {
-        interests: {
-            type: "array",
-            minItems: 0,
-            maxItems: 6,
-            items: { type: "string" }
-        },
-        strengths: {
-            type: "array",
-            minItems: 0,
-            maxItems: 6,
-            items: { type: "string" }
-        },
+        interests: { type: "array", items: { type: "string" } },
+        strengths: { type: "array", items: { type: "string" } },
         thinking_style: { type: "string" },
         motivations: { type: "string" },
         work_environment: { type: "string" },
-        growth_areas: {
-            type: "array",
-            minItems: 0,
-            maxItems: 5,
-            items: { type: "string" }
-        },
-        career_directions: {
-            type: "array",
-            minItems: 0,
-            maxItems: 5,
-            items: {
-                type: "object",
-                properties: {
-                    career: { type: "string" },
-                    why: { type: "string" },
-                    evidence: {
-                        type: "array",
-                        minItems: 0,
-                        maxItems: 4,
-                        items: { type: "string" }
-                    },
-                    develop: { type: "string" },
-                    experiment: { type: "string" }
-                },
-                required: ["career", "why", "evidence", "develop", "experiment"],
-                additionalProperties: false
-            }
-        }
+        growth_areas: { type: "array", items: { type: "string" } },
+        career_directions: { type: "array", items: { type: "string" } }
     },
     required: [
         "interests",
@@ -606,11 +502,14 @@ const PROFILE_SCHEMA = {
 
 app.post(
     "/api/profile",
-    profileLimiter,
     async (req, res) => {
+
         const sessionId = req.headers["x-session-id"];
 
-        if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
+        if (
+            typeof sessionId !== "string" ||
+            !sessions.has(sessionId)
+        ) {
             return res.status(400).json({
                 error: "Chưa có phiên trò chuyện. Hãy nhắn với AI trước."
             });
@@ -618,7 +517,6 @@ app.post(
 
         const session = sessions.get(sessionId);
         session.lastUsedAt = Date.now();
-        const fingerprint = getConversationFingerprint(session);
 
         if (!Array.isArray(session.messages) || !session.messages.some(m => m.role === "user")) {
             return res.status(400).json({
@@ -626,48 +524,50 @@ app.post(
             });
         }
 
-        if (session.profileCache?.fingerprint === fingerprint && session.profileCache?.profile) {
-            return res.json({
-                ok: true,
-                cached: true,
-                profile: session.profileCache.profile
-            });
-        }
+        let releaseGeminiSlot;
 
         try {
-            const transcript = getTranscript(session, 30);
+
+            releaseGeminiSlot = await acquireGeminiSlot();
+
             const prompt = `
-Hãy tạo HỒ SƠ HƯỚNG NGHIỆP RÕ RÀNG cho người dùng dựa trên TOÀN BỘ cuộc trò chuyện dưới đây.
+Hãy tạo HỒ SƠ HƯỚNG NGHIỆP TẠM THỜI cho chính người dùng trong cuộc trò chuyện hiện tại.
 
-Mục tiêu của hồ sơ:
-- Tóm tắt các tín hiệu đã được người dùng thể hiện.
-- Đưa ra 3-5 hướng nghề CỤ THỂ đáng khám phá khi dữ liệu đủ.
-- Mỗi hướng nghề phải giải thích rõ vì sao phù hợp, bằng chứng nào trong cuộc trò chuyện dẫn tới gợi ý đó, điều gì cần phát triển và một cách thử thực tế.
+Chỉ dùng thông tin đã xuất hiện trong cuộc trò chuyện. Không bịa dữ kiện.
+Nếu dữ liệu chưa đủ, hãy ghi nhận là chưa đủ thay vì suy đoán.
+Hồ sơ dùng để khám phá, không phải chẩn đoán hay kết luận nghề nghiệp.
 
-Nguyên tắc:
-- Chỉ dùng dữ kiện thật sự xuất hiện trong transcript. Không bịa.
-- Có thể suy luận ở mức “giả thuyết nghề nghiệp” nếu có nhiều tín hiệu hỗ trợ, nhưng phải diễn đạt như một hướng để thử nghiệm, không phải kết luận chắc chắn.
-- Không gắn nhãn cố định, không chẩn đoán tính cách, không khẳng định người dùng chắc chắn phù hợp với một nghề.
-- Nếu một mục chưa có đủ dữ liệu, ghi ngắn gọn “Chưa đủ dữ liệu” thay vì bịa.
-- career_directions phải là danh sách đối tượng có các trường: career, why, evidence, develop, experiment.
-- Ưu tiên nghề cụ thể, ví dụ chức danh công việc, thay vì chỉ nói “CNTT”, “kinh doanh”, “y tế”.
-- Nếu dữ liệu đủ để gợi ý nghề, hãy cố gắng trả 3-5 hướng nghề có chất lượng thay vì trả một danh sách tên nghề không giải thích.
-- Trả JSON đúng schema, không markdown, không văn bản ngoài JSON.
+Yêu cầu:
+- interests: 2-5 sở thích/tín hiệu đã được người dùng thể hiện.
+- strengths: 2-5 điểm mạnh có bằng chứng từ cách người dùng trả lời.
+- thinking_style: 1-2 câu ngắn.
+- motivations: 1-2 câu ngắn.
+- work_environment: 1-2 câu ngắn.
+- growth_areas: 2-4 điểm nên phát triển.
+- career_directions: 3-5 TÊN NGHỀ CỤ THỂ, lấy từ các nghề thực sự xuất hiện ở phần gợi ý nghề nghiệp gần nhất trong cuộc trò chuyện; không đưa ngành chung chung nếu đã có nghề cụ thể.
+- Mỗi nghề phải là một hướng nghề thực sự, không phải hành động, lời nhắc, bước tiếp theo, hoặc tên tính năng.
 
-LỊCH SỬ CUỘC TRÒ CHUYỆN:
-${transcript}
+Trả JSON đúng schema, không thêm markdown.
 `;
+
+            const transcript = (session.messages || [])
+                .slice(-30)
+                .map((m) => `${m.role === "user" ? "NGƯỜI DÙNG" : "AI"}: ${m.text}`)
+                .join("\n\n");
 
             const profileResponse = await createGenerateContentWithRetry({
                 model: MODEL,
-                contents: prompt,
+                contents: `${prompt}
+
+LỊCH SỬ CUỘC TRÒ CHUYỆN:
+${transcript}`,
                 config: {
                     responseMimeType: "application/json",
                     responseSchema: PROFILE_SCHEMA,
                     systemInstruction:
-                        "Bạn là AI phân tích hồ sơ hướng nghiệp. Trả JSON hợp lệ theo schema. Chỉ dùng dữ kiện trong transcript; mọi gợi ý nghề đều là giả thuyết để khám phá."
+                        "Bạn là AI phân tích hồ sơ hướng nghiệp. Chỉ sử dụng dữ kiện có trong transcript. Không bịa, không chẩn đoán, không khẳng định nghề nghiệp là định mệnh. Trả JSON hợp lệ theo schema."
                 }
-            }, 4);
+            }, 2);
 
             const raw = typeof profileResponse?.text === "string"
                 ? profileResponse.text.trim()
@@ -680,33 +580,33 @@ ${transcript}
                 throw new Error("Gemini trả về hồ sơ không hợp lệ.");
             }
 
-            if (!profile || !Array.isArray(profile.interests) || !Array.isArray(profile.strengths) ||
-                typeof profile.thinking_style !== "string" || typeof profile.motivations !== "string" ||
-                typeof profile.work_environment !== "string" || !Array.isArray(profile.growth_areas) ||
-                !Array.isArray(profile.career_directions)) {
+            if (
+                !profile ||
+                !Array.isArray(profile.interests) ||
+                !Array.isArray(profile.strengths) ||
+                typeof profile.thinking_style !== "string" ||
+                typeof profile.motivations !== "string" ||
+                typeof profile.work_environment !== "string" ||
+                !Array.isArray(profile.growth_areas) ||
+                !Array.isArray(profile.career_directions)
+            ) {
                 throw new Error("Dữ liệu hồ sơ không đúng định dạng.");
             }
 
-            profile.interests = profile.interests.filter(Boolean).map(String).slice(0, 6);
-            profile.strengths = profile.strengths.filter(Boolean).map(String).slice(0, 6);
-            profile.growth_areas = profile.growth_areas.filter(Boolean).map(String).slice(0, 5);
-            profile.career_directions = profile.career_directions.filter(Boolean).map(item => ({
-                career: String(item.career || "").trim(),
-                why: String(item.why || "").trim(),
-                evidence: Array.isArray(item.evidence) ? item.evidence.filter(Boolean).map(String).slice(0, 4) : [],
-                develop: String(item.develop || "").trim(),
-                experiment: String(item.experiment || "").trim()
-            })).filter(item => item.career).slice(0, 5);
-
-            session.profileCache = { fingerprint, profile, createdAt: Date.now() };
-            return res.json({ ok: true, cached: false, profile });
+            return res.json({ profile });
 
         } catch (error) {
+
             console.error("Profile error:", error);
+
             return res.status(503).json({
-                error: getFriendlyError(error),
-                retryable: isRetryableGeminiError(error)
+                error: getFriendlyError(error)
             });
+
+        } finally {
+
+            releaseGeminiSlot?.();
+
         }
     }
 );
@@ -720,84 +620,166 @@ app.post(
     "/api/chat",
     chatLimiter,
     async (req, res) => {
-        const message = typeof req.body?.message === "string" ? req.body.message.trim() : "";
+
+        const message =
+            typeof req.body?.message === "string"
+                ? req.body.message.trim()
+                : "";
+
+        /* -------------------------
+           KIỂM TRA INPUT
+           ------------------------- */
 
         if (!message) {
-            return res.status(400).json({ error: "Tin nhắn không được để trống." });
+
+            return res.status(400).json({
+
+                error:
+                    "Tin nhắn không được để trống."
+
+            });
+
         }
+
 
         if (message.length > 2000) {
-            return res.status(400).json({ error: "Tin nhắn quá dài. Vui lòng nhập tối đa 2000 ký tự." });
+
+            return res.status(400).json({
+
+                error:
+                    "Tin nhắn quá dài. Vui lòng nhập tối đa 2000 ký tự."
+
+            });
+
         }
 
-        const session = getSession(req, res);
+
+        /* -------------------------
+           SESSION
+           ------------------------- */
+
+        const session =
+            getSession(req, res);
+
         session.messages ||= [];
-        session.messages.push({ role: "user", text: message, at: Date.now() });
+        session.messages.push({
+            role: "user",
+            text: message,
+            at: Date.now()
+        });
         if (session.messages.length > 40) session.messages = session.messages.slice(-40);
-        // Nội dung hồ sơ phải được tính lại sau một tin nhắn mới.
-        session.profileCache = null;
 
         let releaseGeminiSlot;
         try {
             releaseGeminiSlot = await acquireGeminiSlot();
         } catch (error) {
-            session.messages.pop();
-            return res.status(503).json({ error: getFriendlyError(error) });
+            return res.status(503).json({
+                error: getFriendlyError(error)
+            });
         }
 
+
+        /* -------------------------
+           SSE HEADERS
+           ------------------------- */
+
         res.status(200);
-        res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
-        res.setHeader("Cache-Control", "no-cache, no-transform");
-        res.setHeader("Connection", "keep-alive");
-        res.setHeader("X-Accel-Buffering", "no");
-        if (typeof res.flushHeaders === "function") res.flushHeaders();
 
-        const sendEvent = payload => {
-            if (!res.writableEnded) res.write(`data: ${JSON.stringify(payload)}\n\n`);
-        };
+        res.setHeader(
+            "Content-Type",
+            "text/event-stream; charset=utf-8"
+        );
 
-        let fullText = "";
-        let streamStarted = false;
+        res.setHeader(
+            "Cache-Control",
+            "no-cache, no-transform"
+        );
+
+        res.setHeader(
+            "Connection",
+            "keep-alive"
+        );
+
+        res.setHeader(
+            "X-Accel-Buffering",
+            "no"
+        );
+
+
+        if (
+            typeof res.flushHeaders === "function"
+        ) {
+
+            res.flushHeaders();
+
+        }
+
+
+        const sendEvent =
+            (payload) => {
+
+                res.write(
+                    `data: ${JSON.stringify(payload)}\n\n`
+                );
+
+            };
+
 
         try {
-            const wantsRecommendation = isRecommendationRequest(message);
-            // Không duplicate tin nhắn mới nhất trong transcript.
-            const priorTranscript = getTranscript({ messages: (session.messages || []).slice(0, -1) }, 20);
+
+            /* -------------------------
+               TẠO CONTEXT CHAT
+               ------------------------- */
+
+            const transcript = (session.messages || [])
+                .slice(-20)
+                .map(m => `${m.role === "user" ? "NGƯỜI DÙNG" : "AI"}: ${String(m.text || "").slice(0, 1400)}`)
+                .join("\n\n");
+
+            const interviewMatch = message.match(/(?:phỏng vấn|phong van)\s+(?:mình|tôi|em)?\s*(?:về|ve)\s+(?:nghề\s+)?(.+?)(?:\.|$)/i);
+            const wantsSummary = /\b(tổng hợp|tong hop|gợi ý nghề|goi y nghe|hướng nghề|huong nghe|nên theo nghề|nen theo nghe|nghề gì|nghe gi)\b/i.test(message);
+
+            const interviewInstruction = interviewMatch
+                ? `\nĐẶC BIỆT — BẮT ĐẦU PHỎNG VẤN NGHỀ: Người dùng đang muốn khám phá riêng nghề "${interviewMatch[1].trim()}". Không lặp lại danh sách nghề nghiệp cũ. Không tạo lại Career Lab. Không kết luận. Chỉ hỏi ĐÚNG 1 câu hỏi mở đầu thật sự liên quan đến nghề này. Sau mỗi câu trả lời tiếp theo, chỉ hỏi 1 câu mới dựa trên câu trả lời vừa nhận được.\n`
+                : "";
+
+            const summaryInstruction = wantsSummary
+                ? `\nĐẶC BIỆT — YÊU CẦU TỔNG HỢP: Hãy hoàn thành trọn vẹn câu trả lời. Nếu đưa nghề nghiệp, phải có heading "💼 NGHỀ NGHIỆP ĐÁNG THỬ" và 3-5 nghề theo đúng định dạng số thứ tự. Không cắt ngang danh sách và không chèn lời dẫn lặp lại.\n`
+                : "";
 
             const chatPrompt = `
 ${SYSTEM_INSTRUCTION}
-
-LƯỢT HIỆN TẠI:
-${wantsRecommendation
-    ? "Người dùng đang yêu cầu tổng hợp hoặc định hướng nghề. Hãy hoàn thành trọn vẹn câu trả lời ngay; TUYỆT ĐỐI không hỏi thêm câu ở cuối lượt này."
-    : "Đây là một lượt trò chuyện khám phá. Nếu còn thiếu dữ liệu, tối đa 1 câu hỏi tiếp theo."}
+${interviewInstruction}${summaryInstruction}
+LANGUAGE REQUIREMENT:
+- Reply entirely in Vietnamese.
+- Keep headings in Vietnamese, including "💼 NGHỀ NGHIỆP ĐÁNG THỬ".
+- Đây là lượt chat hiện tại. Hãy trả lời tự nhiên và đi thẳng vào ý.
 
 LỊCH SỬ GẦN ĐÂY:
-${priorTranscript || "(Chưa có lịch sử trước đó.)"}
+${transcript}
 
 TIN NHẮN MỚI NHẤT CỦA NGƯỜI DÙNG:
 ${message}
-
-${wantsRecommendation ? `
-KIỂM TRA TRƯỚC KHI TRẢ LỜI:
-- Phải có tiêu đề “💼 NGHỀ NGHIỆP ĐÁNG THỬ”.
-- Phải có 3-5 nghề cụ thể và hoàn thành đủ 4 ý cho từng nghề.
-- Phải có “🧭 BƯỚC TIẾP THEO”.
-- Không kết thúc giữa danh sách, không bỏ dở nghề cuối cùng.
-` : ""}
 `;
 
+            /*
+             * Chat dùng generateContentStream thay vì interactions streaming.
+             * Cách này không phụ thuộc previous_interaction_id nên tránh lỗi
+             * 400 khi interaction cũ không còn hợp lệ, đồng thời vẫn stream
+             * chữ ra giao diện ngay khi Gemini bắt đầu trả lời.
+             */
             const stream = await createGenerateContentStreamWithRetry({
                 model: MODEL,
                 contents: chatPrompt,
                 config: {
-                    systemInstruction: "Bạn là AI hướng nghiệp thân thiện, thực tế và luôn trả lời bằng tiếng Việt. Hãy ưu tiên hoàn thành yêu cầu của người dùng, không cắt dở danh sách.",
+                    systemInstruction: "Bạn là AI hướng nghiệp thân thiện, thực tế và luôn trả lời bằng tiếng Việt.",
                     thinkingConfig: { thinkingLevel: "low" },
-                    maxOutputTokens: wantsRecommendation ? 1500 : 720
+                    maxOutputTokens: interviewMatch ? 350 : (wantsSummary ? 1400 : 850)
                 }
             }, 4);
 
-            streamStarted = true;
+            let fullText = "";
+
             for await (const chunk of stream) {
                 const chunkText = typeof chunk?.text === "string" ? chunk.text : "";
                 if (!chunkText) continue;
@@ -805,38 +787,201 @@ KIỂM TRA TRƯỚC KHI TRẢ LỜI:
                 sendEvent({ type: "text", text: chunkText });
             }
 
-            if (!fullText.trim()) throw new Error("Gemini không trả về nội dung.");
-
-            session.lastAssistantText = fullText;
-            session.messages.push({ role: "assistant", text: fullText, at: Date.now() });
-            if (session.messages.length > 40) session.messages = session.messages.slice(-40);
-
-            if (isCareerRecommendation(fullText)) {
-                session.lastRecommendation = {
-                    interactionId: null,
-                    text: fullText,
-                    createdAt: Date.now()
-                };
-            }
-
-            sendEvent({ type: "done" });
-            res.end();
-
-        } catch (error) {
-            console.error("Gemini error:", error);
-
-            // Nếu Gemini fail trước khi có nội dung, không để một lượt lỗi làm bẩn hồ sơ.
             if (!fullText.trim()) {
-                const last = session.messages?.[session.messages.length - 1];
-                if (last?.role === "user" && last.text === message) session.messages.pop();
-            } else if (streamStarted) {
-                session.lastAssistantText = fullText;
+                throw new Error("Gemini không trả về nội dung.");
             }
 
-            sendEvent({ type: "error", message: getFriendlyError(error), retryable: isRetryableGeminiError(error) });
+            /* -------------------------
+               LƯU CONVERSATION ID
+               ------------------------- */
+
+            if (fullText) {
+                session.lastAssistantText = fullText;
+                session.messages ||= [];
+                session.messages.push({
+                    role: "assistant",
+                    text: fullText,
+                    at: Date.now()
+                });
+                if (session.messages.length > 40) session.messages = session.messages.slice(-40);
+                if (/(NGHỀ NGHIỆP ĐÁNG THỬ|CAREERS WORTH TRYING)/i.test(fullText)) {
+                    const careers = extractRecommendedCareers(fullText);
+                    session.lastRecommendation = {
+                        interactionId: null,
+                        text: fullText,
+                        careers,
+                        createdAt: Date.now()
+                    };
+                    session.recommendedCareers = careers;
+                }
+            }
+
+
+            /* -------------------------
+               HOÀN TẤT
+               ------------------------- */
+
+            sendEvent({
+
+                type:
+                    "done"
+
+            });
+
+
             res.end();
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Gemini error:",
+                error
+            );
+
+
+            /*
+             * Nếu stream chưa gửi header lỗi
+             * thì gửi lỗi dạng SSE.
+             */
+
+            sendEvent({
+
+                type:
+                    "error",
+
+                message:
+                    getFriendlyError(error)
+
+            });
+
+
+            res.end();
+
         } finally {
             releaseGeminiSlot?.();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PHỎNG VẤN NGHỀ — AI TỰ TẠO CÂU HỎI ĐỂ NGƯỜI DÙNG CHỌN
+   ========================================================= */
+
+const CAREER_INTERVIEW_SCHEMA = {
+    type: "object",
+    properties: {
+        questions: {
+            type: "array",
+            minItems: 5,
+            maxItems: 6,
+            items: {
+                type: "object",
+                properties: {
+                    type: { type: "string" },
+                    question: { type: "string" }
+                },
+                required: ["type", "question"],
+                additionalProperties: false
+            }
+        }
+    },
+    required: ["questions"],
+    additionalProperties: false
+};
+
+const interviewQuestionLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    limit: 20,
+    keyGenerator: sessionOrIpKey,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Bạn vừa tạo khá nhiều bộ câu hỏi. Vui lòng thử lại sau ít phút." }
+});
+
+app.post(
+    "/api/career-interview-questions",
+    interviewQuestionLimiter,
+    async (req, res) => {
+        const sessionId = req.headers["x-session-id"];
+        const career = typeof req.body?.career === "string" ? req.body.career.trim() : "";
+
+        if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
+            return res.status(400).json({ error: "Không tìm thấy cuộc trò chuyện hiện tại." });
+        }
+        if (!career || career.length > 160) {
+            return res.status(400).json({ error: "Tên nghề không hợp lệ." });
+        }
+
+        const session = sessions.get(sessionId);
+        session.lastUsedAt = Date.now();
+        session.interviewQuestionCache ||= {};
+
+        const cacheKey = career.toLocaleLowerCase("vi-VN");
+        if (Array.isArray(session.interviewQuestionCache[cacheKey]) && !req.body?.refresh) {
+            return res.json({ ok: true, career, questions: session.interviewQuestionCache[cacheKey], cached: true });
+        }
+
+        const transcript = (session.messages || [])
+            .slice(-24)
+            .map(m => `${m.role === "user" ? "NGƯỜI DÙNG" : "AI"}: ${String(m.text || "").slice(0, 1600)}`)
+            .join("\n\n");
+
+        const prompt = `
+Hãy tạo 5-6 câu hỏi để PHỎNG VẤN KHÁM PHÁ nghề "${career}" cho đúng người dùng trong cuộc trò chuyện này.
+
+Mục tiêu là để người dùng tự chọn 1 câu hỏi để bắt đầu trò chuyện, không phải bài kiểm tra kiến thức.
+
+BẮT BUỘC:
+- Mỗi câu hỏi chỉ kiểm tra một góc nhìn.
+- Các câu phải khác kiểu nhau, ưu tiên: sở thích/điều tò mò; tình huống thực tế; cách giải quyết vấn đề; môi trường làm việc; động lực; cách học/thích nghi.
+- Mỗi câu phải cụ thể với nghề "${career}", tránh câu hỏi chung chung kiểu "Bạn có thích nghề này không?".
+- Không hỏi lại nguyên văn điều người dùng đã nói.
+- Không kết luận người dùng hợp hay không hợp nghề.
+- Câu hỏi phải ngắn, tự nhiên và dễ trả lời.
+- Chỉ trả JSON theo schema, không markdown.
+
+LỊCH SỬ CUỘC TRÒ CHUYỆN:
+${transcript}
+`;
+
+        try {
+            const response = await createGenerateContentWithRetry({
+                model: MODEL,
+                contents: prompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: CAREER_INTERVIEW_SCHEMA,
+                    systemInstruction: "Bạn là AI Hướng Nghiệp. Chỉ tạo câu hỏi khám phá, không chẩn đoán nghề nghiệp."
+                }
+            }, 4);
+
+            const raw = typeof response?.text === "string" ? response.text.trim() : "";
+            let parsed;
+            try { parsed = JSON.parse(raw); } catch {
+                throw new Error("Gemini trả về bộ câu hỏi không hợp lệ.");
+            }
+
+            const questions = Array.isArray(parsed?.questions)
+                ? parsed.questions
+                    .map(q => ({ type: String(q?.type || "Khám phá"), question: String(q?.question || "").trim() }))
+                    .filter(q => q.question)
+                    .slice(0, 6)
+                : [];
+
+            if (questions.length < 5) {
+                throw new Error("Gemini chưa tạo đủ câu hỏi phỏng vấn.");
+            }
+
+            session.interviewQuestionCache[cacheKey] = questions;
+            return res.json({ ok: true, career, questions, cached: false });
+        } catch (error) {
+            console.error("Career interview questions error:", error);
+            return res.status(503).json({ error: getFriendlyError(error) });
         }
     }
 );
@@ -948,8 +1093,9 @@ const PERSONAL_QUIZ_SCHEMA = {
 };
 
 function getMatchingIndustries(text) {
+    const lower = String(text || "").toLowerCase();
     return Object.entries(INDUSTRY_RULES)
-        .filter(([, rule]) => rule.terms.some(term => hasPhrase(text, term)))
+        .filter(([, rule]) => rule.terms.some(term => lower.includes(term)))
         .map(([key]) => key);
 }
 
@@ -971,74 +1117,74 @@ app.post(
         const sessionId = req.headers["x-session-id"];
         const industry = typeof req.body?.industry === "string" ? req.body.industry : "";
         const careerLabel = typeof req.body?.careerLabel === "string" ? req.body.careerLabel : "";
-
         if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
             return res.status(400).json({ error: "Không tìm thấy cuộc trò chuyện hiện tại." });
         }
+
         if (!INDUSTRY_RULES[industry]) {
             return res.status(400).json({ error: "Lĩnh vực quiz không hợp lệ." });
         }
 
         const session = sessions.get(sessionId);
-        session.lastUsedAt = Date.now();
         const recommendation = session.lastRecommendation;
         const recommendationText = recommendation?.text || "";
+        const focusedCareers = Array.isArray(session.recommendedCareers) ? session.recommendedCareers : extractRecommendedCareers(recommendationText);
 
-        if (!isCareerRecommendation(recommendationText)) {
-            return res.status(403).json({ error: "Quiz riêng chỉ mở sau khi AI đưa ra gợi ý nghề nghiệp." });
+        // Chỉ mở quiz cho các lĩnh vực được suy ra từ DANH SÁCH NGHỀ nổi bật,
+        // không quét toàn bộ đoạn văn để tránh bắt nhầm từ ngoài luồng.
+        if (!focusedCareers.length) {
+            return res.status(403).json({ error: "Chưa có danh sách nghề nổi bật để tạo quiz." });
         }
 
-        const matches = getMatchingIndustries(recommendationText);
+        const matches = getMatchingIndustries(focusedCareers.join(" | "));
         if (!matches.includes(industry)) {
-            return res.status(403).json({ error: "Nghề được gợi ý chưa có bộ quiz riêng cho lĩnh vực này." });
+            return res.status(403).json({ error: "Nghề nổi bật hiện tại chưa có bộ quiz riêng cho lĩnh vực này." });
         }
 
-        const fingerprint = getConversationFingerprint(session);
-        const cacheKey = `${fingerprint}:${industry}`;
-        const cached = session.personalizedQuizCache?.get(cacheKey);
-        if (cached) return res.json({ ...cached, cached: true });
-
-        let releaseGeminiSlot;
         try {
-            releaseGeminiSlot = await acquireGeminiSlot();
-
-            const transcript = getTranscript(session, 34);
             const prompt = `
-Hãy tạo QUIZ HƯỚNG NGHIỆP RIÊNG gồm ĐÚNG 20 câu cho người dùng hiện tại.
+Hãy tạo một bộ QUIZ HƯỚNG NGHIỆP RIÊNG gồm ĐÚNG 20 câu cho người dùng hiện tại.
 
 Lĩnh vực được gợi ý: ${INDUSTRY_RULES[industry].title}
 Nghề/lĩnh vực hiển thị trên nút: ${careerLabel || INDUSTRY_RULES[industry].title}
 
-Lịch sử cuộc trò chuyện:
-${transcript}
-
-Phần gợi ý nghề gần nhất của AI:
-${recommendationText}
-
-YÊU CẦU:
-- Dựa vào TOÀN BỘ ngữ cảnh trên để cá nhân hóa cách đặt tình huống.
-- Không hỏi lại nguyên văn câu trong cuộc trò chuyện.
+YÊU CẦU QUAN TRỌNG:
+- Dựa vào TOÀN BỘ ngữ cảnh cuộc trò chuyện trước đó và đặc điểm người dùng đã chia sẻ.
+- Quiz phải cá nhân hóa: tình huống, cách hỏi và trọng tâm phải liên quan tới sở thích, điểm mạnh, cách suy nghĩ, động lực và điều người dùng đã nói.
+- Không hỏi lại nguyên văn các câu trong cuộc trò chuyện.
 - Không biến quiz thành bài kiểm tra kiến thức chuyên ngành nặng.
-- 20 câu, mỗi câu đúng 4 lựa chọn.
+- 20 câu, mỗi câu có đúng 4 lựa chọn.
 - answer là chỉ số 0,1,2,3 của đáp án đúng.
-- explanation ngắn, giải thích logic của tình huống và giữ giọng trung tính.
-- Phân bố vị trí đáp án đúng đa dạng.
-- Các câu phải giúp phân biệt sở thích, cách ra quyết định, cách giải quyết vấn đề, độ kiên nhẫn, môi trường làm việc và động lực liên quan tới lĩnh vực này.
-- Không kết luận “chắc chắn hợp nghề”; chỉ phục vụ khám phá.
-- Tiếng Việt, JSON thuần theo schema.
+- explanation ngắn, dễ hiểu, giải thích vì sao đáp án đúng phù hợp với tình huống; không phán rằng người dùng chắc chắn hợp nghề.
+- Các đáp án nên có độ phân biệt, không để đáp án đúng luôn ở cùng một vị trí.
+- Không thêm markdown, không thêm văn bản ngoài JSON.
+- Quiz chỉ mang tính khám phá và tham khảo.
+- Ngôn ngữ đầu ra: Tiếng Việt. Cả câu hỏi, 4 lựa chọn và explanation phải dùng tiếng Việt.
 `;
 
-            const response = await createGenerateContentWithRetry({
-                model: MODEL,
-                contents: prompt,
-                config: {
-                    responseMimeType: "application/json",
-                    responseSchema: PERSONAL_QUIZ_SCHEMA,
-                    systemInstruction: "Bạn là AI thiết kế quiz hướng nghiệp cá nhân hóa. Trả đúng 20 câu JSON hợp lệ và dựa vào transcript được cung cấp."
-                }
-            }, 4);
+            const interaction = await withGeminiSlot(() =>
+                createInteractionWithRetry({
+                    model: MODEL,
+                    previous_interaction_id: recommendation.interactionId,
+                    input: prompt,
+                    response_format: {
+                        type: "text",
+                        mime_type: "application/json",
+                        schema: PERSONAL_QUIZ_SCHEMA
+                    },
+                    generation_config: {
+                        thinking_level: "low",
+                        max_output_tokens: 6500
+                    },
+                    // Gemini requires store=true whenever previous_interaction_id is used.
+                    // This quiz interaction is intentionally NOT copied into the main chat session
+                    // (we do not update session.lastInteractionId below), so the conversation flow
+                    // remains separate while still using the previous recommendation as context.
+                    store: true
+                }, 2)
+            );
 
-            const outputText = typeof response?.text === "string" ? response.text.trim() : "";
+            const outputText = getInteractionOutputText(interaction);
             let parsed;
             try {
                 parsed = JSON.parse(outputText);
@@ -1051,53 +1197,25 @@ YÊU CẦU:
             }
 
             const questions = parsed.questions.map((q, index) => ({
-                question: String(q?.question || `Câu ${index + 1}`).trim(),
-                options: Array.isArray(q?.options) ? q.options.slice(0, 4).map(x => String(x).trim()) : [],
-                answer: Number(q?.answer),
-                explanation: String(q?.explanation || "").trim()
+                question: String(q.question || `Câu ${index + 1}`),
+                options: Array.isArray(q.options) ? q.options.slice(0, 4).map(String) : [],
+                answer: Number(q.answer),
+                explanation: String(q.explanation || "")
             }));
 
-            if (questions.some(q => !q.question || q.options.length !== 4 || q.options.some(x => !x) ||
-                !Number.isInteger(q.answer) || q.answer < 0 || q.answer > 3 || !q.explanation)) {
+            if (questions.some(q => q.options.length !== 4 || !Number.isInteger(q.answer) || q.answer < 0 || q.answer > 3)) {
                 return res.status(502).json({ error: "AI trả về một câu hỏi không hợp lệ. Vui lòng thử lại." });
             }
 
-            const payload = {
+            res.json({
                 ok: true,
                 title: `Quiz riêng: ${INDUSTRY_RULES[industry].title}`,
                 questions
-            };
-            session.personalizedQuizCache ||= new Map();
-            session.personalizedQuizCache.set(cacheKey, payload);
-            return res.json({ ...payload, cached: false });
-
+            });
         } catch (error) {
             console.error("Personalized quiz error:", error);
-            return res.status(503).json({ error: getFriendlyError(error), retryable: isRetryableGeminiError(error) });
-        } finally {
-            releaseGeminiSlot?.();
+            res.status(503).json({ error: getFriendlyError(error) });
         }
-    }
-);
-
-
-/* =========================================================
-   KHÔI PHỤC PHIÊN
-   ========================================================= */
-
-app.get(
-    "/api/session",
-    (req, res) => {
-        const sessionId = req.headers["x-session-id"];
-        if (typeof sessionId !== "string" || !sessions.has(sessionId)) {
-            return res.status(404).json({ error: "Phiên không còn tồn tại." });
-        }
-        const session = sessions.get(sessionId);
-        session.lastUsedAt = Date.now();
-        return res.json({
-            ok: true,
-            messages: (session.messages || []).slice(-40)
-        });
     }
 );
 
@@ -1141,30 +1259,59 @@ app.post(
    ========================================================= */
 
 function getFriendlyError(error) {
-    const message = getErrorText(error) || "Lỗi không xác định.";
+
+    const message =
+        error?.message ||
+        "Lỗi không xác định.";
 
     if (error?.code === "SERVER_BUSY" || message === "SERVER_BUSY") {
         return "Máy chủ đang có nhiều người dùng cùng lúc. Vui lòng thử lại sau ít giây.";
     }
-    if (/API key|API_KEY/i.test(message)) {
-        return "Kết nối AI của server đang có vấn đề. Vui lòng thử lại sau hoặc kiểm tra cấu hình server.";
+
+    if (
+        message.includes("API key") ||
+        message.includes("API_KEY")
+    ) {
+
+        return (
+            "API Key của server không hợp lệ. " +
+            "Hãy kiểm tra GEMINI_API_KEY trong file .env."
+        );
+
     }
+
+
     if (/429|rate.?limit|resource.?exhausted/i.test(message)) {
-        return "AI đang nhận quá nhiều yêu cầu cùng lúc. Mình đã tự thử lại nhưng vẫn chưa thành công. Bạn bấm “Thử lại” sau vài giây nhé.";
+
+        return (
+            "Gemini API đang giới hạn lượt sử dụng. " +
+            "Vui lòng thử lại sau."
+        );
+
     }
-    if (/503|service.?unavailable|unavailable|high demand|overloaded/i.test(message)) {
-        return "AI đang hơi quá tải một chút. Hệ thống đã tự thử kết nối lại; bạn thử lại sau vài giây nhé.";
+
+
+    if (
+        message.includes("403")
+    ) {
+
+        return (
+            "Gemini API từ chối quyền truy cập. " +
+            "Hãy kiểm tra API key và project Google."
+        );
+
     }
-    if (/500|502|504|internal|temporar|deadline.?exceeded|timeout|econnreset|socket/i.test(message)) {
-        return "Kết nối AI đang gặp lỗi tạm thời. Bạn thử lại sau vài giây nhé.";
+
+
+    if (/503|service.?unavailable|unavailable|high demand|temporar/i.test(message)) {
+
+        return "AI đang hơi quá tải một chút. Hệ thống đã tự thử kết nối lại; bạn chờ vài giây rồi thử lại nhé.";
+
     }
-    if (/403/.test(message)) {
-        return "Gemini API từ chối quyền truy cập. Hãy kiểm tra API key và project Google.";
-    }
-    if (/404/.test(message)) {
-        return "Mô hình AI tạm thời không sẵn sàng. Vui lòng thử lại sau ít giây.";
-    }
+
+
     return message;
+
 }
 
 
