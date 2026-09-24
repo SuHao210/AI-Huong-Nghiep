@@ -1381,6 +1381,7 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
                     <input id="userInput" type="text" placeholder="Ví dụ: Em thích chơi game, bóng đá và làm video..." autocomplete="off">
                     <button id="sendBtn">Gửi</button>
                 </div>
+                <button class="reset" id="endInterviewBtn" type="button" style="display:none">⏹️ Kết thúc phỏng vấn nghề</button>
                 <button class="reset" id="resetBtn">🔄 Bắt đầu cuộc trò chuyện mới</button>
                 <div class="status" id="status">🟢 AI đang sẵn sàng</div>
             </div>
@@ -1596,11 +1597,40 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
               const qs=Array.isArray(data.questions)?data.questions:[];
               if(!qs.length) throw new Error('AI chưa tạo được câu hỏi.');
               body.innerHTML=`<div class="career-interview-head"><div class="career-interview-kicker">AI PHỎNG VẤN NGHỀ</div><div class="career-interview-title">Chọn 1 câu để bắt đầu</div><div class="career-interview-desc">Các câu hỏi được tạo riêng cho <b>${escHtml(career)}</b>. Mỗi lượt sau đó AI sẽ hỏi đúng một câu dựa trên câu trả lời trước.</div></div><div class="career-interview-questions">${qs.map((q,i)=>`<button type="button" class="career-interview-option" data-interview-question-index="${i}"><span class="qtype">${escHtml(q.type||'Khám phá')}</span><span class="qtext">${escHtml(q.question||'')}</span></button>`).join('')}</div><div class="career-interview-footer"><button type="button" class="career-interview-refresh" id="careerInterviewRefresh">↻ Tạo bộ câu hỏi khác</button></div>`;
-              body.querySelectorAll('[data-interview-question-index]').forEach(btn=>btn.addEventListener('click',()=>{
+              body.querySelectorAll('[data-interview-question-index]').forEach(btn=>btn.addEventListener('click',async()=>{
                   const q=qs[Number(btn.dataset.interviewQuestionIndex)];
-                  modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
-                  const prompt=`Về nghề ${career}, ${q.question}`;
-                  userInput.value=prompt; sendMessage();
+                  if(!q?.question) return;
+                  btn.disabled=true;
+                  try{
+                      const r=await fetch('/api/career-interview-start',{
+                          method:'POST',
+                          headers:{
+                              'Content-Type':'application/json',
+                              ...(sessionId?{'X-Session-Id':sessionId}:{})
+                          },
+                          body:JSON.stringify({career,question:q.question})
+                      });
+                      const data=await r.json().catch(()=>({}));
+                      const returnedSession=r.headers.get('X-Session-Id');
+                      if(returnedSession) saveSessionId(returnedSession);
+                      if(!r.ok) throw new Error(data.error||'Không thể bắt đầu phỏng vấn.');
+                      modal.classList.remove('open');
+                      modal.setAttribute('aria-hidden','true');
+                      switchMode('chat');
+                      window.__careerInterviewActive=true;
+                      window.__careerInterviewCareer=career;
+                      addMessage(q.question,'ai');
+                      status.textContent='🟢 Đang phỏng vấn · '+career;
+                      userInput.focus();
+                  }catch(error){
+                      btn.disabled=false;
+                      const existing=body.querySelector('.career-interview-error');
+                      if(existing) existing.remove();
+                      const err=document.createElement('div');
+                      err.className='career-interview-error';
+                      err.innerHTML='❌ '+escHtml(error.message||'Không thể bắt đầu phỏng vấn.');
+                      body.appendChild(err);
+                  }
               }));
               document.getElementById('careerInterviewRefresh')?.addEventListener('click',()=>openCareerInterviewQuestions(career,true));
           })
@@ -1701,8 +1731,13 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
                     if(event.type==="error"){streamError=true; aiContent.textContent="❌ "+(event.message||"AI gặp lỗi.");}
                 }
             }
-            if(!streamError && fullText){ addPersonalQuizButtons(fullText); buildCareerLab(fullText); }
-            status.textContent = streamError ? "🔴 AI tạm thời không sẵn sàng" : "🟢 AI đang sẵn sàng";
+            if(!streamError && fullText){
+                if(!window.__careerInterviewActive){
+                    addPersonalQuizButtons(fullText);
+                    buildCareerLab(fullText);
+                }
+            }
+            status.textContent = streamError ? "🔴 AI tạm thời không sẵn sàng" : (window.__careerInterviewActive ? "🟢 Đang phỏng vấn" : "🟢 AI đang sẵn sàng");
         } catch(error) {
             console.error(error); typing.remove(); addMessage("❌ Không thể kết nối tới server. Vui lòng thử lại sau.","ai"); status.textContent="🔴 Mất kết nối server";
         } finally { sending=false; sendBtn.disabled=false; sendBtn.textContent=window.careerLanguage?.t?.().send || "Gửi"; userInput.focus(); }
@@ -1711,11 +1746,31 @@ body:not(.dark-theme) .brand-title-sub{color:#475569}
     async function resetChat(){
         try{await fetch("/api/reset",{method:"POST",headers:{...(sessionId?{"X-Session-Id":sessionId}: {})}});}catch{}
         sessionId=null; localStorage.removeItem("huongnghiep_session_id");
+        window.__careerInterviewActive=false;
+        window.__careerInterviewCareer="";
+        if(endInterviewBtn) endInterviewBtn.style.display="none";
         chatBox.innerHTML=`<div class="message ai"><div class="bubble"><div class="sender">🧭 AI Hướng Nghiệp</div>Chúng ta bắt đầu lại nhé! 👋<br><br>Hãy kể cho mình những thứ bạn thích, những việc bạn thường làm khi rảnh, hoặc điều gì khiến bạn tò mò.</div></div>`;
         status.textContent="🟢 AI đang sẵn sàng"; userInput.focus();
     }
+    const endInterviewBtn = document.getElementById("endInterviewBtn");
+    function syncInterviewUi(){
+        const active=!!window.__careerInterviewActive;
+        if(endInterviewBtn) endInterviewBtn.style.display=active?"block":"none";
+        if(active && window.__careerInterviewCareer){
+            status.textContent="🟢 Đang phỏng vấn · "+window.__careerInterviewCareer;
+        }
+    }
+    endInterviewBtn?.addEventListener("click",()=>{
+        window.__careerInterviewActive=false;
+        window.__careerInterviewCareer="";
+        if(endInterviewBtn) endInterviewBtn.style.display="none";
+        status.textContent="🟢 AI đang sẵn sàng";
+        userInput.focus();
+        addMessage("Bạn đã kết thúc cuộc phỏng vấn nghề. Khi muốn khám phá nghề khác, hãy chọn lại trong Career Lab.","ai");
+    });
     sendBtn.addEventListener("click",sendMessage); resetBtn.addEventListener("click",resetChat);
     userInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();sendMessage();}});
+    syncInterviewUi();
 
     /* ===================== QUIZ DATA ===================== */
     const INDUSTRIES = {
